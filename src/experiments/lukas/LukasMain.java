@@ -14,6 +14,7 @@ public class LukasMain {
 	 static {
 		 try {
 			 // Load chillkat.dll in Java-bin-dir (jdk)
+			 // Test
 			 System.loadLibrary("chilkat");
 		 } catch (UnsatisfiedLinkError e) {
 		     System.err.println("Native code library failed to load.\n" + e);
