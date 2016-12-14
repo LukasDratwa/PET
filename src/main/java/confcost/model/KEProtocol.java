@@ -1,3 +1,4 @@
+
 package confcost.model;
 
 /**
@@ -8,4 +9,11 @@ package confcost.model;
  */
 public enum KEProtocol {
 	DiffieHellman;
+	
+	public String getName() {
+		switch (this) {
+		case DiffieHellman:	return "DH";
+		default:	return null;
+		}
+	}
 }

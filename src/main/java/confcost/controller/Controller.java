@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -64,9 +65,9 @@ public class Controller implements ViewListener, SendViewListener {
 	@Override
 	public void notifySendButtonPressed(SendModeView sendModeView) {
 		try {
-			sendController.send(sendModeView.getSendMode().getInstance(1024, 1024));
+			sendController.send(sendModeView.getSendMode().getInstance(1024, 117));
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-				| BadPaddingException | IOException e) {
+				| BadPaddingException | IOException | InvalidKeySpecException e) {
 			System.err.println("Unable to send!");
 			e.printStackTrace();
 		}

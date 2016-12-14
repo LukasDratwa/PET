@@ -1,9 +1,22 @@
 package confcost.controller;
 
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.RSAKeyGenParameterSpec;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import confcost.network.Frame;
 
 /**
  * A {@link Thread} to handle an incoming connection.
@@ -27,26 +40,39 @@ public class DispatchThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			// Get message length
-			int length = socket.getInputStream().read();
+			// Receive key exchange and encryption method
+			System.out.println("DispatchThread >> Receiving KE and ENC methods");
+			String keyEx = Frame.get(socket).toString(); // Ignored for now
+			String enc = Frame.get(socket).toString();
+			System.out.println("DispatchThread >> "+keyEx+"|"+enc);
 			
-			byte[] encrypt = new byte[length];
-			for (int i = 0; i < length; i++) {
-				encrypt[i] = (byte)socket.getInputStream().read();
-			}
-			System.out.println("DispatchThread >> Received "+encrypt);
+			// Receive key length
+			System.out.println("DispatchThread >> Receiving key length");
+			int keyLength = new DataInputStream(socket.getInputStream()).readInt();
+			System.out.println("DispatchThread >> Key length is "+keyLength+" bit");
 			
-			byte[] message = sender.send(cipher.doFinal(message.getBytes("UTF-8")));
-
-	        // Set cipher to decrypt
-			Cipher cipher = Cipher.getInstance(transformation)
-	        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-
-
-					System.out.println("Received: "+socket.getInputStream().read());
-			System.out.println("DispatchThread >> Encrypted: "+message);
+			// Generate key pair
+			System.out.println("DispatchThread >> Generating key pair");
+			KeyPairGenerator gen = KeyPairGenerator.getInstance(enc);
+			gen.initialize(new RSAKeyGenParameterSpec(keyLength, new BigInteger("3")));
+			KeyPair keys = gen.genKeyPair();
 			
-		} catch (IOException e) {
+			// Send public key
+			System.out.println("DispatchThread >> Sending public key '"+new String(keys.getPublic().getEncoded()));
+			new Frame(keys.getPublic().getEncoded()).write(socket);
+			
+			// Receive data
+			System.out.println("DispatchThread >> Receiving data");
+			byte[] encrypt = Frame.get(socket).data;
+
+			System.out.println("DispatchThread >> Encrypting data");
+			Cipher cipher = Cipher.getInstance(enc);
+			cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
+			byte[] decryptByte = cipher.doFinal(encrypt);
+			
+			System.out.println("DispatchThread >> Encrypted: "+new String(decryptByte));
+			
+		} catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
 			e.printStackTrace();
 		}
 		
