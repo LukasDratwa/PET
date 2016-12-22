@@ -26,6 +26,9 @@ public class View extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -5317039148938674808L;
+
+	private static final int HEIGHT = 400;
+	private static final int WIDTH = 400;
 	
 	/**
 	 * The registered {@link ViewListener}
@@ -50,6 +53,7 @@ public class View extends JFrame {
 		
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		this.setTitle(title);
+		this.setSize(WIDTH, HEIGHT);
 		
 		this.setLayout(new BorderLayout());
 		
