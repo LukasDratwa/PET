@@ -2,9 +2,12 @@ package confcost.controller;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -65,9 +68,9 @@ public class Controller implements ViewListener, SendViewListener {
 	@Override
 	public void notifySendButtonPressed(SendModeView sendModeView) {
 		try {
-			sendController.send(sendModeView.getSendMode().getInstance(1024, 117));
+			sendController.send(sendModeView.getSendMode().getInstance(512, 256));
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-				| BadPaddingException | IOException | InvalidKeySpecException e) {
+				| BadPaddingException | IOException | InvalidKeySpecException | NoSuchProviderException | InvalidAlgorithmParameterException | InvalidParameterSpecException e) {
 			System.err.println("Unable to send!");
 			e.printStackTrace();
 		}
