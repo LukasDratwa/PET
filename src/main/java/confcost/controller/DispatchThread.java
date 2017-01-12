@@ -13,9 +13,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import confcost.controller.encryption.AESEncryption;
-import confcost.controller.ke.KeyExchange;
-import confcost.controller.ke.KeyExchangeFactory;
+import confcost.controller.encryption.RSAEncryption;
 import confcost.model.KEProtocol;
 import confcost.network.Frame;
 
@@ -47,8 +45,11 @@ public class DispatchThread extends Thread {
 			String enc = Frame.get(socket).toString();
 			System.out.println("DispatchThread >> "+keyEx+"|"+enc);
 			
-			KeyExchange ke = KeyExchangeFactory.get(keyEx);
-			AESEncryption e = new AESEncryption(ke);
+//			KeyExchange ke = KeyExchangeFactory.get(keyEx);
+//			AESEncryption e = new AESEncryption(ke);
+//			e.receive(socket);
+			
+			RSAEncryption e = new RSAEncryption();
 			e.receive(socket);
 			
 			System.out.println("DispatchThread >> Done.");

@@ -17,6 +17,8 @@ import javax.crypto.NoSuchPaddingException;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.encryption.RSAEncryption;
+import confcost.model.CProtocol;
+import confcost.model.KEProtocol;
 import confcost.model.SendModeInstance;
 import confcost.network.Frame;
 
@@ -51,8 +53,8 @@ public class SendController {
 	    socket.setSoTimeout(10000);
 		System.out.println("SendController >> Connected.");
 		
-		new Frame(instance.getSendMode().keyExchange.getName()).write(socket);
-		new Frame(instance.getSendMode().messageExchange.getName()).write(socket);
+//		new Frame(instance.getSendMode().keyExchange.getName()).write(socket);
+//		new Frame(instance.getSendMode().messageExchange.getName()).write(socket);
 		
 		// Get KeyExchange
 //		KeyExchange ke = KeyExchangeFactory.get(instance.getSendMode().keyExchange);
@@ -61,6 +63,9 @@ public class SendController {
 		// Perform key exchange and send message
 //		AESEncryption e = new AESEncryption(ke);
 //		e.send(socket, instance.getMessageLength());
+
+		new Frame(KEProtocol.None.getName()).write(socket);
+		new Frame(CProtocol.RSA.getName()).write(socket);
 		
 		RSAEncryption e = new RSAEncryption();
 		e.send(socket, instance.getMessageLength());

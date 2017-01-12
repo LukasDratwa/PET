@@ -29,6 +29,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.network.Frame;
+import confcost.util.HexString;
 
 /**
  * Bouncy Castle RSA Encryption
@@ -55,7 +56,7 @@ public class RSAEncryption extends AsymmetricEncryption {
 		
 		// Generate data
 	    byte[] message = new BigInteger(messageLength, new Random()).toByteArray();
-	    System.out.println("RSAEncryption::send >> Generated message "+new String(message));
+	    System.out.println("RSAEncryption::send >> Generated message "+new HexString(message));
 	    
 		// Encrypt data
 	    System.out.println("RSAEncryption::send >> Encrypting");
@@ -64,7 +65,7 @@ public class RSAEncryption extends AsymmetricEncryption {
 		byte[] encrypt = cipher.doFinal(message);
 		
 		// Send data
-		System.out.println("RSAEncryption::send >> Sending data '"+new String(encrypt)+"'");
+		System.out.println("RSAEncryption::send >> Sending data '"+new HexString(encrypt)+"'");
 		new Frame(encrypt).write(socket);
 		
 		// Close socket
@@ -88,9 +89,11 @@ public class RSAEncryption extends AsymmetricEncryption {
 		final KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "BC");
 		gen.initialize(new RSAKeyGenParameterSpec(keyLength, new BigInteger("3")));
 		final KeyPair keys = gen.genKeyPair();
+		System.out.println("RSAEncryption::receive >> Private key: "+new HexString(keys.getPrivate().getEncoded()));
+		System.out.println("RSAEncryption::receive >> Public key: "+new HexString(keys.getPublic().getEncoded()));
 		
 		// Send public key
-		System.out.println("RSAEncryption::receive >> Sending public key '"+new String(keys.getPublic().getEncoded()));
+		System.out.println("RSAEncryption::receive >> Sending public key");
 		new Frame(keys.getPublic().getEncoded()).write(socket);
 		
 		// Receive data
@@ -102,7 +105,7 @@ public class RSAEncryption extends AsymmetricEncryption {
 		cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
 		byte[] decryptByte = cipher.doFinal(encrypt);
 		
-		System.out.println("RSAEncryption::receive >> Encrypted: "+new String(decryptByte));
+		System.out.println("RSAEncryption::receive >> Encrypted: "+new HexString(decryptByte));
 		
 	}
 
