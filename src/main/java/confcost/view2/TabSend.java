@@ -59,7 +59,15 @@ public class TabSend extends JPanel {
 	
 	public TabSend(MainFrame mainFrame, Collection<SendMode> modes) {
 		for(SendMode mode : modes) {
-			possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(mainFrame, this, mode));
+			switch(mode.messageExchange.getName()) {
+				case "RSA":
+					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(mainFrame, this, mode));
+					break;
+				
+				case "AES":
+					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationAES(mainFrame, this, mode));
+					break;
+			}
 		}
 		
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
