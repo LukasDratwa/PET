@@ -25,8 +25,8 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 	private JTextField textFieldWestMsglength;
 	private JTextField textFieldCenterKeylength;
 
-	public AlgorithmConfigurationRSA(MainFrame mainFrame, SendMode sendMode) {
-		super("RSA", mainFrame, sendMode);
+	public AlgorithmConfigurationRSA(MainFrame mainFrame, TabSend tabSend, SendMode sendMode) {
+		super("RSA", mainFrame, tabSend, sendMode);
 		
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 		DecimalFormat decimalFormat = (DecimalFormat) numberFormat;

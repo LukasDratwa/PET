@@ -14,8 +14,8 @@ import confcost.model.SendMode;
 public class AlgorithmConfigurationTest extends AlgorithmConfiguration {
 	private static final long serialVersionUID = 1L;
 
-	public AlgorithmConfigurationTest(MainFrame mainFrame, SendMode sendMode) {
-		super("Test", mainFrame, sendMode);
+	public AlgorithmConfigurationTest(MainFrame mainFrame, TabSend tabSend, SendMode sendMode) {
+		super("Test", mainFrame, tabSend, sendMode);
 		initSendClickedListener();
 	}
 

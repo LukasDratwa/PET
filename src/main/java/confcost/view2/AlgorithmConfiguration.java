@@ -27,11 +27,13 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	private JButton btnSend;
 	private String header;
 	private JFrame mainFrame;
+	private TabSend tabSend;
 	
 	private final @NonNull SendMode sendMode;
 	private List<SendButtonListener> sendButtonListeners = new LinkedList<SendButtonListener>();
 
-	public AlgorithmConfiguration(String header, MainFrame mainFrame, SendMode sendMode) {
+	public AlgorithmConfiguration(String header, MainFrame mainFrame, TabSend tabSend, SendMode sendMode) {
+		this.tabSend = tabSend;
 		this.sendMode = sendMode;
 		setLayout(new BorderLayout(0, 0));
 		this.header = header;
@@ -96,5 +98,19 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	 */
 	public SendMode getSendMode() {
 		return sendMode;
+	}
+
+	/**
+	 * @return the tabSend
+	 */
+	public TabSend getTabSend() {
+		return tabSend;
+	}
+
+	/**
+	 * @param tabSend the tabSend to set
+	 */
+	public void setTabSend(TabSend tabSend) {
+		this.tabSend = tabSend;
 	}
 }

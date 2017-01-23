@@ -4,11 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.AbstractListModel;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -34,6 +38,7 @@ public class TabSend extends JPanel {
 	private List<AlgorithmConfiguration> possibleAlgorithmConfigurations  = new ArrayList<AlgorithmConfiguration>();;
 	private JTextField textFieldHost;
 	private JTextField textFieldPort;
+	private JSpinner spinnerIterations;
 	
 	private String[] getPossibleAlgorithmConfigurationsAsStringArray() {
 		String[] result = new String[possibleAlgorithmConfigurations.size()];
@@ -54,8 +59,12 @@ public class TabSend extends JPanel {
 	
 	public TabSend(MainFrame mainFrame, Collection<SendMode> modes) {
 		for(SendMode mode : modes) {
-			possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(mainFrame, mode));
+			possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(mainFrame, this, mode));
 		}
+		
+		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+		DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
+		decimalFormat.setGroupingUsed(false);
 		
 		setLayout(new BorderLayout(0, 0));
 		
@@ -113,7 +122,7 @@ public class TabSend extends JPanel {
 		JLabel lblIterations = new JLabel("Iterations");
 		panel_1.add(lblIterations);
 		
-		JSpinner spinnerIterations = new JSpinner();
+		spinnerIterations = new JSpinner();
 		panel_1.add(spinnerIterations);
 		
 		JPanel panel_2 = new JPanel();
@@ -133,7 +142,7 @@ public class TabSend extends JPanel {
 		JLabel lblPort = new JLabel("Port");
 		panel_3.add(lblPort);
 		
-		textFieldPort = new JTextField();
+		textFieldPort = new JFormattedTextField(numberFormat);
 		panel_3.add(textFieldPort);
 		textFieldPort.setColumns(10);
 	}
@@ -142,5 +151,47 @@ public class TabSend extends JPanel {
 		for (AlgorithmConfiguration c : possibleAlgorithmConfigurations) {
 			c.addSendButtonListener(listener);
 		}
+	}
+
+	/**
+	 * @return the textFieldHost
+	 */
+	public JTextField getTextFieldHost() {
+		return textFieldHost;
+	}
+
+	/**
+	 * @param textFieldHost the textFieldHost to set
+	 */
+	public void setTextFieldHost(JTextField textFieldHost) {
+		this.textFieldHost = textFieldHost;
+	}
+
+	/**
+	 * @return the textFieldPort
+	 */
+	public JTextField getTextFieldPort() {
+		return textFieldPort;
+	}
+
+	/**
+	 * @param textFieldPort the textFieldPort to set
+	 */
+	public void setTextFieldPort(JTextField textFieldPort) {
+		this.textFieldPort = textFieldPort;
+	}
+
+	/**
+	 * @return the spinnerIterations
+	 */
+	public JSpinner getSpinnerIterations() {
+		return spinnerIterations;
+	}
+
+	/**
+	 * @param spinnerIterations the spinnerIterations to set
+	 */
+	public void setSpinnerIterations(JSpinner spinnerIterations) {
+		this.spinnerIterations = spinnerIterations;
 	}
 }

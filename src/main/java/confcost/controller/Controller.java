@@ -70,17 +70,41 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 	}
 	
 	public void sendButtonClicked(AlgorithmConfiguration ac) {
-		int defaultKeyLength = 1024;
-		int defualtMsgLength = 117;
+		int keyLength = 1024;
+		int msgLength = 117;
+		String host = "localhost";
+		int port = 1111;
+		int iterations = 1;
 		
 		if(ac.getClass().equals(AlgorithmConfigurationRSA.class)) {
-			System.out.println("JO");
+			AlgorithmConfigurationRSA acRSA = (AlgorithmConfigurationRSA) ac;
+			
+			if(!acRSA.getTextFieldCenterKeylength().getText().equals("")) {
+				keyLength = Integer.parseInt(acRSA.getTextFieldCenterKeylength().getText());
+			}
+			
+			if(!acRSA.getTextFieldWestMsglength().getText().equals("")) {
+				keyLength = Integer.parseInt(acRSA.getTextFieldWestMsglength().getText());
+			}
+			
+			if(!acRSA.getTabSend().getTextFieldHost().getText().equals("")) {
+				host = acRSA.getTabSend().getTextFieldHost().getText();
+			}
+			
+			if(!acRSA.getTabSend().getTextFieldPort().getText().equals("")) {
+				port = Integer.parseInt(acRSA.getTabSend().getTextFieldPort().getText());
+			}
+			
+			if(!acRSA.getTabSend().getSpinnerIterations().getValue().toString().equals("")) {
+				iterations = Integer.parseInt(acRSA.getTabSend().getSpinnerIterations().getValue().toString());
+			}
 		}
 		
+		System.out.println("\nSEND: " + host + ":" + port + ", msgLength=" + msgLength + ", keyLength=" + keyLength + ", iterations: " + iterations);
+		
 		try {
-			sendController.send(ac.getSendMode().getInstance(1024, 117));
-		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-				| BadPaddingException | InvalidKeySpecException | IOException e) {
+			sendController.send(ac.getSendMode().getInstance(keyLength, msgLength), host, port);
+		} catch (GeneralSecurityException | IOException e) {
 			e.printStackTrace();
 		}
 	}
