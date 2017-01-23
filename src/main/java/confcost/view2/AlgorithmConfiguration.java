@@ -1,12 +1,17 @@
 package confcost.view2;
 
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Font;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import java.awt.Font;
+
+import confcost.controller.SendButtonListener;
 
 /**
  * Abstract class to represent panels for possbile algorithm configurations.
@@ -19,6 +24,8 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	private JButton btnSend;
 	private String header;
 	private JFrame mainFrame;
+	
+	private List<SendButtonListener> sendButtonListeners = new LinkedList<SendButtonListener>();
 
 	public AlgorithmConfiguration(String header, MainFrame mainFrame) {
 		setLayout(new BorderLayout(0, 0));
@@ -68,5 +75,14 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	 */
 	public void setMainFrame(JFrame mainFrame) {
 		this.mainFrame = mainFrame;
+	}
+	
+	public void addSendButtonListener(SendButtonListener listener) {
+		this.sendButtonListeners.add(listener);
+	}
+	
+	public void notifySendButtonListeners() {
+		for (SendButtonListener l : sendButtonListeners)
+			l.sendButtonClicked(this);
 	}
 }

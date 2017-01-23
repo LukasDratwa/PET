@@ -22,6 +22,7 @@ public class AlgorithmConfigurationTest extends AlgorithmConfiguration {
 		getBtnSend().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				AlgorithmConfigurationTest.this.notifySendButtonListeners();
 				System.out.println("Send test");
 			}
 		});

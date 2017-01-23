@@ -1,10 +1,11 @@
 package confcost.view2;
 
+import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
+
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
@@ -54,12 +55,14 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 		textFieldCenterKeylength.setColumns(10);
 		initSendClickedListener();
 	}
+	
 
 	@Override
 	protected void initSendClickedListener() {
 		getBtnSend().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				AlgorithmConfigurationRSA.this.notifySendButtonListeners();
 				System.out.println("Send RSA");
 			}
 		});

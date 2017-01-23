@@ -15,6 +15,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import confcost.model.Model;
 import confcost.view.SendModeView;
 import confcost.view.View;
+import confcost.view2.AlgorithmConfiguration;
+import confcost.view2.MainFrame;
 
 /**
  * Main Controller class
@@ -22,23 +24,23 @@ import confcost.view.View;
  * @author Marc Eichler
  *
  */
-public class Controller implements ViewListener, SendViewListener {
+public class Controller implements ViewListener, SendViewListener, SendButtonListener {
 	private static final String HOST = "localhost";
 	private static final int PORT = 1111;
 	
 	private final @NonNull Model model;
-	private final @NonNull View view;
+	private final @NonNull MainFrame view;
 	
 	private final ReceiveThread receiveThread;
 	
 	private final SendController sendController;
 	
-	public Controller(@NonNull Model model, @NonNull View view) throws IOException {
+	public Controller(@NonNull Model model, @NonNull MainFrame view) throws IOException {
 		this.model = model;
 		this.view = view;
 		this.sendController = new SendController(HOST, PORT);
 		
-		this.view.addViewListener(this);
+		this.view.addSendButtonListener(this);
 		
 		this.receiveThread = new ReceiveThread(this, PORT);
 	}
@@ -71,5 +73,9 @@ public class Controller implements ViewListener, SendViewListener {
 			System.err.println("Unable to send!");
 			e.printStackTrace();
 		}
+	}
+	
+	public void sendButtonClicked(AlgorithmConfiguration ac) {
+		System.out.println("Send was clicked");
 	}
 }

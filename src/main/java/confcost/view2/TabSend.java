@@ -12,9 +12,13 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.SwingUtilities;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+import confcost.controller.SendButtonListener;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * {@link JPanel} to represent a tab for the send-configurations.
@@ -135,5 +139,11 @@ public class TabSend extends JPanel {
 		textFieldPort = new JTextField();
 		panel_3.add(textFieldPort);
 		textFieldPort.setColumns(10);
+	}
+	
+	public void addSendButtonListener(final @NonNull SendButtonListener listener) {
+		for (AlgorithmConfiguration c : possibleAlgorithmConfigurations) {
+			c.addSendButtonListener(listener);
+		}
 	}
 }

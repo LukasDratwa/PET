@@ -2,7 +2,6 @@ package confcost.view2;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,6 +10,11 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+import confcost.controller.SendButtonListener;
+import confcost.model.Model;
+
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -18,24 +22,7 @@ public class MainFrame extends JFrame {
 	private TabReceive tabReceive;
 	private TabStatistics tabStatistics;
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		changeLookAndFeel();
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainFrame frame = new MainFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	
+	@SuppressWarnings("unused")
 	private static void changeLookAndFeel() {
 		try {
 		    for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -48,8 +35,8 @@ public class MainFrame extends JFrame {
 		    e.printStackTrace();
 		}
 	}
-
-	public MainFrame() {
+	
+	public MainFrame(@NonNull Model model) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		setMinimumSize(new Dimension(450, 300));
@@ -111,5 +98,9 @@ public class MainFrame extends JFrame {
 	 */
 	public void setTabStatistics(TabStatistics tabStatistics) {
 		this.tabStatistics = tabStatistics;
+	}
+	
+	public void addSendButtonListener(SendButtonListener listener) {
+		this.tabSend.addSendButtonListener(listener);
 	}
 }

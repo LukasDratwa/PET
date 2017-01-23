@@ -7,7 +7,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import confcost.controller.Controller;
 import confcost.model.Model;
-import confcost.view.View;
+import confcost.view2.MainFrame;
 
 /**
  * Hello world!
@@ -29,7 +29,7 @@ public class App
     	App.setLookAndFeel();
     	
         Model model = new Model();
-        View view = new View(model, "ConfCost");
+        MainFrame view = new MainFrame(model);
         Controller controller = new Controller(model, view);
         controller.start();
     }
