@@ -5,17 +5,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.InvalidParameterSpecException;
+import java.security.GeneralSecurityException;
 import java.util.Random;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -35,26 +26,27 @@ import confcost.util.HexString;
  */
 public class SendController {
 
-	private final @NonNull String host;
-	private final @NonNull int port;
-	
 	/**
 	 * Creates a new {@link SendController}.
 	 * 
 	 * @param host	The receiver host name or IP
 	 * @param port	The receiver port
 	 */
-	public SendController(@NonNull String host, int port) {
-		this.host = host;
-		this.port = port;
+	public SendController() {
 	}
 	
 	public void connect() throws UnknownHostException, IOException {
 	}
 	
-	public void send(SendModeInstance instance) throws UnknownHostException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidParameterSpecException {
-		System.out.println("SendController >> Sending "+instance+" to "+host+":"+port);
-		Socket socket = new Socket(host, port);
+	/**
+	 * Sends one or more encrypted messages to the specified host, according to the specified parameters 
+	 * @param instance	The parameters
+	 * @param hostname	The host
+	 * @param port	The port
+	 */
+	public void send(SendModeInstance instance, final @NonNull String hostname, final int port) throws GeneralSecurityException, IOException {
+		System.out.println("SendController >> Sending "+instance+" to "+hostname+":"+port);
+		Socket socket = new Socket(hostname, port);
 	    socket.setSoTimeout(10000);
 		System.out.println("SendController >> Connected.");
 		
