@@ -13,7 +13,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SwingUtilities;
-
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -100,10 +99,10 @@ public class TabSend extends JPanel {
 		panelSendConfigurationGeneral.setLayout(new MigLayout("", "[91px,grow]", "[][30px][grow]"));
 		
 		JLabel lblGeneralConfiguration = new JLabel("General Configuration");
-		panelSendConfigurationGeneral.add(lblGeneralConfiguration, "cell 0 0");
+		panelSendConfigurationGeneral.add(lblGeneralConfiguration, "cell 0 0,alignx left,aligny center");
 		
 		JPanel panel_1 = new JPanel();
-		panelSendConfigurationGeneral.add(panel_1, "cell 0 1,growx,aligny top");
+		panelSendConfigurationGeneral.add(panel_1, "cell 0 1,alignx left,aligny top");
 		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JLabel lblIterations = new JLabel("Iterations");
