@@ -10,6 +10,7 @@ import confcost.model.Model;
 import confcost.view.SendModeView;
 import confcost.view.View;
 import confcost.view2.AlgorithmConfiguration;
+import confcost.view2.AlgorithmConfigurationAES;
 import confcost.view2.AlgorithmConfigurationRSA;
 import confcost.view2.MainFrame;
 
@@ -76,7 +77,11 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 		int port = PORT;
 		int iterations = 1;
 		
+		System.out.println("\n");
+		
+		// RSA
 		if(ac.getClass().equals(AlgorithmConfigurationRSA.class)) {
+			System.out.println("RSA");
 			AlgorithmConfigurationRSA acRSA = (AlgorithmConfigurationRSA) ac;
 			
 			if(!acRSA.getTextFieldCenterKeylength().getText().equals("")) {
@@ -90,17 +95,44 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 			if(!acRSA.getTabSend().getTextFieldHost().getText().equals("")) {
 				host = acRSA.getTabSend().getTextFieldHost().getText();
 			}
+		}
+		
+		// AES
+		if(ac.getClass().equals(AlgorithmConfigurationAES.class)) {
+			System.out.println("AES");
+			AlgorithmConfigurationAES acAES = (AlgorithmConfigurationAES) ac;
 			
-			if(!acRSA.getTabSend().getTextFieldPort().getText().equals("")) {
-				port = Integer.parseInt(acRSA.getTabSend().getTextFieldPort().getText());
+			if(!acAES.getTextFieldCenterKeylength().getText().equals("")) {
+				keyLength = Integer.parseInt(acAES.getTextFieldCenterKeylength().getText());
 			}
 			
-			if(!acRSA.getTabSend().getSpinnerIterations().getValue().toString().equals("")) {
-				iterations = Integer.parseInt(acRSA.getTabSend().getSpinnerIterations().getValue().toString());
+			if(!acAES.getTextFieldWestMsglength().getText().equals("")) {
+				msgLength = Integer.parseInt(acAES.getTextFieldWestMsglength().getText());
+			}
+			
+			if(!acAES.getTabSend().getTextFieldHost().getText().equals("")) {
+				host = acAES.getTabSend().getTextFieldHost().getText();
+			}
+			
+			if(!acAES.getTabSend().getTextFieldPort().getText().equals("")) {
+				port = Integer.parseInt(acAES.getTabSend().getTextFieldPort().getText());
+			}
+			
+			if(!acAES.getTabSend().getSpinnerIterations().getValue().toString().equals("")) {
+				iterations = Integer.parseInt(acAES.getTabSend().getSpinnerIterations().getValue().toString());
 			}
 		}
 		
-		System.out.println("\nSEND: " + host + ":" + port + ", msgLength=" + msgLength + ", keyLength=" + keyLength + ", iterations: " + iterations);
+		// General settings
+		if(!ac.getTabSend().getTextFieldPort().getText().equals("")) {
+			port = Integer.parseInt(ac.getTabSend().getTextFieldPort().getText());
+		}
+		
+		if(!ac.getTabSend().getSpinnerIterations().getValue().toString().equals("")) {
+			iterations = Integer.parseInt(ac.getTabSend().getSpinnerIterations().getValue().toString());
+		}
+		
+		System.out.println("SEND: " + host + ":" + port + ", msgLength=" + msgLength + ", keyLength=" + keyLength + ", iterations: " + iterations);
 		
 		try {
 			sendController.send(ac.getSendMode().getInstance(keyLength, msgLength), host, port);
