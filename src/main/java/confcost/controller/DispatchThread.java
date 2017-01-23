@@ -2,21 +2,21 @@ package confcost.controller;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.RSAKeyGenParameterSpec;
+import java.security.NoSuchProviderException;
 
 import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import confcost.controller.encryption.AsymmetricEncryption;
+import confcost.controller.encryption.RSAEncryption;
+import confcost.model.KEProtocol;
 import confcost.network.Frame;
+import confcost.util.HexString;
 
 /**
  * A {@link Thread} to handle an incoming connection.
@@ -42,37 +42,32 @@ public class DispatchThread extends Thread {
 		try {
 			// Receive key exchange and encryption method
 			System.out.println("DispatchThread >> Receiving KE and ENC methods");
-			String keyEx = Frame.get(socket).toString(); // Ignored for now
-			String enc = Frame.get(socket).toString();
+			final KEProtocol keyEx = KEProtocol.get(Frame.get(socket).toString()); // Ignored for now
+			final String enc = Frame.get(socket).toString();
 			System.out.println("DispatchThread >> "+keyEx+"|"+enc);
-			
-			// Receive key length
-			System.out.println("DispatchThread >> Receiving key length");
-			int keyLength = new DataInputStream(socket.getInputStream()).readInt();
-			System.out.println("DispatchThread >> Key length is "+keyLength+" bit");
-			
-			// Generate key pair
-			System.out.println("DispatchThread >> Generating key pair");
-			KeyPairGenerator gen = KeyPairGenerator.getInstance(enc);
-			gen.initialize(new RSAKeyGenParameterSpec(keyLength, new BigInteger("3")));
-			KeyPair keys = gen.genKeyPair();
-			
-			// Send public key
-			System.out.println("DispatchThread >> Sending public key '"+new String(keys.getPublic().getEncoded()));
-			new Frame(keys.getPublic().getEncoded()).write(socket);
-			
-			// Receive data
-			System.out.println("DispatchThread >> Receiving data");
-			byte[] encrypt = Frame.get(socket).data;
 
-			System.out.println("DispatchThread >> Encrypting data");
-			Cipher cipher = Cipher.getInstance(enc);
-			cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
-			byte[] decryptByte = cipher.doFinal(encrypt);
+			final int keyLength = new DataInputStream(socket.getInputStream()).readInt();
+			System.out.println("DispatchThread >> Key length: "+keyLength);
+//			KeyExchange ke = KeyExchangeFactory.get(keyEx);
+//			AESEncryption e = new AESEncryption(ke);
+//			e.receive(socket);
 			
-			System.out.println("DispatchThread >> Encrypted: "+new String(decryptByte));
+			AsymmetricEncryption e = new RSAEncryption("BC");
 			
-		} catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+			// Generate and send public key
+			e.generateKeyPair(keyLength);
+			System.out.println("DispatchThread >> Sending public key: "+keyLength);
+			new Frame(e.getPublicKey().getEncoded()).write(socket);;
+			
+			// Retrieve and decrypt message
+			byte[] message = Frame.get(socket).data;
+			System.out.println("DispatchThread >> Received: "+new HexString(message));
+			
+			message = e.decrypt(message);
+			System.out.println("DispatchThread >> Encrypted: "+new HexString(message));
+			
+			System.out.println("DispatchThread >> Done.");
+		} catch (IOException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException | InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 		}
 		

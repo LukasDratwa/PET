@@ -2,13 +2,7 @@ package confcost.controller;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import java.security.GeneralSecurityException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -38,7 +32,7 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 	public Controller(@NonNull Model model, @NonNull MainFrame view) throws IOException {
 		this.model = model;
 		this.view = view;
-		this.sendController = new SendController(HOST, PORT);
+		this.sendController = new SendController();
 		
 		this.view.addSendButtonListener(this);
 		
@@ -67,9 +61,8 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 	@Override
 	public void notifySendButtonPressed(SendModeView sendModeView) {
 		try {
-			sendController.send(sendModeView.getSendMode().getInstance(1024, 117));
-		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-				| BadPaddingException | IOException | InvalidKeySpecException e) {
+			sendController.send(sendModeView.getSendMode().getInstance(512, 256), HOST, PORT);
+		} catch (IOException | GeneralSecurityException e) {
 			System.err.println("Unable to send!");
 			e.printStackTrace();
 		}

@@ -5,23 +5,18 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.GeneralSecurityException;
 import java.util.Random;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.controller.encryption.AsymmetricEncryption;
+import confcost.controller.encryption.RSAEncryption;
+import confcost.model.CProtocol;
+import confcost.model.KEProtocol;
 import confcost.model.SendModeInstance;
 import confcost.network.Frame;
+import confcost.util.HexString;
 
 /**
  * Responsible for sending data in accordance with a {@link SendModeInstance}.
@@ -31,56 +26,62 @@ import confcost.network.Frame;
  */
 public class SendController {
 
-	private final @NonNull String host;
-	private final @NonNull int port;
-	
 	/**
 	 * Creates a new {@link SendController}.
 	 * 
 	 * @param host	The receiver host name or IP
 	 * @param port	The receiver port
 	 */
-	public SendController(@NonNull String host, int port) {
-		this.host = host;
-		this.port = port;
+	public SendController() {
 	}
 	
 	public void connect() throws UnknownHostException, IOException {
 	}
 	
-	public void send(SendModeInstance instance) throws UnknownHostException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
-		System.out.println("SendController >> Sending "+instance+" to "+host+":"+port);
-		Socket socket = new Socket(host, port);
-	    socket.setSoTimeout(1000);
+	/**
+	 * Sends one or more encrypted messages to the specified host, according to the specified parameters 
+	 * @param instance	The parameters
+	 * @param hostname	The host
+	 * @param port	The port
+	 */
+	public void send(SendModeInstance instance, final @NonNull String hostname, final int port) throws GeneralSecurityException, IOException {
+		System.out.println("SendController >> Sending "+instance+" to "+hostname+":"+port);
+		Socket socket = new Socket(hostname, port);
+	    socket.setSoTimeout(10000);
 		System.out.println("SendController >> Connected.");
 		
-		// Write key exchange and encyption method
-		new Frame(instance.getSendMode().keyExchange.getName()).write(socket);
-		new Frame(instance.getSendMode().messageExchange.getName()).write(socket);
+//		new Frame(instance.getSendMode().keyExchange.getName()).write(socket);
+//		new Frame(instance.getSendMode().messageExchange.getName()).write(socket);
 		
-		// Send key length
-		new DataOutputStream(socket.getOutputStream()).writeInt(instance.getKeyLength());
+		// Get KeyExchange
+//		KeyExchange ke = KeyExchangeFactory.get(instance.getSendMode().keyExchange);
+//		ke.setKeyLength(instance.getKeyLength());
 		
-		// Receive public key from receiver
-		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Frame.get(socket).data);
-		PublicKey pubKey = KeyFactory.getInstance(instance.getSendMode().messageExchange.getName()).generatePublic(pubKeySpec);
-		System.out.println("SendController >> Received PubKey");
+		// Perform key exchange and send message
+//		AESEncryption e = new AESEncryption(ke);
+//		e.send(socket, instance.getMessageLength());
+
+		// Perform setup information exchange
+		new Frame(KEProtocol.None.getName()).write(socket);
+		new Frame(CProtocol.RSA.getName()).write(socket);
 		
-		// Generate data
+		new DataOutputStream(socket.getOutputStream()).writeInt(instance.getKeyLength()); // Send message length
+		
+		// Run encryption
+		AsymmetricEncryption e = new RSAEncryption("BC");
+		e.setPublicKey(Frame.get(socket).data); // Get public key
+		
+		// Generate and encrypt message
 	    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
-	    System.out.println("SendController >> Generated message "+new String(message));
-	    
-		// Encrypt data
-	    System.out.println("SendController >> Encrypting");
-		Cipher cipher = Cipher.getInstance(instance.getSendMode().messageExchange.getName());
-		cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-		byte[] encrypt = cipher.doFinal(message);
+	    System.out.println("SendController::send >> Generated message "+new HexString(message));
+		message = e.encrypt(message);
 		
-		// Send data
-		System.out.println("SendController >> Sending data '"+new String(encrypt)+"'");
-		new Frame(encrypt).write(socket);
+		// Send encrypted message
+	    System.out.println("SendController::send >> Sending "+new HexString(message));
+		new Frame(message).write(socket);
+	    System.out.println("SendController::send >> Message sent.");
 		
-		// Close socket
+	    // Close socket
 		socket.close();
 		System.out.println("SendController >> Done.");
 	}
