@@ -62,7 +62,7 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 	@Override
 	public void notifySendButtonPressed(SendModeView sendModeView) {
 		try {
-			sendController.send(sendModeView.getSendMode().getInstance(512, 256), HOST, PORT);
+			sendController.send(sendModeView.getSendMode().getInstance(256, 256), HOST, PORT);
 		} catch (IOException | GeneralSecurityException e) {
 			System.err.println("Unable to send!");
 			e.printStackTrace();

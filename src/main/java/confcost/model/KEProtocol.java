@@ -13,8 +13,7 @@ public enum KEProtocol {
 	None, DiffieHellman;
 	
 	/**
-	 * Return the protocol as a unique string identifier
-	 * @return
+	 * @return the protocol as a unique string identifier.
 	 */
 	public String getName() {
 		switch (this) {
@@ -25,7 +24,10 @@ public enum KEProtocol {
 	}
 	
 	/**
+	 * Returns the {@link KEProtocol} with the specified name.
 	 * 
+	 * @param name	The name
+	 * @return the matching {@link KEProtocol}
 	 */
 	public static KEProtocol get(@NonNull String name) {
 		for (KEProtocol p : KEProtocol.values())
