@@ -11,7 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import confcost.controller.SendButtonListener;
+import confcost.model.SendMode;
 
 /**
  * Abstract class to represent panels for possbile algorithm configurations.
@@ -25,9 +28,11 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	private String header;
 	private JFrame mainFrame;
 	
+	private final @NonNull SendMode sendMode;
 	private List<SendButtonListener> sendButtonListeners = new LinkedList<SendButtonListener>();
 
-	public AlgorithmConfiguration(String header, MainFrame mainFrame) {
+	public AlgorithmConfiguration(String header, MainFrame mainFrame, SendMode sendMode) {
+		this.sendMode = sendMode;
 		setLayout(new BorderLayout(0, 0));
 		this.header = header;
 		
@@ -84,5 +89,12 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	public void notifySendButtonListeners() {
 		for (SendButtonListener l : sendButtonListeners)
 			l.sendButtonClicked(this);
+	}
+
+	/**
+	 * @return the sendMode
+	 */
+	public SendMode getSendMode() {
+		return sendMode;
 	}
 }

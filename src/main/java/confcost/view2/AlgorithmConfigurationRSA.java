@@ -3,10 +3,16 @@ package confcost.view2;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import confcost.model.SendMode;
 
 /**
  * Class to represent the possible configurations for the algorithm RSA.
@@ -19,8 +25,12 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 	private JTextField textFieldWestMsglength;
 	private JTextField textFieldCenterKeylength;
 
-	public AlgorithmConfigurationRSA(MainFrame mainFrame) {
-		super("RSA", mainFrame);
+	public AlgorithmConfigurationRSA(MainFrame mainFrame, SendMode sendMode) {
+		super("RSA", mainFrame, sendMode);
+		
+		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+		DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
+		decimalFormat.setGroupingUsed(false);
 		
 		JPanel panel = new JPanel();
 		add(panel, BorderLayout.CENTER);
@@ -36,7 +46,7 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 		JLabel lblWestMsglength = new JLabel("Nachrichtenlaenge");
 		panelWestNorth.add(lblWestMsglength);
 		
-		textFieldWestMsglength = new JTextField();
+		textFieldWestMsglength = new JFormattedTextField(numberFormat);
 		panelWestNorth.add(textFieldWestMsglength);
 		textFieldWestMsglength.setColumns(10);
 		
@@ -50,12 +60,11 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 		JLabel lblCenterKeylength = new JLabel("Schluessellaenge");
 		panelCenterNorth.add(lblCenterKeylength);
 		
-		textFieldCenterKeylength = new JTextField();
+		textFieldCenterKeylength = new JFormattedTextField(numberFormat);
 		panelCenterNorth.add(textFieldCenterKeylength);
 		textFieldCenterKeylength.setColumns(10);
 		initSendClickedListener();
 	}
-	
 
 	@Override
 	protected void initSendClickedListener() {
@@ -63,8 +72,35 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				AlgorithmConfigurationRSA.this.notifySendButtonListeners();
-				System.out.println("Send RSA");
 			}
 		});
+	}
+
+	/**
+	 * @return the textFieldWestMsglength
+	 */
+	public JTextField getTextFieldWestMsglength() {
+		return textFieldWestMsglength;
+	}
+
+	/**
+	 * @param textFieldWestMsglength the textFieldWestMsglength to set
+	 */
+	public void setTextFieldWestMsglength(JTextField textFieldWestMsglength) {
+		this.textFieldWestMsglength = textFieldWestMsglength;
+	}
+
+	/**
+	 * @return the textFieldCenterKeylength
+	 */
+	public JTextField getTextFieldCenterKeylength() {
+		return textFieldCenterKeylength;
+	}
+
+	/**
+	 * @param textFieldCenterKeylength the textFieldCenterKeylength to set
+	 */
+	public void setTextFieldCenterKeylength(JTextField textFieldCenterKeylength) {
+		this.textFieldCenterKeylength = textFieldCenterKeylength;
 	}
 }

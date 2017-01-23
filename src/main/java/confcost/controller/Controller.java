@@ -16,6 +16,7 @@ import confcost.model.Model;
 import confcost.view.SendModeView;
 import confcost.view.View;
 import confcost.view2.AlgorithmConfiguration;
+import confcost.view2.AlgorithmConfigurationRSA;
 import confcost.view2.MainFrame;
 
 /**
@@ -38,7 +39,7 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 	public Controller(@NonNull Model model, @NonNull MainFrame view) throws IOException {
 		this.model = model;
 		this.view = view;
-		this.sendController = new SendController(HOST, PORT);
+		this.sendController = new SendController();
 		
 		this.view.addSendButtonListener(this);
 		
@@ -67,15 +68,26 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 	@Override
 	public void notifySendButtonPressed(SendModeView sendModeView) {
 		try {
-			sendController.send(sendModeView.getSendMode().getInstance(1024, 117));
-		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-				| BadPaddingException | IOException | InvalidKeySpecException e) {
+			sendController.send(sendModeView.getSendMode().getInstance(512, 256), HOST, PORT);
+		} catch (IOException | GeneralSecurityException e) {
 			System.err.println("Unable to send!");
 			e.printStackTrace();
 		}
 	}
 	
 	public void sendButtonClicked(AlgorithmConfiguration ac) {
-		System.out.println("Send was clicked");
+		int defaultKeyLength = 1024;
+		int defualtMsgLength = 117;
+		
+		if(ac.getClass().equals(AlgorithmConfigurationRSA.class)) {
+			System.out.println("JO");
+		}
+		
+		try {
+			sendController.send(ac.getSendMode().getInstance(1024, 117));
+		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+				| BadPaddingException | InvalidKeySpecException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

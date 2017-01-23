@@ -10,8 +10,23 @@ import javax.swing.JPanel;
  */
 public class TabReceive extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private MainFrame mainFrame;
 
-	public TabReceive() {
+	public TabReceive(MainFrame mainFrame) {
+		this.mainFrame = mainFrame;
+	}
 
+	/**
+	 * @return the mainFrame
+	 */
+	public MainFrame getMainFrame() {
+		return mainFrame;
+	}
+
+	/**
+	 * @param mainFrame the mainFrame to set
+	 */
+	public void setMainFrame(MainFrame mainFrame) {
+		this.mainFrame = mainFrame;
 	}
 }

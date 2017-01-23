@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -22,21 +20,11 @@ public class MainFrame extends JFrame {
 	private TabReceive tabReceive;
 	private TabStatistics tabStatistics;
 	
-	@SuppressWarnings("unused")
-	private static void changeLookAndFeel() {
-		try {
-		    for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());
-		            break;
-		        }
-		    }
-		} catch (Exception e) {
-		    e.printStackTrace();
-		}
-	}
+	private final @NonNull Model model;
 	
-	public MainFrame(@NonNull Model model) {
+	public MainFrame(String title, @NonNull Model model) {
+		setTitle(title);
+		this.model = model;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		setMinimumSize(new Dimension(450, 300));
@@ -48,13 +36,13 @@ public class MainFrame extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane);
 		
-		tabSend = new TabSend(this);
+		tabSend = new TabSend(this, model.getModes());
 		tabbedPane.addTab("Send", null, tabSend, null);
 		
-		tabReceive = new TabReceive();
+		tabReceive = new TabReceive(this);
 		tabbedPane.addTab("Receive", null, tabReceive, null);
 		
-		tabStatistics = new TabStatistics();
+		tabStatistics = new TabStatistics(this);
 		tabbedPane.addTab("Statisctics", null, tabStatistics, null);
 	}
 
@@ -102,5 +90,12 @@ public class MainFrame extends JFrame {
 	
 	public void addSendButtonListener(SendButtonListener listener) {
 		this.tabSend.addSendButtonListener(listener);
+	}
+
+	/**
+	 * @return the model
+	 */
+	public Model getModel() {
+		return model;
 	}
 }

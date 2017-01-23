@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import confcost.controller.Controller;
 import confcost.model.Model;
@@ -15,6 +16,7 @@ import confcost.view2.MainFrame;
  */
 public class App 
 {
+	@SuppressWarnings("unused")
 	private static void setLookAndFeel() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -24,12 +26,24 @@ public class App
 	    } 
 	}
 	
+	private static void setNimbusLookAndFell() {
+		try {
+		    for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	}
+	
     public static void main( String[] args ) throws IOException
     {
-    	App.setLookAndFeel();
-    	
+    	setNimbusLookAndFell();
         Model model = new Model();
-        MainFrame view = new MainFrame(model);
+        MainFrame view = new MainFrame("confcost", model);
         Controller controller = new Controller(model, view);
         controller.start();
     }

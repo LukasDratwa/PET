@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
@@ -18,6 +19,7 @@ import javax.swing.SwingUtilities;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.SendButtonListener;
+import confcost.model.SendMode;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -29,16 +31,9 @@ import net.miginfocom.swing.MigLayout;
 public class TabSend extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private AlgorithmConfiguration actualPanelSendConfiguration = null;
-	private List<AlgorithmConfiguration> possibleAlgorithmConfigurations;
+	private List<AlgorithmConfiguration> possibleAlgorithmConfigurations  = new ArrayList<AlgorithmConfiguration>();;
 	private JTextField textFieldHost;
 	private JTextField textFieldPort;
-
-	private void initPossibleAlgorithmConfigurations(MainFrame mainFrame) {
-		possibleAlgorithmConfigurations = new ArrayList<AlgorithmConfiguration>();
-		
-		possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(mainFrame));
-		possibleAlgorithmConfigurations.add(new AlgorithmConfigurationTest(mainFrame));
-	}
 	
 	private String[] getPossibleAlgorithmConfigurationsAsStringArray() {
 		String[] result = new String[possibleAlgorithmConfigurations.size()];
@@ -57,8 +52,10 @@ public class TabSend extends JPanel {
 		return null;
 	}
 	
-	public TabSend(MainFrame mainFrame) {
-		initPossibleAlgorithmConfigurations(mainFrame);
+	public TabSend(MainFrame mainFrame, Collection<SendMode> modes) {
+		for(SendMode mode : modes) {
+			possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(mainFrame, mode));
+		}
 		
 		setLayout(new BorderLayout(0, 0));
 		

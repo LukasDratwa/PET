@@ -3,6 +3,8 @@ package confcost.view2;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import confcost.model.SendMode;
+
 /**
  * Test class to represent algorithm configurations.
  * 
@@ -12,8 +14,8 @@ import java.awt.event.MouseEvent;
 public class AlgorithmConfigurationTest extends AlgorithmConfiguration {
 	private static final long serialVersionUID = 1L;
 
-	public AlgorithmConfigurationTest(MainFrame mainFrame) {
-		super("Test", mainFrame);
+	public AlgorithmConfigurationTest(MainFrame mainFrame, SendMode sendMode) {
+		super("Test", mainFrame, sendMode);
 		initSendClickedListener();
 	}
 
@@ -23,7 +25,6 @@ public class AlgorithmConfigurationTest extends AlgorithmConfiguration {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				AlgorithmConfigurationTest.this.notifySendButtonListeners();
-				System.out.println("Send test");
 			}
 		});
 	}
