@@ -1,6 +1,8 @@
 package confcost.controller;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
@@ -9,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
+import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -16,11 +19,13 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.controller.encryption.AsymmetricEncryption;
 import confcost.controller.encryption.RSAEncryption;
 import confcost.model.CProtocol;
 import confcost.model.KEProtocol;
 import confcost.model.SendModeInstance;
 import confcost.network.Frame;
+import confcost.util.HexString;
 
 /**
  * Responsible for sending data in accordance with a {@link SendModeInstance}.
@@ -64,12 +69,27 @@ public class SendController {
 //		AESEncryption e = new AESEncryption(ke);
 //		e.send(socket, instance.getMessageLength());
 
+		// Perform setup information exchange
 		new Frame(KEProtocol.None.getName()).write(socket);
 		new Frame(CProtocol.RSA.getName()).write(socket);
 		
-		RSAEncryption e = new RSAEncryption();
-		e.send(socket, instance.getMessageLength());
+		new DataOutputStream(socket.getOutputStream()).writeInt(instance.getKeyLength()); // Send message length
 		
+		// Run encryption
+		AsymmetricEncryption e = new RSAEncryption("BC");
+		e.setPublicKey(Frame.get(socket).data); // Get public key
+		
+		// Generate and encrypt message
+	    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
+	    System.out.println("SendController::send >> Generated message "+new HexString(message));
+		message = e.encrypt(message);
+		
+		// Send encrypted message
+	    System.out.println("SendController::send >> Sending "+new HexString(message));
+		new Frame(message).write(socket);
+	    System.out.println("SendController::send >> Message sent.");
+		
+	    // Close socket
 		socket.close();
 		System.out.println("SendController >> Done.");
 	}

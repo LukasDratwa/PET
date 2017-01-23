@@ -1,21 +1,22 @@
 package confcost.controller;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.InvalidParameterSpecException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import confcost.controller.encryption.AsymmetricEncryption;
 import confcost.controller.encryption.RSAEncryption;
 import confcost.model.KEProtocol;
 import confcost.network.Frame;
+import confcost.util.HexString;
 
 /**
  * A {@link Thread} to handle an incoming connection.
@@ -41,19 +42,32 @@ public class DispatchThread extends Thread {
 		try {
 			// Receive key exchange and encryption method
 			System.out.println("DispatchThread >> Receiving KE and ENC methods");
-			KEProtocol keyEx = KEProtocol.get(Frame.get(socket).toString()); // Ignored for now
-			String enc = Frame.get(socket).toString();
+			final KEProtocol keyEx = KEProtocol.get(Frame.get(socket).toString()); // Ignored for now
+			final String enc = Frame.get(socket).toString();
 			System.out.println("DispatchThread >> "+keyEx+"|"+enc);
-			
+
+			final int keyLength = new DataInputStream(socket.getInputStream()).readInt();
+			System.out.println("DispatchThread >> Key length: "+keyLength);
 //			KeyExchange ke = KeyExchangeFactory.get(keyEx);
 //			AESEncryption e = new AESEncryption(ke);
 //			e.receive(socket);
 			
-			RSAEncryption e = new RSAEncryption();
-			e.receive(socket);
+			AsymmetricEncryption e = new RSAEncryption("BC");
+			
+			// Generate and send public key
+			e.generateKeyPair(keyLength);
+			System.out.println("DispatchThread >> Sending public key: "+keyLength);
+			new Frame(e.getPublicKey().getEncoded()).write(socket);;
+			
+			// Retrieve and decrypt message
+			byte[] message = Frame.get(socket).data;
+			System.out.println("DispatchThread >> Received: "+new HexString(message));
+			
+			message = e.decrypt(message);
+			System.out.println("DispatchThread >> Encrypted: "+new HexString(message));
 			
 			System.out.println("DispatchThread >> Done.");
-		} catch (IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchProviderException | InvalidKeySpecException | InvalidParameterSpecException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException e) {
+		} catch (IOException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException | InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 		}
 		
