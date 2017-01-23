@@ -1,6 +1,7 @@
 package confcost.view2;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -51,6 +52,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
+		setMinimumSize(new Dimension(450, 300));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -62,11 +64,11 @@ public class MainFrame extends JFrame {
 		tabSend = new TabSend(this);
 		tabbedPane.addTab("Send", null, tabSend, null);
 		
-		JPanel panelReceive = new JPanel();
-		tabbedPane.addTab("Receive", null, panelReceive, null);
+		tabReceive = new TabReceive();
+		tabbedPane.addTab("Receive", null, tabReceive, null);
 		
-		JPanel panelStatistics = new JPanel();
-		tabbedPane.addTab("Statisctics", null, panelStatistics, null);
+		tabStatistics = new TabStatistics();
+		tabbedPane.addTab("Statisctics", null, tabStatistics, null);
 	}
 
 	/**

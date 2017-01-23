@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JTextField;
 
 /**
  * {@link JPanel} to represent a tab for the send-configurations.
@@ -25,6 +26,8 @@ public class TabSend extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private AlgorithmConfiguration actualPanelSendConfiguration = null;
 	private List<AlgorithmConfiguration> possibleAlgorithmConfigurations;
+	private JTextField textFieldHost;
+	private JTextField textFieldPort;
 
 	private void initPossibleAlgorithmConfigurations(MainFrame mainFrame) {
 		possibleAlgorithmConfigurations = new ArrayList<AlgorithmConfiguration>();
@@ -79,6 +82,7 @@ public class TabSend extends JPanel {
 				}
 				
 				SwingUtilities.updateComponentTreeUI(mainFrame);
+				mainFrame.pack();
 			}
 		});
 		list.setModel(new AbstractListModel<String>() {
@@ -96,7 +100,7 @@ public class TabSend extends JPanel {
 		
 		JPanel panelSendConfigurationGeneral = new JPanel();
 		add(panelSendConfigurationGeneral, BorderLayout.EAST);
-		panelSendConfigurationGeneral.setLayout(new MigLayout("", "[91px,grow]", "[][30px][grow]"));
+		panelSendConfigurationGeneral.setLayout(new MigLayout("", "[91px,grow]", "[][30px][grow][grow]"));
 		
 		JLabel lblGeneralConfiguration = new JLabel("General Configuration");
 		panelSendConfigurationGeneral.add(lblGeneralConfiguration, "cell 0 0,alignx left,aligny center");
@@ -110,5 +114,26 @@ public class TabSend extends JPanel {
 		
 		JSpinner spinnerIterations = new JSpinner();
 		panel_1.add(spinnerIterations);
+		
+		JPanel panel_2 = new JPanel();
+		panelSendConfigurationGeneral.add(panel_2, "cell 0 2,grow");
+		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JLabel lblHost = new JLabel("Host");
+		panel_2.add(lblHost);
+		
+		textFieldHost = new JTextField();
+		panel_2.add(textFieldHost);
+		textFieldHost.setColumns(10);
+		
+		JPanel panel_3 = new JPanel();
+		panelSendConfigurationGeneral.add(panel_3, "cell 0 3,grow");
+		
+		JLabel lblPort = new JLabel("Port");
+		panel_3.add(lblPort);
+		
+		textFieldPort = new JTextField();
+		panel_3.add(textFieldPort);
+		textFieldPort.setColumns(10);
 	}
 }
