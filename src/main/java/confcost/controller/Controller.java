@@ -20,7 +20,7 @@ import confcost.view2.MainFrame;
  * @author Marc Eichler
  *
  */
-public class Controller implements ViewListener, SendViewListener, SendButtonListener {
+public class Controller implements ViewListener, SendButtonListener {
 	private static final String HOST = "localhost";
 	private static final int PORT = 1111;
 	
@@ -58,16 +58,6 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 		this.stop();
 		view.setVisible(false);
 		view.dispose();
-	}
-
-	@Override
-	public void notifySendButtonPressed(SendModeView sendModeView) {
-		try {
-			sendController.send(sendModeView.getSendMode().getInstance(256, 256), HOST, PORT);
-		} catch (IOException | GeneralSecurityException e) {
-			System.err.println("Unable to send!");
-			e.printStackTrace();
-		}
 	}
 	
 	public void sendButtonClicked(AlgorithmConfiguration ac) {
@@ -131,9 +121,15 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 		System.out.println("SEND: " + host + ":" + port + ", msgLength=" + msgLength + ", keyLength=" + keyLength + ", iterations: " + iterations);
 		
 		try {
-			sendController.send(ac.getSendMode().getInstance(keyLength, msgLength), host, port);
+			sendController.send(ac.getSendMode().getInstance(keyLength, msgLength), iterations, host, port);
 		} catch (GeneralSecurityException | IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void notifySendButtonPressed(SendModeView sendModeView) {
+		// TODO Auto-generated method stub
+		
 	}
 }

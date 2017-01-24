@@ -55,7 +55,7 @@ public class SendController {
 	 * @param hostname	The host
 	 * @param port	The port
 	 */
-	public void send(SendModeInstance instance, final @NonNull String hostname, final int port) throws GeneralSecurityException, IOException {
+	public void send(SendModeInstance instance, int iterations, final @NonNull String hostname, final int port) throws GeneralSecurityException, IOException {
 		System.out.println("SendController >> Sending "+instance+" to "+hostname+":"+port);
 		Socket socket = new Socket(hostname, port);
 	    socket.setSoTimeout(10000);
@@ -75,81 +75,82 @@ public class SendController {
 		// Perform setup information exchange
 		new Frame(instance.getSendMode().keyExchange.getName()).write(socket);
 		new Frame(instance.getSendMode().messageExchange.getName()).write(socket);
-		
+		new DataOutputStream(socket.getOutputStream()).writeInt(iterations); // Send iteration count
 		new DataOutputStream(socket.getOutputStream()).writeInt(instance.getKeyLength()); // Send message length
-		
 		
 		CryptoPass cp = new CryptoPass(instance.getSendMode().messageExchange,
 																							instance.getSendMode().keyExchange,
 																							instance.getKeyLength(),
 																							instance.getMessageLength(),
-																							1);
+																							iterations);
 		
-		CryptoIteration ci = new CryptoIteration(instance.getSendMode().messageExchange,
-																							instance.getSendMode().keyExchange,
-																							instance.getKeyLength(),
-																							instance.getMessageLength());
-		
-		// Measured time in ns
-		long initTime = -1;
-		long remoteInitTime = -1;
-		long encryptionTime = -1;
-		long decryptionTime = -1;
-		
-		// RSA
-		if (instance.getSendMode().messageExchange == CProtocol.RSA) {
-			// Run encryption
-			AsymmetricEncryption e = new RSAEncryption(DEFAULT_PROVIDER);
-			e.setPublicKey(Frame.get(socket).data); // Get public key
+		for (int i = 0; i < iterations; i++) {
+			CryptoIteration ci = new CryptoIteration(instance.getSendMode().messageExchange,
+																								instance.getSendMode().keyExchange,
+																								instance.getKeyLength(),
+																								instance.getMessageLength());
 			
-			// Generate and encrypt message
-		    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
-		    System.out.println("SendController::send >> Generated message "+new HexString(message));
-		    encryptionTime = System.nanoTime();
-			message = e.encrypt(message);
-			encryptionTime = System.nanoTime() - encryptionTime;
+			// Measured time in ns
+			long initTime = -1;
+			long remoteInitTime = -1;
+			long encryptionTime = -1;
+			long decryptionTime = -1;
 			
-			// Send encrypted message
-		    System.out.println("SendController::send >> Sending "+new HexString(message));
-			new Frame(message).write(socket);
-		    System.out.println("SendController::send >> Message sent.");
-		} 
-		// AES
-		else if (instance.getSendMode().messageExchange == CProtocol.AES) {
-			KeyExchange ke = KeyExchangeFactory.get(instance.getSendMode().keyExchange);
+			// RSA
+			if (instance.getSendMode().messageExchange == CProtocol.RSA) {
+				// Run encryption
+				AsymmetricEncryption e = new RSAEncryption(DEFAULT_PROVIDER);
+				e.setPublicKey(Frame.get(socket).data); // Get public key
+				
+				// Generate and encrypt message
+			    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
+			    System.out.println("SendController::send >> Generated message "+new HexString(message));
+			    encryptionTime = System.nanoTime();
+				message = e.encrypt(message);
+				encryptionTime = System.nanoTime() - encryptionTime;
+				
+				// Send encrypted message
+			    System.out.println("SendController::send >> Sending "+new HexString(message));
+				new Frame(message).write(socket);
+			    System.out.println("SendController::send >> Message sent.");
+			} 
+			// AES
+			else if (instance.getSendMode().messageExchange == CProtocol.AES) {
+				KeyExchange ke = KeyExchangeFactory.get(instance.getSendMode().keyExchange);
 
-		    System.out.println("SendController::send >> Exchanging keys.");
-		    ke.setKeyLength(512);
-			ke.send(socket);
-			
-			SymmetricEncryption e = new AESEncryption(DEFAULT_PROVIDER, ke);
-			
-			// Generate key
-			e.generateKey(instance.getKeyLength(), ke.getKey());
-		    System.out.println("SendController::send >> AES Key: "+new HexString(e.getKey().getEncoded()));
+			    System.out.println("SendController::send >> Exchanging keys.");
+			    ke.setKeyLength(512);
+				ke.send(socket);
+				
+				SymmetricEncryption e = new AESEncryption(DEFAULT_PROVIDER, ke);
+				
+				// Generate key
+				e.generateKey(instance.getKeyLength(), ke.getKey());
+			    System.out.println("SendController::send >> AES Key: "+new HexString(e.getKey().getEncoded()));
+			    
+				// Generate and encrypt message
+			    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
+			    System.out.println("SendController::send >> Generated message "+new HexString(message));
+				message = e.encrypt(message);
+				
+				// Send message
+			    System.out.println("SendController::send >> Sending "+new HexString(message));
+				new Frame(message).write(socket);
+			    System.out.println("SendController::send >> Message sent.");
+			} else throw new IllegalStateException("Unsupported encryption method: "+instance.getSendMode().messageExchange);
+
+		    // Receive key generation time
+		    remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();
+		    // Receive decryption time
+		    decryptionTime = new DataInputStream(socket.getInputStream()).readLong();
 		    
-			// Generate and encrypt message
-		    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
-		    System.out.println("SendController::send >> Generated message "+new HexString(message));
-			message = e.encrypt(message);
-			
-			// Send message
-		    System.out.println("SendController::send >> Sending "+new HexString(message));
-			new Frame(message).write(socket);
-		    System.out.println("SendController::send >> Message sent.");
-		} else throw new IllegalStateException("Unsupported encryption method: "+instance.getSendMode().messageExchange);
-
-	    // Receive key generation time
-	    remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();
-	    // Receive decryption time
-	    decryptionTime = new DataInputStream(socket.getInputStream()).readLong();
-	    
-	    ci.setInitTime(initTime/1000);
-	    ci.setRemoteInitTime(remoteInitTime/1000);
-	    ci.setEncryptionTime(encryptionTime/1000);
-	    ci.setDecryptionTime(decryptionTime/1000);
-	    
-	    cp.add(ci);
+		    ci.setInitTime(initTime/1000);
+		    ci.setRemoteInitTime(remoteInitTime/1000);
+		    ci.setEncryptionTime(encryptionTime/1000);
+		    ci.setDecryptionTime(decryptionTime/1000);
+		    
+		    cp.add(ci);
+		}
 	    
 		this.model.addCryptoPass(cp);
 		

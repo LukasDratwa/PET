@@ -44,7 +44,8 @@ public class DispatchThread extends Thread {
 			System.out.println("DispatchThread >> Receiving KE and ENC methods");
 			final KEProtocol keyEx = KEProtocol.get(Frame.get(socket).toString()); // Ignored for now
 			final CProtocol enc = CProtocol.get(Frame.get(socket).toString());
-			System.out.println("DispatchThread >> "+keyEx+"|"+enc);
+			final int iterations = new DataInputStream(socket.getInputStream()).readInt();
+			System.out.println("DispatchThread >> "+keyEx+"|"+enc+" *"+iterations);
 
 			final int keyLength = new DataInputStream(socket.getInputStream()).readInt();
 			System.out.println("DispatchThread >> Key length: "+keyLength);
@@ -52,56 +53,58 @@ public class DispatchThread extends Thread {
 //			AESEncryption e = new AESEncryption(ke);
 //			e.receive(socket);
 			
-			long initTime = -1;
-			long decryptTime = -1;
-			
-			if (enc == CProtocol.RSA) {
-				AsymmetricEncryption e = new RSAEncryption(DEFAULT_PROVIDER);
+			for (int i = 0; i < iterations; i++) {
+				System.out.println("DispatchThread >> Iteration: "+i+"/"+iterations);
+				long initTime = -1;
+				long decryptTime = -1;
 				
-				// Generate and send public key
-				e.generateKeyPair(keyLength);
-				System.out.println("DispatchThread >> Sending public key: "+keyLength);
-				new Frame(e.getPublicKey().getEncoded()).write(socket);;
-				
-				// Retrieve and decrypt message
-				byte[] message = Frame.get(socket).data;
-				System.out.println("DispatchThread >> Received: "+new HexString(message));
-				
-				message = e.decrypt(message);
-				System.out.println("DispatchThread >> Encrypted: "+new HexString(message));
-				
-				System.out.println("DispatchThread >> Done.");
+				if (enc == CProtocol.RSA) {
+					AsymmetricEncryption e = new RSAEncryption(DEFAULT_PROVIDER);
+					
+					// Generate and send public key
+					e.generateKeyPair(keyLength);
+					System.out.println("DispatchThread >> Sending public key: "+keyLength);
+					new Frame(e.getPublicKey().getEncoded()).write(socket);;
+					
+					// Retrieve and decrypt message
+					byte[] message = Frame.get(socket).data;
+					System.out.println("DispatchThread >> Received: "+new HexString(message));
+					
+					message = e.decrypt(message);
+					System.out.println("DispatchThread >> Encrypted: "+new HexString(message));
+					
+					System.out.println("DispatchThread >> Done.");
+				}
+				// AES
+				else if (enc == CProtocol.AES) {
+					KeyExchange ke = KeyExchangeFactory.get(keyEx);
+	
+				    System.out.println("DispatchThread >> Exchanging keys.");
+					ke.receive(socket);
+					
+					SymmetricEncryption e = new AESEncryption(DEFAULT_PROVIDER, ke);
+					
+					// Generate key
+					initTime = System.nanoTime();
+					e.generateKey(keyLength, ke.getKey());
+				    System.out.println("DispatchThread >> AES Key: "+new HexString(e.getKey().getEncoded()));
+				    initTime = System.nanoTime() - initTime;
+				    
+					// Receive and decrypt message
+				    byte[] message = Frame.get(socket).data;
+				    System.out.println("DispatchThread >>  Received "+new HexString(message));
+				    decryptTime = System.nanoTime();
+					message = e.decrypt(message);
+					decryptTime = decryptTime - System.nanoTime();
+				    System.out.println("DispatchThread >>  Message "+new HexString(message));
+					
+				    System.out.println("DispatchThread >> Iteration done.");
+				} else throw new IllegalStateException("Unsupported crypto algorithm: "+enc);
+	
+			    // Send measured times
+			    new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
+			    new DataOutputStream(socket.getOutputStream()).writeLong(decryptTime);
 			}
-			// AES
-			else if (enc == CProtocol.AES) {
-				KeyExchange ke = KeyExchangeFactory.get(keyEx);
-
-			    System.out.println("DispatchThread >> Exchanging keys.");
-				ke.receive(socket);
-				
-				SymmetricEncryption e = new AESEncryption(DEFAULT_PROVIDER, ke);
-				
-				// Generate key
-				initTime = System.nanoTime();
-				e.generateKey(keyLength, ke.getKey());
-			    System.out.println("DispatchThread >> AES Key: "+new HexString(e.getKey().getEncoded()));
-			    initTime = System.nanoTime() - initTime;
-			    
-				// Receive and decrypt message
-			    byte[] message = Frame.get(socket).data;
-			    System.out.println("DispatchThread >>  Received "+new HexString(message));
-			    decryptTime = System.nanoTime();
-				message = e.decrypt(message);
-				decryptTime = decryptTime - System.nanoTime();
-			    System.out.println("DispatchThread >>  Message "+new HexString(message));
-				
-			    System.out.println("DispatchThread >> Done.");
-			} else throw new IllegalStateException("Unsupported crypto algorithm: "+enc);
-
-		    // Send measured times
-		    new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
-		    new DataOutputStream(socket.getOutputStream()).writeLong(decryptTime);
-			
 		} catch (GeneralSecurityException | IOException e1) {
 			e1.printStackTrace();
 		}
