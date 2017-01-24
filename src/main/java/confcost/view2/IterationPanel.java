@@ -23,6 +23,7 @@ public class IterationPanel extends JPanel {
 	}
 	
 	public void set(final @NonNull CryptoIteration ci) {
+		System.out.println("Displaying Iteration "+ci);
 		if (ci == null) {
 			data.setText("");
 		} else {

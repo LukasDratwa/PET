@@ -24,6 +24,7 @@ public class ModelList<E> extends AbstractListModel<E>  {
 			return iterations.get(index);
 		}
 		public void set(List<E> iterations) {
+			System.out.println("ModelList::set");
 			this.iterations = iterations;
 			this.fireContentsChanged(this, 0, this.iterations.size());
 		}

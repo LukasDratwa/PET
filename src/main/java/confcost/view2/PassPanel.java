@@ -1,8 +1,10 @@
 package confcost.view2;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -28,6 +30,8 @@ public class PassPanel extends JPanel {
 
 	public PassPanel() {
 		this.setLayout(new BorderLayout());
+		
+		this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		this.data = new JTextArea();
 		this.add(data, BorderLayout.SOUTH);
@@ -63,7 +67,6 @@ public class PassPanel extends JPanel {
 					);
 		} else {
 			this.data.setText("No pass selected");
-			this.iterations.set(null);
 		}
 	}
 }
