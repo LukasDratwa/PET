@@ -7,7 +7,6 @@ import java.security.GeneralSecurityException;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.model.Model;
-import confcost.view.SendModeView;
 import confcost.view.View;
 import confcost.view2.AlgorithmConfiguration;
 import confcost.view2.AlgorithmConfigurationAES;

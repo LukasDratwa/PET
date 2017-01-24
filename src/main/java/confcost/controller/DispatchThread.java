@@ -62,15 +62,19 @@ public class DispatchThread extends Thread {
 					AsymmetricEncryption e = new RSAEncryption(DEFAULT_PROVIDER);
 					
 					// Generate and send public key
+					initTime = System.nanoTime();
 					e.generateKeyPair(keyLength);
+				    initTime = System.nanoTime() - initTime;
 					System.out.println("DispatchThread >> Sending public key: "+keyLength);
 					new Frame(e.getPublicKey().getEncoded()).write(socket);;
 					
 					// Retrieve and decrypt message
 					byte[] message = Frame.get(socket).data;
 					System.out.println("DispatchThread >> Received: "+new HexString(message));
-					
+
+				    decryptTime = System.nanoTime();
 					message = e.decrypt(message);
+					decryptTime = System.nanoTime() - decryptTime;
 					System.out.println("DispatchThread >> Encrypted: "+new HexString(message));
 					
 					System.out.println("DispatchThread >> Done.");
@@ -95,13 +99,14 @@ public class DispatchThread extends Thread {
 				    System.out.println("DispatchThread >>  Received "+new HexString(message));
 				    decryptTime = System.nanoTime();
 					message = e.decrypt(message);
-					decryptTime = decryptTime - System.nanoTime();
+					decryptTime = System.nanoTime() - decryptTime;
 				    System.out.println("DispatchThread >>  Message "+new HexString(message));
 					
 				    System.out.println("DispatchThread >> Iteration done.");
 				} else throw new IllegalStateException("Unsupported crypto algorithm: "+enc);
 	
 			    // Send measured times
+				System.out.println("DispatchThread >> Measured "+initTime +", "+decryptTime);
 			    new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
 			    new DataOutputStream(socket.getOutputStream()).writeLong(decryptTime);
 			}

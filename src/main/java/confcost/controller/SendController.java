@@ -125,13 +125,17 @@ public class SendController {
 				SymmetricEncryption e = new AESEncryption(DEFAULT_PROVIDER, ke);
 				
 				// Generate key
+				initTime = System.nanoTime();
 				e.generateKey(instance.getKeyLength(), ke.getKey());
+				initTime = System.nanoTime() - initTime;
 			    System.out.println("SendController::send >> AES Key: "+new HexString(e.getKey().getEncoded()));
 			    
 				// Generate and encrypt message
 			    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
 			    System.out.println("SendController::send >> Generated message "+new HexString(message));
+			    encryptionTime = System.nanoTime();
 				message = e.encrypt(message);
+				encryptionTime = System.nanoTime() - encryptionTime;
 				
 				// Send message
 			    System.out.println("SendController::send >> Sending "+new HexString(message));
@@ -144,10 +148,10 @@ public class SendController {
 		    // Receive decryption time
 		    decryptionTime = new DataInputStream(socket.getInputStream()).readLong();
 		    
-		    ci.setInitTime(initTime/1000);
-		    ci.setRemoteInitTime(remoteInitTime/1000);
-		    ci.setEncryptionTime(encryptionTime/1000);
-		    ci.setDecryptionTime(decryptionTime/1000);
+		    ci.setInitTime(initTime/1000000);
+		    ci.setRemoteInitTime(remoteInitTime/1000000);
+		    ci.setEncryptionTime(encryptionTime/1000000);
+		    ci.setDecryptionTime(decryptionTime/1000000);
 		    
 		    cp.add(ci);
 		}
