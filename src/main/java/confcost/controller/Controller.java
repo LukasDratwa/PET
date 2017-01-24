@@ -13,6 +13,7 @@ import confcost.view2.AlgorithmConfiguration;
 import confcost.view2.AlgorithmConfigurationAES;
 import confcost.view2.AlgorithmConfigurationRSA;
 import confcost.view2.MainFrame;
+import confcost.view2.TabSend;
 
 /**
  * Main Controller class
@@ -129,6 +130,12 @@ public class Controller implements ViewListener, SendButtonListener {
 
 	@Override
 	public void notifySendButtonPressed(SendModeView sendModeView) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifyCryptoPassSelected(TabSend tab) {
 		// TODO Auto-generated method stub
 		
 	}
