@@ -3,9 +3,11 @@ package confcost.view2;
 import java.awt.BorderLayout;
 
 import javax.swing.AbstractListModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 /**
  * {@link JPanel} to represent a tab for the statistics-configurations.
@@ -48,6 +50,7 @@ public class TabStatistics extends JPanel {
 				return values[index];
 			}
 		});
+		((DefaultListCellRenderer) listIterations.getCellRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 		panelWestLeftIterationList.add(listIterations);
 		
 		JPanel panelWestRight = new JPanel();
@@ -75,7 +78,11 @@ public class TabStatistics extends JPanel {
 				return values[index];
 			}
 		});
+		((DefaultListCellRenderer) listResultObjects.getCellRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 		panelWestRightResultObjList.add(listResultObjects);
+		
+		JPanel panelWestCenterSeparator = new JPanel();
+		panelWest.add(panelWestCenterSeparator, BorderLayout.CENTER);
 		
 		JPanel panelCenter = new JPanel();
 		add(panelCenter, BorderLayout.CENTER);
