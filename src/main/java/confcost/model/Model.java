@@ -21,7 +21,8 @@ public class Model {
 	 * Create a new {@link Model}
 	 */
 	public Model() {
-		this.modes.add(new SendMode(KEProtocol.DiffieHellman, CProtocol.RSA));
+		this.modes.add(new SendMode(KEProtocol.None, CProtocol.RSA));
+		this.modes.add(new SendMode(KEProtocol.DiffieHellman, CProtocol.AES));
 	}
 	
 	public Collection<SendMode> getModes() {

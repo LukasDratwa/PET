@@ -1,7 +1,7 @@
 package confcost.controller.encryption;
 
+import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -11,10 +11,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -27,15 +24,11 @@ import confcost.util.HexString;
  *
  */
 public abstract class AsymmetricEncryption extends Encryption {
-	public  final String algorithm;
-	public final String provider;
-	
 	protected PublicKey publicKey;
 	protected PrivateKey privateKey;
 	
 	public AsymmetricEncryption(final @NonNull String algorithm, final @NonNull String provider) {
-		this.algorithm = algorithm;
-		this.provider = provider;
+		super(algorithm, provider);
 	}
 	
 	/**
@@ -62,7 +55,8 @@ public abstract class AsymmetricEncryption extends Encryption {
 	 */
 	public abstract void generateKeyPair(int keyLength) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException;
 	
-	public byte[] encrypt(@NonNull final byte[] message) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+	@Override
+	public byte[] encrypt(@NonNull final byte[] message) throws GeneralSecurityException {
 		if (this.publicKey == null) throw new IllegalStateException("No public key set!");
 		
 		Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
@@ -71,7 +65,8 @@ public abstract class AsymmetricEncryption extends Encryption {
 		return cipher.doFinal(message);
 	}
 	
-	public byte[] decrypt(@NonNull final byte[] message) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+	@Override
+	public byte[] decrypt(@NonNull final byte[] message) throws GeneralSecurityException {
 		if (this.privateKey == null) throw new IllegalStateException("No private key set!");
 		
 		System.out.println("GAE::decrypt >> Decrypting");

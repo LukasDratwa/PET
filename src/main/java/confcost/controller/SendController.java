@@ -10,10 +10,13 @@ import java.util.Random;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.controller.encryption.AESEncryption;
 import confcost.controller.encryption.AsymmetricEncryption;
 import confcost.controller.encryption.RSAEncryption;
+import confcost.controller.encryption.SymmetricEncryption;
+import confcost.controller.ke.KeyExchange;
+import confcost.controller.ke.KeyExchangeFactory;
 import confcost.model.CProtocol;
-import confcost.model.KEProtocol;
 import confcost.model.SendModeInstance;
 import confcost.network.Frame;
 import confcost.util.HexString;
@@ -25,6 +28,7 @@ import confcost.util.HexString;
  *
  */
 public class SendController {
+	private static final String DEFAULT_PROVIDER = "BC";
 
 	/**
 	 * Creates a new {@link SendController}.
@@ -62,24 +66,51 @@ public class SendController {
 //		e.send(socket, instance.getMessageLength());
 
 		// Perform setup information exchange
-		new Frame(KEProtocol.None.getName()).write(socket);
-		new Frame(CProtocol.RSA.getName()).write(socket);
+		new Frame(instance.getSendMode().keyExchange.getName()).write(socket);
+		new Frame(instance.getSendMode().messageExchange.getName()).write(socket);
 		
 		new DataOutputStream(socket.getOutputStream()).writeInt(instance.getKeyLength()); // Send message length
 		
-		// Run encryption
-		AsymmetricEncryption e = new RSAEncryption("BC");
-		e.setPublicKey(Frame.get(socket).data); // Get public key
-		
-		// Generate and encrypt message
-	    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
-	    System.out.println("SendController::send >> Generated message "+new HexString(message));
-		message = e.encrypt(message);
-		
-		// Send encrypted message
-	    System.out.println("SendController::send >> Sending "+new HexString(message));
-		new Frame(message).write(socket);
-	    System.out.println("SendController::send >> Message sent.");
+		// RSA
+		if (instance.getSendMode().messageExchange == CProtocol.RSA) {
+			// Run encryption
+			AsymmetricEncryption e = new RSAEncryption(DEFAULT_PROVIDER);
+			e.setPublicKey(Frame.get(socket).data); // Get public key
+			
+			// Generate and encrypt message
+		    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
+		    System.out.println("SendController::send >> Generated message "+new HexString(message));
+			message = e.encrypt(message);
+			
+			// Send encrypted message
+		    System.out.println("SendController::send >> Sending "+new HexString(message));
+			new Frame(message).write(socket);
+		    System.out.println("SendController::send >> Message sent.");
+		} 
+		// AES
+		else if (instance.getSendMode().messageExchange == CProtocol.AES) {
+			KeyExchange ke = KeyExchangeFactory.get(instance.getSendMode().keyExchange);
+
+		    System.out.println("SendController::send >> Exchanging keys.");
+		    ke.setKeyLength(512);
+			ke.send(socket);
+			
+			SymmetricEncryption e = new AESEncryption(DEFAULT_PROVIDER, ke);
+			
+			// Generate key
+			e.generateKey(instance.getKeyLength(), ke.getKey());
+		    System.out.println("SendController::send >> AES Key: "+new HexString(e.getKey().getEncoded()));
+		    
+			// Generate and encrypt message
+		    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
+		    System.out.println("SendController::send >> Generated message "+new HexString(message));
+			message = e.encrypt(message);
+			
+			// Send message
+		    System.out.println("SendController::send >> Sending "+new HexString(message));
+			new Frame(message).write(socket);
+		    System.out.println("SendController::send >> Message sent.");
+		}
 		
 	    // Close socket
 		socket.close();
