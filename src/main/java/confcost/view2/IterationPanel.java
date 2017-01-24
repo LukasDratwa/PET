@@ -10,10 +10,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import confcost.model.CryptoIteration;
 
 public class IterationPanel extends JPanel {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8861998372720649766L;
 
 	private JTextArea data;
@@ -22,6 +18,7 @@ public class IterationPanel extends JPanel {
 		this.setLayout(new BorderLayout());
 		
 		data = new JTextArea();
+		data.setEditable(false);
 		this.add(data, BorderLayout.CENTER);
 	}
 	
@@ -29,7 +26,14 @@ public class IterationPanel extends JPanel {
 		if (ci == null) {
 			data.setText("");
 		} else {
-			data.setText(ci.getAlgorithm() + "|"+ci.getKeyExchange());
+			String text = ci.getAlgorithm() + " | " + ci.getKeyExchange() + "\n"
+				+ "    key length: " + ci.getKeyLength() + " bits\n"
+				+ "    message length: " + ci.getMessageLength() + " bits\n"
+				+ "    init time: " + ci.getInitTime() + " ms\n"
+				+ "    remote time init: " + ci.getRemoteInitTime() + " ms\n"
+				+ "    encryption time: " + ci.getEncryptionTime() + " ms\n"
+				+ "    decryption time: " + ci.getDecryptionTime() + " ms";
+			data.setText(text);
 		}
 	}
 }
