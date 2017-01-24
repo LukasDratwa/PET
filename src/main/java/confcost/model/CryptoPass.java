@@ -32,6 +32,14 @@ public class CryptoPass {
 		return this.algorithm+"/"+this.keyExchange+" ("+this.keyLength+","+this.messageLength+") *"+numIterations;
 	}
 	
+	public CProtocol getAlgorithm() {
+		return this.algorithm;
+	}
+	
+	public KEProtocol getKeyExchange() {
+		return this.keyExchange;
+	}
+	
 	public long getAvgEncryptionTime() {
 		long sum = 0;
 		for(CryptoIteration ci : iterations) {
