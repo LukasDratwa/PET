@@ -1,5 +1,6 @@
 package confcost.controller;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -17,6 +18,9 @@ import confcost.controller.encryption.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
 import confcost.controller.ke.KeyExchangeFactory;
 import confcost.model.CProtocol;
+import confcost.model.CryptoIteration;
+import confcost.model.CryptoPass;
+import confcost.model.Model;
 import confcost.model.SendModeInstance;
 import confcost.network.Frame;
 import confcost.util.HexString;
@@ -29,6 +33,8 @@ import confcost.util.HexString;
  */
 public class SendController {
 	private static final String DEFAULT_PROVIDER = "BC";
+	
+	private final @NonNull Model model;
 
 	/**
 	 * Creates a new {@link SendController}.
@@ -36,7 +42,8 @@ public class SendController {
 	 * @param host	The receiver host name or IP
 	 * @param port	The receiver port
 	 */
-	public SendController() {
+	public SendController(final @NonNull Model model) {
+		this.model = model;
 	}
 	
 	public void connect() throws UnknownHostException, IOException {
@@ -71,6 +78,24 @@ public class SendController {
 		
 		new DataOutputStream(socket.getOutputStream()).writeInt(instance.getKeyLength()); // Send message length
 		
+		
+		CryptoPass cp = new CryptoPass(instance.getSendMode().messageExchange,
+																							instance.getSendMode().keyExchange,
+																							instance.getKeyLength(),
+																							instance.getMessageLength(),
+																							1);
+		
+		CryptoIteration ci = new CryptoIteration(instance.getSendMode().messageExchange,
+																							instance.getSendMode().keyExchange,
+																							instance.getKeyLength(),
+																							instance.getMessageLength());
+		
+		// Measured time in ns
+		long initTime = -1;
+		long remoteInitTime = -1;
+		long encryptionTime = -1;
+		long decryptionTime = -1;
+		
 		// RSA
 		if (instance.getSendMode().messageExchange == CProtocol.RSA) {
 			// Run encryption
@@ -80,7 +105,9 @@ public class SendController {
 			// Generate and encrypt message
 		    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
 		    System.out.println("SendController::send >> Generated message "+new HexString(message));
+		    encryptionTime = System.nanoTime();
 			message = e.encrypt(message);
+			encryptionTime = System.nanoTime() - encryptionTime;
 			
 			// Send encrypted message
 		    System.out.println("SendController::send >> Sending "+new HexString(message));
@@ -110,7 +137,21 @@ public class SendController {
 		    System.out.println("SendController::send >> Sending "+new HexString(message));
 			new Frame(message).write(socket);
 		    System.out.println("SendController::send >> Message sent.");
-		}
+		} else throw new IllegalStateException("Unsupported encryption method: "+instance.getSendMode().messageExchange);
+
+	    // Receive key generation time
+	    remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();
+	    // Receive decryption time
+	    decryptionTime = new DataInputStream(socket.getInputStream()).readLong();
+	    
+	    ci.setInitTime(initTime/1000);
+	    ci.setRemoteInitTime(remoteInitTime/1000);
+	    ci.setEncryptionTime(encryptionTime/1000);
+	    ci.setDecryptionTime(decryptionTime/1000);
+	    
+	    cp.add(ci);
+	    
+		this.model.addCryptoPass(cp);
 		
 	    // Close socket
 		socket.close();

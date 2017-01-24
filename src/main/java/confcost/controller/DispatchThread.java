@@ -1,6 +1,7 @@
 package confcost.controller;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
@@ -51,6 +52,9 @@ public class DispatchThread extends Thread {
 //			AESEncryption e = new AESEncryption(ke);
 //			e.receive(socket);
 			
+			long initTime = -1;
+			long decryptTime = -1;
+			
 			if (enc == CProtocol.RSA) {
 				AsymmetricEncryption e = new RSAEncryption(DEFAULT_PROVIDER);
 				
@@ -78,22 +82,30 @@ public class DispatchThread extends Thread {
 				SymmetricEncryption e = new AESEncryption(DEFAULT_PROVIDER, ke);
 				
 				// Generate key
+				initTime = System.nanoTime();
 				e.generateKey(keyLength, ke.getKey());
 			    System.out.println("DispatchThread >> AES Key: "+new HexString(e.getKey().getEncoded()));
+			    initTime = System.nanoTime() - initTime;
 			    
-				// Generate and encrypt message
+				// Receive and decrypt message
 			    byte[] message = Frame.get(socket).data;
 			    System.out.println("DispatchThread >>  Received "+new HexString(message));
+			    decryptTime = System.nanoTime();
 				message = e.decrypt(message);
+				decryptTime = decryptTime - System.nanoTime();
 			    System.out.println("DispatchThread >>  Message "+new HexString(message));
 				
-				// Send message
 			    System.out.println("DispatchThread >> Done.");
-			}
+			} else throw new IllegalStateException("Unsupported crypto algorithm: "+enc);
+
+		    // Send measured times
+		    new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
+		    new DataOutputStream(socket.getOutputStream()).writeLong(decryptTime);
+			
 		} catch (GeneralSecurityException | IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		// Close the socket
 		try {
 			socket.close();

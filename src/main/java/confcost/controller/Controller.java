@@ -33,7 +33,7 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 	public Controller(@NonNull Model model, @NonNull MainFrame view) throws IOException {
 		this.model = model;
 		this.view = view;
-		this.sendController = new SendController();
+		this.sendController = new SendController(model);
 		
 		this.view.addSendButtonListener(this);
 		

@@ -40,6 +40,7 @@ public class Comparator {
 	
 	public CryptoIteration calculateAverage(CryptoIteration[] iterationArray) {
 		long initTime = 0;
+		long remoteInitTime = 0;
 		long encryptTime = 0;
 		long decryptTime = 0;
 		int keyLength = 0;
@@ -47,14 +48,20 @@ public class Comparator {
 		
 		int arrLength = iterationArray.length;
 		for(int i = 0; i < arrLength; i++) {
-			initTime += iterationArray[i].getInitializationTime() / arrLength;
+			initTime += iterationArray[i].getInitTime() / arrLength;
+			remoteInitTime += iterationArray[i].getRemoteInitTime() / arrLength;
 			encryptTime += iterationArray[i].getEncryptionTime() / arrLength;
 			decryptTime += iterationArray[i].getDecryptionTime() / arrLength;
 			keyLength += iterationArray[i].getKeyLength() / arrLength;
 			messageLength += iterationArray[i].getMessageLength() / arrLength;
 		}
 		
-		return new CryptoIteration(initTime, encryptTime, decryptTime, keyLength, iterationArray[0].getAlgoName(), messageLength);
+		CryptoIteration avg = new CryptoIteration(iterationArray[0].getAlgorithm(), iterationArray[0].getKeyExchange(), keyLength, messageLength);
+		avg.setInitTime(initTime);
+		avg.setRemoteInitTime(remoteInitTime);
+		avg.setEncryptionTime(encryptTime);
+		avg.setDecryptionTime(decryptTime);
+		return avg;
 	}
 	
 	public String compare(CryptoIteration[] arr1, CryptoIteration[] arr2) {
@@ -63,20 +70,20 @@ public class Comparator {
 		CryptoIteration secAlgoValues = calculateAverage(arr2);
 		double percentage;
 		
-		percentage = priAlgoValues.getInitializationTime() / secAlgoValues.getInitializationTime();
-		comparison += "initialization time: " + priAlgoValues.getAlgoName() + " " + percentage + " times as long as " + secAlgoValues.getAlgoName() + "\n";
+		percentage = priAlgoValues.getInitTime() / secAlgoValues.getInitTime();
+		comparison += "initialization time: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName() + "\n";
 		
 		percentage = priAlgoValues.getEncryptionTime() / secAlgoValues.getEncryptionTime();
-		comparison += "encryption time: " + priAlgoValues.getAlgoName() + " " + percentage + " times as long as " + secAlgoValues.getAlgoName() + "\n";
+		comparison += "encryption time: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName() + "\n";
 		
 		percentage = priAlgoValues.getDecryptionTime() / secAlgoValues.getDecryptionTime();
-		comparison += "decryption time: " + priAlgoValues.getAlgoName() + " " + percentage + " times as long as " + secAlgoValues.getAlgoName() + "\n";
+		comparison += "decryption time: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName() + "\n";
 		
 		percentage = priAlgoValues.getKeyLength() / secAlgoValues.getKeyLength();
-		comparison += "key length: " + priAlgoValues.getAlgoName() + " " + percentage + " times as long as " + secAlgoValues.getAlgoName();
+		comparison += "key length: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName();
 		
 		percentage = priAlgoValues.getMessageLength() / secAlgoValues.getMessageLength();
-		comparison += "message length: " + priAlgoValues.getAlgoName() + " " + percentage + " times as long as " + secAlgoValues.getAlgoName();
+		comparison += "message length: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName();
 		
 		return comparison;
 	}

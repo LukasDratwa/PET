@@ -14,8 +14,10 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class Model {
 	private final @NonNull List<SendMode> modes = new LinkedList<>();
-	
+
 	private final @NonNull ReceiveModel recvModel = new ReceiveModel();
+
+	private final @NonNull StatModel statModel = new StatModel();
 	
 	/**
 	 * Create a new {@link Model}
@@ -28,13 +30,16 @@ public class Model {
 	public Collection<SendMode> getModes() {
 		return modes;
 	}
+	
+	public void addListener(StatModelListener listener) {
+		this.statModel.addListener(listener);
+	}
 
-	/**
-	 * Returns the {@link ReceiveModel}.
-	 * 
-	 * @return	The {@link ReceiveModel}
-	 */
-	public ReceiveModel getReceiveModel() {
-		return recvModel;
+	public void addCryptoPass(CryptoPass cp) {
+		this.statModel.add(cp);
+	}
+	
+	public StatModel getStatModel() {
+		return this.statModel;
 	}
 }

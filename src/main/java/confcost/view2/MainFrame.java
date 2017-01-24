@@ -22,7 +22,7 @@ public class MainFrame extends JFrame {
 	
 	private final @NonNull Model model;
 	
-	public MainFrame(String title, @NonNull Model model) {
+	public MainFrame(String title, final @NonNull Model model) {
 		setTitle(title);
 		this.model = model;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,8 +42,8 @@ public class MainFrame extends JFrame {
 		tabReceive = new TabReceive(this);
 		tabbedPane.addTab("Receive", null, tabReceive, null);
 		
-		tabStatistics = new TabStatistics(this);
-		tabbedPane.addTab("Statisctics", null, tabStatistics, null);
+		tabStatistics = new TabStatistics(this, model.getStatModel());
+		tabbedPane.addTab("Statistics", null, tabStatistics, null);
 	}
 
 	/**
