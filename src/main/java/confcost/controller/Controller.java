@@ -129,12 +129,6 @@ public class Controller implements ViewListener, SendButtonListener {
 	}
 
 	@Override
-	public void notifySendButtonPressed(SendModeView sendModeView) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void notifyCryptoPassSelected(TabSend tab) {
 		// TODO Auto-generated method stub
 		
