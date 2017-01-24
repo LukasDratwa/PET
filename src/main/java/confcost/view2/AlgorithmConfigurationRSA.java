@@ -7,6 +7,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,7 +25,7 @@ import confcost.model.SendMode;
 public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 	private static final long serialVersionUID = 1L;
 	private JTextField textFieldWestMsglength;
-	private JTextField textFieldCenterKeylength;
+	private JComboBox<Integer> comboBoxKeyLength;
 
 	public AlgorithmConfigurationRSA(MainFrame mainFrame, TabSend tabSend, SendMode sendMode) {
 		super("RSA", mainFrame, tabSend, sendMode);
@@ -60,9 +62,12 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 		JLabel lblCenterKeylength = new JLabel("Schluessellaenge");
 		panelCenterNorth.add(lblCenterKeylength);
 		
-		textFieldCenterKeylength = new JFormattedTextField(numberFormat);
-		panelCenterNorth.add(textFieldCenterKeylength);
-		textFieldCenterKeylength.setColumns(10);
+		comboBoxKeyLength = new JComboBox<Integer>();
+		comboBoxKeyLength.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {128, 256, 512, 1024, 2048}));
+		panelCenterNorth.add(comboBoxKeyLength);
+		comboBoxKeyLength.setSelectedIndex(0);
+		
+		
 		initSendClickedListener();
 	}
 
@@ -91,16 +96,16 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 	}
 
 	/**
-	 * @return the textFieldCenterKeylength
+	 * @return the comboBoxKeyLength
 	 */
-	public JTextField getTextFieldCenterKeylength() {
-		return textFieldCenterKeylength;
+	public JComboBox<Integer> getComboBoxKeyLength() {
+		return comboBoxKeyLength;
 	}
 
 	/**
-	 * @param textFieldCenterKeylength the textFieldCenterKeylength to set
+	 * @param comboBoxKeyLength the comboBoxKeyLength to set
 	 */
-	public void setTextFieldCenterKeylength(JTextField textFieldCenterKeylength) {
-		this.textFieldCenterKeylength = textFieldCenterKeylength;
+	public void setComboBoxKeyLength(JComboBox<Integer> comboBoxKeyLength) {
+		this.comboBoxKeyLength = comboBoxKeyLength;
 	}
 }

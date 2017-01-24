@@ -84,9 +84,7 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 			System.out.println("RSA");
 			AlgorithmConfigurationRSA acRSA = (AlgorithmConfigurationRSA) ac;
 			
-			if(!acRSA.getTextFieldCenterKeylength().getText().equals("")) {
-				keyLength = Integer.parseInt(acRSA.getTextFieldCenterKeylength().getText());
-			}
+			keyLength = (Integer) acRSA.getComboBoxKeyLength().getModel().getSelectedItem();
 			
 			if(!acRSA.getTextFieldWestMsglength().getText().equals("")) {
 				msgLength = Integer.parseInt(acRSA.getTextFieldWestMsglength().getText());
@@ -102,9 +100,7 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 			System.out.println("AES");
 			AlgorithmConfigurationAES acAES = (AlgorithmConfigurationAES) ac;
 			
-			if(!acAES.getTextFieldCenterKeylength().getText().equals("")) {
-				keyLength = Integer.parseInt(acAES.getTextFieldCenterKeylength().getText());
-			}
+			keyLength = (Integer) acAES.getComboBoxKeyLength().getModel().getSelectedItem();
 			
 			if(!acAES.getTextFieldWestMsglength().getText().equals("")) {
 				msgLength = Integer.parseInt(acAES.getTextFieldWestMsglength().getText());
