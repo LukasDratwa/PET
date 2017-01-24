@@ -84,7 +84,7 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 			}
 			
 			if(!acRSA.getTextFieldWestMsglength().getText().equals("")) {
-				keyLength = Integer.parseInt(acRSA.getTextFieldWestMsglength().getText());
+				msgLength = Integer.parseInt(acRSA.getTextFieldWestMsglength().getText());
 			}
 			
 			if(!acRSA.getTabSend().getTextFieldHost().getText().equals("")) {
