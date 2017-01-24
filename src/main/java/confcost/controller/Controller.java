@@ -72,8 +72,8 @@ public class Controller implements ViewListener, SendViewListener, SendButtonLis
 	public void sendButtonClicked(AlgorithmConfiguration ac) {
 		int keyLength = 1024;
 		int msgLength = 117;
-		String host = "localhost";
-		int port = 1111;
+		String host = HOST;
+		int port = PORT;
 		int iterations = 1;
 		
 		if(ac.getClass().equals(AlgorithmConfigurationRSA.class)) {
