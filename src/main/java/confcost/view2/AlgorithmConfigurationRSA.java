@@ -27,8 +27,8 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 	private JTextField textFieldWestMsglength;
 	private JComboBox<Integer> comboBoxKeyLength;
 
-	public AlgorithmConfigurationRSA(MainFrame mainFrame, TabSend tabSend, SendMode sendMode) {
-		super("RSA", mainFrame, tabSend, sendMode);
+	public AlgorithmConfigurationRSA(TabSend tabSend, SendMode sendMode) {
+		super("RSA", tabSend, sendMode);
 		
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 		DecimalFormat decimalFormat = (DecimalFormat) numberFormat;

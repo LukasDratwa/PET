@@ -13,6 +13,12 @@ import org.eclipse.jdt.annotation.NonNull;
 import confcost.controller.SendButtonListener;
 import confcost.model.Model;
 
+/**
+ * Class to represent the main frame of the application.
+ * 
+ * <hr>Created on 24.01.2017<hr>
+ * @author <a href="mailto:lukasdratwa@yahoo.de">Lukas Dratwa</a>
+ */
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;

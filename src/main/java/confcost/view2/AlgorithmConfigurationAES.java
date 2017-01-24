@@ -21,8 +21,8 @@ public class AlgorithmConfigurationAES extends AlgorithmConfiguration {
 	private JTextField textFieldWestMsglength;
 	private JComboBox<Integer> comboBoxKeyLength;
 	
-	public AlgorithmConfigurationAES(MainFrame mainFrame, TabSend tabSend, SendMode sendMode) {
-			super("AES", mainFrame, tabSend, sendMode);
+	public AlgorithmConfigurationAES(TabSend tabSend, SendMode sendMode) {
+			super("AES", tabSend, sendMode);
 			
 			NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 			DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
