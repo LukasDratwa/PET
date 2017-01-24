@@ -26,7 +26,7 @@ public class App
 	    } 
 	}
 	
-	private static void setNimbusLookAndFell() {
+	private static void setNimbusLookAndFeel() {
 		try {
 		    for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		        if ("Nimbus".equals(info.getName())) {
@@ -41,7 +41,7 @@ public class App
 	
     public static void main( String[] args ) throws IOException
     {
-    	setNimbusLookAndFell();
+    	setNimbusLookAndFeel();
         Model model = new Model();
         MainFrame view = new MainFrame("confcost", model);
         Controller controller = new Controller(model, view);
