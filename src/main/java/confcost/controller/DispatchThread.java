@@ -91,8 +91,8 @@ public class DispatchThread extends Thread {
 					// Generate key
 					initTime = System.nanoTime();
 					e.generateKey(keyLength, ke.getKey());
-				    System.out.println("DispatchThread >> AES Key: "+new HexString(e.getKey().getEncoded()));
 				    initTime = System.nanoTime() - initTime;
+				    System.out.println("DispatchThread >> AES Key: "+new HexString(e.getKey().getEncoded()));
 				    
 					// Receive and decrypt message
 				    byte[] message = Frame.get(socket).data;
