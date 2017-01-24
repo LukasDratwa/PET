@@ -5,6 +5,7 @@ import java.awt.Dimension;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -22,10 +23,14 @@ public class PassPanel extends JPanel {
 	
 	private ModelList<CryptoIteration> iterations;
 	private final @NonNull IterationPanel iterationPanel;
+	private final @NonNull JTextArea data;
 
 	public PassPanel() {
 		this.setLayout(new BorderLayout());
 
+		this.data = new JTextArea();
+		this.add(data, BorderLayout.SOUTH);
+		
 		this.iterationPanel = new IterationPanel();
 		this.add(iterationPanel, BorderLayout.CENTER);
 		
@@ -44,9 +49,18 @@ public class PassPanel extends JPanel {
 	
 	public void set(CryptoPass pass) {
 		System.out.println("Displaying "+pass);
-		if (pass != null)
+		if (pass != null) {
 			this.iterations.set(pass.getIterations());
 		
-		// Set data in data panel
+			this.data.setText(pass.getAlgorithm()+","+pass.getKeyExchange()+" *"+pass.getNumIterations()+"\n"+
+					"Init "+pass.getMinInitTime().getInitTime()+"ms /"+pass.getAvgInitTime()+"ms /"+pass.getMaxInitTime().getInitTime() + "ms\n"+
+					"Remote init "+pass.getMinRemoteInitTime().getRemoteInitTime()+"/"+pass.getAvgRemoteInitTime()+"/"+pass.getMaxRemoteInitTime().getRemoteInitTime() + "ms\n"+
+					"Encryption "+pass.getMinEncryptionTime().getEncryptionTime()+"ms /"+pass.getAvgEncryptionTime()+"ms /"+pass.getMaxEncryptionTime().getEncryptionTime() + "ms\n"+
+					"Decryption "+pass.getMinDecryptionTime().getDecryptionTime()+"ms /"+pass.getAvgDecryptionTime()+"ms /"+pass.getMaxDecryptionTime().getEncryptionTime() + "ms\n"
+					);
+		} else {
+			this.data.setText("No pass selected");
+			this.iterations.set(null);
+		}
 	}
 }
