@@ -3,9 +3,11 @@ package confcost.view2;
 import java.awt.BorderLayout;
 
 import javax.swing.AbstractListModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -21,7 +23,6 @@ import confcost.model.StatModelListener;
  */
 public class TabStatistics extends JPanel implements StatModelListener {
 	private static final long serialVersionUID = 1L;
-	private MainFrame mainFrame;
 	
 	private final JList<CryptoPass> listIterations;
 	
@@ -86,7 +87,11 @@ public class TabStatistics extends JPanel implements StatModelListener {
 				return values[index];
 			}
 		});
+		((DefaultListCellRenderer) listResultObjects.getCellRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 		panelWestRightResultObjList.add(listResultObjects);
+		
+		JPanel panelWestCenterSeparator = new JPanel();
+		panelWest.add(panelWestCenterSeparator, BorderLayout.CENTER);
 		
 		JPanel panelCenter = new JPanel();
 		add(panelCenter, BorderLayout.CENTER);
@@ -118,21 +123,7 @@ public class TabStatistics extends JPanel implements StatModelListener {
 
 		
 	}
-
-	/**
-	 * @return the mainFrame
-	 */
-	public MainFrame getMainFrame() {
-		return mainFrame;
-	}
-
-	/**
-	 * @param mainFrame the mainFrame to set
-	 */
-	public void setMainFrame(MainFrame mainFrame) {
-		this.mainFrame = mainFrame;
-	}
-
+	
 	@Override
 	public void statModelChanged(@NonNull StatModel model) {
 		System.out.println("Stat model changed!");

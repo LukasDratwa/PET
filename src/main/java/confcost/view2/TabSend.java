@@ -61,11 +61,11 @@ public class TabSend extends JPanel {
 		for(SendMode mode : modes) {
 			switch(mode.messageExchange.getName()) {
 				case "RSA":
-					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(mainFrame, this, mode));
+					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(this, mode));
 					break;
 				
 				case "AES":
-					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationAES(mainFrame, this, mode));
+					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationAES(this, mode));
 					break;
 			}
 		}
@@ -99,7 +99,7 @@ public class TabSend extends JPanel {
 					actualPanelSendConfiguration = ac;
 				}
 				
-				SwingUtilities.updateComponentTreeUI(mainFrame);
+				SwingUtilities.updateComponentTreeUI(TabSend.this);
 				mainFrame.pack();
 			}
 		});

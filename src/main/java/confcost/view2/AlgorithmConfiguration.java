@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -26,13 +25,12 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JButton btnSend;
 	private String header;
-	private JFrame mainFrame;
 	private TabSend tabSend;
 	
 	private final @NonNull SendMode sendMode;
 	private List<SendButtonListener> sendButtonListeners = new LinkedList<SendButtonListener>();
 
-	public AlgorithmConfiguration(String header, MainFrame mainFrame, TabSend tabSend, SendMode sendMode) {
+	public AlgorithmConfiguration(String header, TabSend tabSend, SendMode sendMode) {
 		this.tabSend = tabSend;
 		this.sendMode = sendMode;
 		setLayout(new BorderLayout(0, 0));
@@ -70,20 +68,6 @@ public abstract class AlgorithmConfiguration extends JPanel {
 		this.header = header;
 	}
 
-	/**
-	 * @return the mainFrame
-	 */
-	public JFrame getMainFrame() {
-		return mainFrame;
-	}
-
-	/**
-	 * @param mainFrame the mainFrame to set
-	 */
-	public void setMainFrame(JFrame mainFrame) {
-		this.mainFrame = mainFrame;
-	}
-	
 	public void addSendButtonListener(SendButtonListener listener) {
 		this.sendButtonListeners.add(listener);
 	}

@@ -13,14 +13,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import confcost.model.SendMode;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class AlgorithmConfigurationAES extends AlgorithmConfiguration {
 	private static final long serialVersionUID = 2580203504731330945L;
 	private JTextField textFieldWestMsglength;
-	private JTextField textFieldCenterKeylength;
+	private JComboBox<Integer> comboBoxKeyLength;
 	
-	public AlgorithmConfigurationAES(MainFrame mainFrame, TabSend tabSend, SendMode sendMode) {
-			super("AES", mainFrame, tabSend, sendMode);
+	public AlgorithmConfigurationAES(TabSend tabSend, SendMode sendMode) {
+			super("AES", tabSend, sendMode);
 			
 			NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 			DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
@@ -54,9 +56,12 @@ public class AlgorithmConfigurationAES extends AlgorithmConfiguration {
 			JLabel lblCenterKeylength = new JLabel("Schluessellaenge");
 			panelCenterNorth.add(lblCenterKeylength);
 			
-			textFieldCenterKeylength = new JFormattedTextField(numberFormat);
-			panelCenterNorth.add(textFieldCenterKeylength);
-			textFieldCenterKeylength.setColumns(10);
+			comboBoxKeyLength = new JComboBox<Integer>();
+			comboBoxKeyLength.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {128, 192, 256}));
+			panelCenterNorth.add(comboBoxKeyLength);
+			comboBoxKeyLength.setSelectedIndex(0);
+			
+			
 			initSendClickedListener();
 		}
 
@@ -85,16 +90,16 @@ public class AlgorithmConfigurationAES extends AlgorithmConfiguration {
 		}
 
 		/**
-		 * @return the textFieldCenterKeylength
+		 * @return the comboBoxKeyLength
 		 */
-		public JTextField getTextFieldCenterKeylength() {
-			return textFieldCenterKeylength;
+		public JComboBox<Integer> getComboBoxKeyLength() {
+			return comboBoxKeyLength;
 		}
 
 		/**
-		 * @param textFieldCenterKeylength the textFieldCenterKeylength to set
+		 * @param comboBoxKeyLength the comboBoxKeyLength to set
 		 */
-		public void setTextFieldCenterKeylength(JTextField textFieldCenterKeylength) {
-			this.textFieldCenterKeylength = textFieldCenterKeylength;
+		public void setComboBoxKeyLength(JComboBox<Integer> comboBoxKeyLength) {
+			this.comboBoxKeyLength = comboBoxKeyLength;
 		}
 	}
