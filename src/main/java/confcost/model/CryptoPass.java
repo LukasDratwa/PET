@@ -264,4 +264,8 @@ public class CryptoPass {
 	public List<CryptoIteration> getIterations() {
 		return this.iterations;
 	}
+	
+	public int getNumIterations() {
+		return this.numIterations;
+	}
 }
