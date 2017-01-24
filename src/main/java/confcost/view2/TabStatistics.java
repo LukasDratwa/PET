@@ -15,7 +15,6 @@ import javax.swing.JPanel;
  */
 public class TabStatistics extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private MainFrame mainFrame;
 	
 	public TabStatistics(MainFrame mainFrame) {
 		setLayout(new BorderLayout(0, 0));
@@ -106,19 +105,5 @@ public class TabStatistics extends JPanel {
 		panelEast.add(panelStatiscticContainer, BorderLayout.CENTER);
 		panelStatiscticContainer.setLayout(new BorderLayout(0, 0));
 
-	}
-
-	/**
-	 * @return the mainFrame
-	 */
-	public MainFrame getMainFrame() {
-		return mainFrame;
-	}
-
-	/**
-	 * @param mainFrame the mainFrame to set
-	 */
-	public void setMainFrame(MainFrame mainFrame) {
-		this.mainFrame = mainFrame;
 	}
 }
