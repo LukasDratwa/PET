@@ -3,6 +3,7 @@ package confcost.view2;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -30,6 +31,8 @@ public class PassPanel extends JPanel {
 
 		this.data = new JTextArea();
 		this.add(data, BorderLayout.SOUTH);
+
+		this.add(new JLabel("Iterations"), BorderLayout.NORTH);
 		
 		this.iterationPanel = new IterationPanel();
 		this.add(iterationPanel, BorderLayout.CENTER);
