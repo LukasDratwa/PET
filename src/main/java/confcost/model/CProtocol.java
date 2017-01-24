@@ -5,18 +5,22 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Enumerates cryptographic protocols.
  * 
- * @author Marc Eichler
- *
+ * @author Marc Eichler, Lukas Dratwa
  */
 public enum CProtocol {
-	RSA, AES;
+	RSA("RSA"), AES("AES");
 	
+	private final String name;
+	
+	private CProtocol(final String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * @return the name
+	 */
 	public String getName() {
-		switch (this) {
-		case RSA:	return "RSA";
-		case AES:	return "AES";
-		default:	return null;
-		}
+		return name;
 	}
 	
 	/**

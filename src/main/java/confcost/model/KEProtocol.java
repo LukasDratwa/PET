@@ -6,21 +6,22 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Enumerates key exchange protocols.
  * 
- * @author Marc Eichler
- *
+ * @author Marc Eichler, Lukas Dratwa
  */
 public enum KEProtocol {
-	None, DiffieHellman;
+	None("None"), DiffieHellman("DH");
+	
+	private final String name;
+	
+	private KEProtocol(final String name) {
+		this.name = name;
+	}
 	
 	/**
-	 * @return the protocol as a unique string identifier.
+	 * @return the name
 	 */
 	public String getName() {
-		switch (this) {
-		case None: return "None";
-		case DiffieHellman:	return "DH";
-		default:	return null;
-		}
+		return name;
 	}
 	
 	/**
