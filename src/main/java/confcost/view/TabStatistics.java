@@ -1,4 +1,4 @@
-package confcost.view2;
+package confcost.view;
 
 import java.awt.BorderLayout;
 

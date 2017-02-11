@@ -1,6 +1,6 @@
 package confcost.controller;
 
-import confcost.view2.AlgorithmConfiguration;
+import confcost.view.AlgorithmConfiguration;
 
 public interface SendButtonListener {
 	public void sendButtonClicked(AlgorithmConfiguration ac);

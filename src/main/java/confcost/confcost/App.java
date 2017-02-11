@@ -8,7 +8,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import confcost.controller.Controller;
 import confcost.model.Model;
-import confcost.view2.MainFrame;
+import confcost.view.MainFrame;
 
 /**
  * Hello world!

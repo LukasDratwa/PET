@@ -7,12 +7,11 @@ import java.security.GeneralSecurityException;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.model.Model;
-import confcost.view.View;
-import confcost.view2.AlgorithmConfiguration;
-import confcost.view2.AlgorithmConfigurationAES;
-import confcost.view2.AlgorithmConfigurationRSA;
-import confcost.view2.MainFrame;
-import confcost.view2.TabSend;
+import confcost.view.AlgorithmConfiguration;
+import confcost.view.AlgorithmConfigurationAES;
+import confcost.view.AlgorithmConfigurationRSA;
+import confcost.view.MainFrame;
+import confcost.view.TabSend;
 
 /**
  * Main Controller class
@@ -52,14 +51,6 @@ public class Controller implements ViewListener, SendButtonListener {
 		receiveThread.interrupt();
 	}
 
-	@Override
-	public void notifyClosing(@NonNull View view) {
-		System.out.println("Closed");
-		this.stop();
-		view.setVisible(false);
-		view.dispose();
-	}
-	
 	public void sendButtonClicked(AlgorithmConfiguration ac) {
 		int keyLength = 1024;
 		int msgLength = 117;
