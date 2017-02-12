@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import confcost.model.CryptoPass;
+import confcost.model.CryptoPassStatistic;
 
 /**
  * <hr>Created on 12.02.2017<hr>
@@ -20,9 +21,9 @@ public class IterationStatisticPanel extends JPanel {
 	
 	public IterationStatisticPanel(CryptoPass pass) {
 		this.setLayout(new BorderLayout());
-		setPreferredSize(new Dimension(0, 125));
+		setPreferredSize(new Dimension(0, 140));
 		
-		JLabel label = new JLabel("Statistic of pass: " + pass);
+		JLabel label = new JLabel("Statistic of pass: " + pass + ", values in ms");
 		this.add(label, BorderLayout.NORTH);
 		
 		JScrollPane tableContainer = new JScrollPane();
@@ -34,16 +35,71 @@ public class IterationStatisticPanel extends JPanel {
 	class IterationStatisticTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1445146757994573243L;
 
-		private String[] columnNames = {"Metric", "Min (ms)", "Avg (ms)", "Max (ms)"};
+		private String[] columnNames = {"Metric", "Min", "Mean", "Squared Mean",
+										"Max", "Standard Deviation", "Variance"};
 	    private Object[][] data;
 	    
 	    public IterationStatisticTableModel(CryptoPass pass) {
+	    	pass.initCryptoPassStatistic();
+	    	CryptoPassStatistic cps = pass.getCryptoPassStatistic();
+	    	
 	    	data = new Object[][]{
-	    	    	{"Init", pass.getMinInitTime().getInitTime(), pass.getAvgInitTime(), pass.getMaxInitTime().getInitTime()},
-	    	    	{"Remote init", pass.getMinRemoteInitTime().getRemoteInitTime(), pass.getAvgRemoteInitTime(), pass.getMaxRemoteInitTime().getRemoteInitTime()},
-	    	    	{"Encryption", pass.getMinEncryptionTime().getEncryptionTime(), pass.getAvgEncryptionTime(), pass.getMaxEncryptionTime().getEncryptionTime()},
-	    	    	{"Decription", pass.getMinDecryptionTime().getDecryptionTime(),pass.getAvgDecryptionTime(), pass.getMaxDecryptionTime().getEncryptionTime()}
-	    	   };
+	    	    	{
+	    	    		"Init",
+	    	    		cps.getSumStatisticsInitTime().getMin(),
+	    	    		cps.getSumStatisticsInitTime().getMean(),
+	    	    		cps.getSumStatisticsInitTime().getQuadraticMean(),
+	    	    		cps.getSumStatisticsInitTime().getMax(),
+	    	    		cps.getSumStatisticsInitTime().getStandardDeviation(),
+	    	    		cps.getSumStatisticsInitTime().getVariance()
+	    	    	},
+	    	    	{
+	    	    		"Remote init",
+	    	    		cps.getSumStatisticsRemoteInitTime().getMin(),
+	    	    		cps.getSumStatisticsRemoteInitTime().getMean(),
+	    	    		cps.getSumStatisticsRemoteInitTime().getQuadraticMean(),
+	    	    		cps.getSumStatisticsRemoteInitTime().getMax(),
+	    	    		cps.getSumStatisticsRemoteInitTime().getStandardDeviation(),
+	    	    		cps.getSumStatisticsRemoteInitTime().getVariance()
+	    	    	},
+	    	    	{
+	    	    		"Encryption",
+	    	    		cps.getSumStatisticsEncryption().getMin(),
+	    	    		cps.getSumStatisticsEncryption().getMean(),
+	    	    		cps.getSumStatisticsEncryption().getQuadraticMean(),
+	    	    		cps.getSumStatisticsEncryption().getMax(),
+	    	    		cps.getSumStatisticsEncryption().getStandardDeviation(),
+	    	    		cps.getSumStatisticsEncryption().getVariance()
+	    	    	},
+	    	    	{
+	    	    		"Decription",
+	    	    		cps.getSumStatisticsDecryption().getMin(),
+	    	    		cps.getSumStatisticsDecryption().getMean(),
+	    	    		cps.getSumStatisticsDecryption().getQuadraticMean(),
+	    	    		cps.getSumStatisticsDecryption().getMax(),
+	    	    		cps.getSumStatisticsDecryption().getStandardDeviation(),
+	    	    		cps.getSumStatisticsDecryption().getVariance()
+	    	    	}
+	    	    	,
+	    	    	{
+	    	    		"Msg length",
+	    	    		cps.getSumStatisticsMsgLength().getMin(),
+	    	    		cps.getSumStatisticsMsgLength().getMean(),
+	    	    		cps.getSumStatisticsMsgLength().getQuadraticMean(),
+	    	    		cps.getSumStatisticsMsgLength().getMax(),
+	    	    		cps.getSumStatisticsMsgLength().getStandardDeviation(),
+	    	    		cps.getSumStatisticsMsgLength().getVariance()
+	    	    	},
+	    	    	{
+	    	    		"Key length",
+	    	    		cps.getSumStatisticsKeyLength().getMin(),
+	    	    		cps.getSumStatisticsKeyLength().getMean(),
+	    	    		cps.getSumStatisticsKeyLength().getQuadraticMean(),
+	    	    		cps.getSumStatisticsKeyLength().getMax(),
+	    	    		cps.getSumStatisticsKeyLength().getStandardDeviation(),
+	    	    		cps.getSumStatisticsKeyLength().getVariance()
+	    	    	}
+	    	};
 	    }
 
 	    public int getColumnCount() {
