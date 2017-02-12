@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -18,24 +17,21 @@ import org.eclipse.jdt.annotation.NonNull;
 import confcost.model.CryptoIteration;
 import confcost.model.CryptoPass;
 
+/**
+ * <hr>Created on 12.02.2017<hr>
+ * @author <a href="mailto:lukasdratwa@yahoo.de">Lukas Dratwa</a>, Marc Eichler
+ */
 public class PassPanel extends JPanel {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -795649707680699060L;
 	
 	private ModelList<CryptoIteration> iterations;
 	private final @NonNull IterationPanel iterationPanel;
-	private final @NonNull JTextArea data;
+	private IterationStatisticPanel iterationStatistic;
 
 	public PassPanel() {
 		this.setLayout(new BorderLayout());
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-		this.data = new JTextArea();
-		this.add(data, BorderLayout.SOUTH);
 
 		this.add(new JLabel("Iterations"), BorderLayout.NORTH);
 		
@@ -62,14 +58,13 @@ public class PassPanel extends JPanel {
 		if (pass != null) {
 			this.iterations.set(pass.getIterations());
 		
-			this.data.setText(pass.getAlgorithm()+","+pass.getKeyExchange()+" *"+pass.getNumIterations()+"\n"+
-					"Init "+pass.getMinInitTime().getInitTime()+"ms /"+pass.getAvgInitTime()+"ms /"+pass.getMaxInitTime().getInitTime() + "ms\n"+
-					"Remote init "+pass.getMinRemoteInitTime().getRemoteInitTime()+"/"+pass.getAvgRemoteInitTime()+"/"+pass.getMaxRemoteInitTime().getRemoteInitTime() + "ms\n"+
-					"Encryption "+pass.getMinEncryptionTime().getEncryptionTime()+"ms /"+pass.getAvgEncryptionTime()+"ms /"+pass.getMaxEncryptionTime().getEncryptionTime() + "ms\n"+
-					"Decryption "+pass.getMinDecryptionTime().getDecryptionTime()+"ms /"+pass.getAvgDecryptionTime()+"ms /"+pass.getMaxDecryptionTime().getEncryptionTime() + "ms\n"
-					);
-		} else {
-			this.data.setText("No pass selected");
+			if(iterationStatistic != null) {
+				this.remove(iterationStatistic);
+			}
+			iterationStatistic = new IterationStatisticPanel(pass);
+			this.add(iterationStatistic, BorderLayout.SOUTH);
+			this.revalidate();
+			this.repaint();
 		}
 	}
 }
