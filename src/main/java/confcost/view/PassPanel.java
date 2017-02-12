@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -42,16 +43,18 @@ public class PassPanel extends JPanel {
 		this.add(iterationPanel, BorderLayout.CENTER);
 		
 		this.iterations = new ModelList<>();
-		JList<CryptoIteration> iterationList = new JList<>();
+		JList<CryptoIteration> iterationList = new JList<CryptoIteration>();
 		iterationList.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				iterationPanel.set(iterations.getElementAt(iterationList.getSelectedIndex()));
 			}
 		});
-		iterationList.setPreferredSize(new Dimension(100, 0));
 		iterationList.setModel(this.iterations);
-		this.add(iterationList, BorderLayout.WEST);
+		JScrollPane scrollPaneIterations = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPaneIterations.setViewportView(iterationList);
+		scrollPaneIterations.setPreferredSize(new Dimension(150, 0));
+		this.add(scrollPaneIterations, BorderLayout.WEST);
 	}
 	
 	public void set(CryptoPass pass) {
