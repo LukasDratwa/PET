@@ -36,7 +36,7 @@ public class IterationStatisticPanel extends JPanel {
 		private static final long serialVersionUID = 1445146757994573243L;
 
 		private String[] columnNames = {"Metric", "Min", "Mean", "Squared Mean",
-										"Max", "Standard Deviation", "Variance"};
+										"Max", "Standard Deviation", "Variance", "Population variance"};
 	    private Object[][] data;
 	    
 	    public IterationStatisticTableModel(CryptoPass pass) {
@@ -51,7 +51,8 @@ public class IterationStatisticPanel extends JPanel {
 	    	    		cps.getSumStatisticsInitTime().getQuadraticMean(),
 	    	    		cps.getSumStatisticsInitTime().getMax(),
 	    	    		cps.getSumStatisticsInitTime().getStandardDeviation(),
-	    	    		cps.getSumStatisticsInitTime().getVariance()
+	    	    		cps.getSumStatisticsInitTime().getVariance(),
+	    	    		cps.getSumStatisticsInitTime().getPopulationVariance()
 	    	    	},
 	    	    	{
 	    	    		"Remote init",
@@ -60,7 +61,8 @@ public class IterationStatisticPanel extends JPanel {
 	    	    		cps.getSumStatisticsRemoteInitTime().getQuadraticMean(),
 	    	    		cps.getSumStatisticsRemoteInitTime().getMax(),
 	    	    		cps.getSumStatisticsRemoteInitTime().getStandardDeviation(),
-	    	    		cps.getSumStatisticsRemoteInitTime().getVariance()
+	    	    		cps.getSumStatisticsRemoteInitTime().getVariance(),
+	    	    		cps.getSumStatisticsRemoteInitTime().getPopulationVariance()
 	    	    	},
 	    	    	{
 	    	    		"Encryption",
@@ -69,7 +71,8 @@ public class IterationStatisticPanel extends JPanel {
 	    	    		cps.getSumStatisticsEncryption().getQuadraticMean(),
 	    	    		cps.getSumStatisticsEncryption().getMax(),
 	    	    		cps.getSumStatisticsEncryption().getStandardDeviation(),
-	    	    		cps.getSumStatisticsEncryption().getVariance()
+	    	    		cps.getSumStatisticsEncryption().getVariance(),
+	    	    		cps.getSumStatisticsEncryption().getPopulationVariance()
 	    	    	},
 	    	    	{
 	    	    		"Decription",
@@ -78,7 +81,8 @@ public class IterationStatisticPanel extends JPanel {
 	    	    		cps.getSumStatisticsDecryption().getQuadraticMean(),
 	    	    		cps.getSumStatisticsDecryption().getMax(),
 	    	    		cps.getSumStatisticsDecryption().getStandardDeviation(),
-	    	    		cps.getSumStatisticsDecryption().getVariance()
+	    	    		cps.getSumStatisticsDecryption().getVariance(),
+	    	    		cps.getSumStatisticsDecryption().getPopulationVariance()
 	    	    	}
 	    	    	,
 	    	    	{
@@ -88,7 +92,8 @@ public class IterationStatisticPanel extends JPanel {
 	    	    		cps.getSumStatisticsMsgLength().getQuadraticMean(),
 	    	    		cps.getSumStatisticsMsgLength().getMax(),
 	    	    		cps.getSumStatisticsMsgLength().getStandardDeviation(),
-	    	    		cps.getSumStatisticsMsgLength().getVariance()
+	    	    		cps.getSumStatisticsMsgLength().getVariance(),
+	    	    		cps.getSumStatisticsMsgLength().getPopulationVariance()
 	    	    	},
 	    	    	{
 	    	    		"Key length",
@@ -97,7 +102,8 @@ public class IterationStatisticPanel extends JPanel {
 	    	    		cps.getSumStatisticsKeyLength().getQuadraticMean(),
 	    	    		cps.getSumStatisticsKeyLength().getMax(),
 	    	    		cps.getSumStatisticsKeyLength().getStandardDeviation(),
-	    	    		cps.getSumStatisticsKeyLength().getVariance()
+	    	    		cps.getSumStatisticsKeyLength().getVariance(),
+	    	    		cps.getSumStatisticsKeyLength().getPopulationVariance()
 	    	    	}
 	    	};
 	    }
