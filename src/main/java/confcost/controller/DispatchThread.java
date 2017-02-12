@@ -8,6 +8,8 @@ import java.security.GeneralSecurityException;
 
 import confcost.controller.encryption.AESEncryption;
 import confcost.controller.encryption.AsymmetricEncryption;
+import confcost.controller.encryption.ECIESEncryption;
+import confcost.controller.encryption.RC2Encryption;
 import confcost.controller.encryption.RSAEncryption;
 import confcost.controller.encryption.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
@@ -93,6 +95,53 @@ public class DispatchThread extends Thread {
 					e.generateKey(keyLength, ke.getKey());
 				    initTime = System.nanoTime() - initTime;
 				    System.out.println("DispatchThread >> AES Key: "+new HexString(e.getKey().getEncoded()));
+				    
+					// Receive and decrypt message
+				    byte[] message = Frame.get(socket).data;
+				    System.out.println("DispatchThread >>  Received "+new HexString(message));
+				    decryptTime = System.nanoTime();
+					message = e.decrypt(message);
+					decryptTime = System.nanoTime() - decryptTime;
+				    System.out.println("DispatchThread >>  Message "+new HexString(message));
+					
+				    System.out.println("DispatchThread >> Iteration done.");
+				}
+				// ECIES
+				else if (enc == CProtocol.ECIES) {
+					AsymmetricEncryption e = new ECIESEncryption(DEFAULT_PROVIDER);
+					
+					// Generate and send public key
+					initTime = System.nanoTime();
+					e.generateKeyPair(keyLength);
+				    initTime = System.nanoTime() - initTime;
+					System.out.println("DispatchThread >> Sending public key: "+keyLength);
+					new Frame(e.getPublicKey().getEncoded()).write(socket);;
+					
+					// Retrieve and decrypt message
+					byte[] message = Frame.get(socket).data;
+					System.out.println("DispatchThread >> Received: "+new HexString(message));
+
+				    decryptTime = System.nanoTime();
+					message = e.decrypt(message);
+					decryptTime = System.nanoTime() - decryptTime;
+					System.out.println("DispatchThread >> Encrypted: "+new HexString(message));
+					
+					System.out.println("DispatchThread >> Done.");
+				} 
+				// RC2
+				else if (enc == CProtocol.RC2) {
+					KeyExchange ke = KeyExchangeFactory.get(keyEx);
+	
+				    System.out.println("DispatchThread >> Exchanging keys.");
+					ke.receive(socket);
+					
+					SymmetricEncryption e = new RC2Encryption(DEFAULT_PROVIDER, ke);
+					
+					// Generate key
+					initTime = System.nanoTime();
+					e.generateKey(keyLength, ke.getKey());
+				    initTime = System.nanoTime() - initTime;
+				    System.out.println("DispatchThread >> RC2 Key: "+new HexString(e.getKey().getEncoded()));
 				    
 					// Receive and decrypt message
 				    byte[] message = Frame.get(socket).data;

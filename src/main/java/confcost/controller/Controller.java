@@ -7,9 +7,12 @@ import java.security.GeneralSecurityException;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.model.Model;
+import confcost.view.SendModeView;
 import confcost.view.View;
 import confcost.view2.AlgorithmConfiguration;
 import confcost.view2.AlgorithmConfigurationAES;
+import confcost.view2.AlgorithmConfigurationECIES;
+import confcost.view2.AlgorithmConfigurationRC2;
 import confcost.view2.AlgorithmConfigurationRSA;
 import confcost.view2.MainFrame;
 import confcost.view2.TabSend;
@@ -108,6 +111,52 @@ public class Controller implements ViewListener, SendButtonListener {
 				iterations = Integer.parseInt(acAES.getTabSend().getSpinnerIterations().getValue().toString());
 			}
 		}
+		// ECIES
+		if(ac.getClass().equals(AlgorithmConfigurationECIES.class)) {
+			System.out.println("ECIES");
+			AlgorithmConfigurationECIES acECIES = (AlgorithmConfigurationECIES) ac;
+			
+			keyLength = (Integer) acECIES.getComboBoxKeyLength().getModel().getSelectedItem();
+			
+			if(!acECIES.getTextFieldWestMsglength().getText().equals("")) {
+				msgLength = Integer.parseInt(acECIES.getTextFieldWestMsglength().getText());
+			}
+			
+			if(!acECIES.getTabSend().getTextFieldHost().getText().equals("")) {
+				host = acECIES.getTabSend().getTextFieldHost().getText();
+			}
+			
+			if(!acECIES.getTabSend().getTextFieldPort().getText().equals("")) {
+				port = Integer.parseInt(acECIES.getTabSend().getTextFieldPort().getText());
+			}
+			
+			if(!acECIES.getTabSend().getSpinnerIterations().getValue().toString().equals("")) {
+				iterations = Integer.parseInt(acECIES.getTabSend().getSpinnerIterations().getValue().toString());
+			}
+		}
+		// RC2
+		if(ac.getClass().equals(AlgorithmConfigurationRC2.class)) {
+			System.out.println("RC2");
+			AlgorithmConfigurationRC2 acRC2 = (AlgorithmConfigurationRC2) ac;
+			
+			keyLength = (Integer) acRC2.getComboBoxKeyLength().getModel().getSelectedItem();
+			
+			if(!acRC2.getTextFieldWestMsglength().getText().equals("")) {
+				msgLength = Integer.parseInt(acRC2.getTextFieldWestMsglength().getText());
+			}
+			
+			if(!acRC2.getTabSend().getTextFieldHost().getText().equals("")) {
+				host = acRC2.getTabSend().getTextFieldHost().getText();
+			}
+			
+			if(!acRC2.getTabSend().getTextFieldPort().getText().equals("")) {
+				port = Integer.parseInt(acRC2.getTabSend().getTextFieldPort().getText());
+			}
+			
+			if(!acRC2.getTabSend().getSpinnerIterations().getValue().toString().equals("")) {
+				iterations = Integer.parseInt(acRC2.getTabSend().getSpinnerIterations().getValue().toString());
+			}
+		}
 		
 		// General settings
 		if(!ac.getTabSend().getTextFieldPort().getText().equals("")) {
@@ -129,6 +178,12 @@ public class Controller implements ViewListener, SendButtonListener {
 
 	@Override
 	public void notifyCryptoPassSelected(TabSend tab) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifySendButtonPressed(SendModeView sendModeView) {
 		// TODO Auto-generated method stub
 		
 	}

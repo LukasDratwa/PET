@@ -13,6 +13,8 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.encryption.AESEncryption;
 import confcost.controller.encryption.AsymmetricEncryption;
+import confcost.controller.encryption.ECIESEncryption;
+import confcost.controller.encryption.RC2Encryption;
 import confcost.controller.encryption.RSAEncryption;
 import confcost.controller.encryption.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
@@ -138,6 +140,53 @@ public class SendController {
 				encryptionTime = System.nanoTime() - encryptionTime;
 				
 				// Send message
+			    System.out.println("SendController::send >> Sending "+new HexString(message));
+				new Frame(message).write(socket);
+			    System.out.println("SendController::send >> Message sent.");
+			}
+			// RC2
+			else if (instance.getSendMode().messageExchange == CProtocol.RC2) {
+				KeyExchange ke = KeyExchangeFactory.get(instance.getSendMode().keyExchange);
+
+			    System.out.println("SendController::send >> Exchanging keys.");
+			    ke.setKeyLength(512);
+				ke.send(socket);
+				
+				SymmetricEncryption e = new RC2Encryption(DEFAULT_PROVIDER, ke);
+				
+				// Generate key
+				initTime = System.nanoTime();
+				e.generateKey(instance.getKeyLength(), ke.getKey());
+				initTime = System.nanoTime() - initTime;
+				System.out.println("SendController::send >> RC2 Key: "+e.getKey().getEncoded().toString());
+			    System.out.println("SendController::send >> RC2 Key: "+new HexString(e.getKey().getEncoded()));
+			    
+				// Generate and encrypt message
+			    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
+			    System.out.println("SendController::send >> Generated message "+new HexString(message));
+			    encryptionTime = System.nanoTime();
+				message = e.encrypt(message);
+				encryptionTime = System.nanoTime() - encryptionTime;
+				
+				// Send message
+			    System.out.println("SendController::send >> Sending "+new HexString(message));
+				new Frame(message).write(socket);
+			    System.out.println("SendController::send >> Message sent.");
+			}
+			 // ECIES
+			else if (instance.getSendMode().messageExchange == CProtocol.ECIES) {
+				// Run encryption
+				AsymmetricEncryption e = new ECIESEncryption(DEFAULT_PROVIDER);
+				e.setPublicKey(Frame.get(socket).data); // Get public key
+				
+				// Generate and encrypt message
+			    byte[] message = new BigInteger(instance.getMessageLength(), new Random()).toByteArray();
+			    System.out.println("SendController::send >> Generated message "+new HexString(message));
+			    encryptionTime = System.nanoTime();
+				message = e.encrypt(message);
+				encryptionTime = System.nanoTime() - encryptionTime;
+				
+				// Send encrypted message
 			    System.out.println("SendController::send >> Sending "+new HexString(message));
 				new Frame(message).write(socket);
 			    System.out.println("SendController::send >> Message sent.");

@@ -16,5 +16,13 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path=".apt_generated">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="org.eclipse.jdt.annotation_2.1.0.v20160418-1457.jar"/>
+	<classpathentry kind="lib" path="D:/Development/git/PET/miglayout15-swing.jar"/>
+	<classpathentry kind="lib" path="D:/Development/git/PET/bcprov-jdk15on-156.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

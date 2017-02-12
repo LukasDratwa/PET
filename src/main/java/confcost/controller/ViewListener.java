@@ -1,5 +1,6 @@
 package confcost.controller;
 
+import confcost.view.SendModeView;
 import confcost.view.View;
 import confcost.view2.TabSend;
 
@@ -13,4 +14,6 @@ public interface ViewListener {
 	public void notifyClosing(View view);
 
 	public void notifyCryptoPassSelected(TabSend tab);
+
+	public void notifySendButtonPressed(SendModeView sendModeView);
 }

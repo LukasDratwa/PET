@@ -5,10 +5,10 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Enumerates cryptographic protocols.
  * 
- * @author Marc Eichler, Lukas Dratwa
+ * @author Marc Eichler, Lukas Dratwa, Aziani
  */
 public enum CProtocol {
-	RSA("RSA"), AES("AES");
+	RSA("RSA"), AES("AES"), ECIES("ECIES"), RC2("RC2");
 	
 	private final String name;
 	

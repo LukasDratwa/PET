@@ -25,6 +25,8 @@ public class Model {
 	public Model() {
 		this.modes.add(new SendMode(KEProtocol.None, CProtocol.RSA));
 		this.modes.add(new SendMode(KEProtocol.DiffieHellman, CProtocol.AES));
+		this.modes.add(new SendMode(KEProtocol.DiffieHellman,CProtocol.ECIES));
+		this.modes.add(new SendMode(KEProtocol.DiffieHellman,CProtocol.RC2));
 	}
 	
 	public Collection<SendMode> getModes() {
@@ -41,5 +43,9 @@ public class Model {
 	
 	public StatModel getStatModel() {
 		return this.statModel;
+	}
+
+	public ReceiveModel getReceiveModel() {
+		return this.recvModel;
 	}
 }
