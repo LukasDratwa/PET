@@ -1,7 +1,6 @@
 package confcost.view;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -73,7 +72,6 @@ public class TabStatistics extends JPanel implements StatModelListener {
 		});
 		JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setViewportView(listIterations);
-		scrollPane.setPreferredSize(new Dimension(175, 0));
 		panelWestLeftIterationList.add(scrollPane);
 		
 	}

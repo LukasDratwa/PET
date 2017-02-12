@@ -53,7 +53,7 @@ public class PassPanel extends JPanel {
 		iterationList.setModel(this.iterations);
 		JScrollPane scrollPaneIterations = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPaneIterations.setViewportView(iterationList);
-		scrollPaneIterations.setPreferredSize(new Dimension(150, 0));
+		scrollPaneIterations.setMaximumSize(new Dimension(300, 0));
 		this.add(scrollPaneIterations, BorderLayout.WEST);
 	}
 	
