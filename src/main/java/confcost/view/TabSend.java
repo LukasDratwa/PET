@@ -69,6 +69,14 @@ public class TabSend extends JPanel {
 				case "AES":
 					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationAES(this, mode));
 					break;
+					
+				case "ECIES":
+					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationECIES(this, mode));
+					break;
+					
+				case "RC2":
+					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRC2(this, mode));
+					break;
 			}
 		}
 		

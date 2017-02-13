@@ -8,7 +8,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * @author Marc Eichler, Lukas Dratwa
  */
 public enum CProtocol {
-	RSA("RSA"), AES("AES");
+	RSA("RSA"), AES("AES"), RC2("RC2"), ECIES("ECIES");
 	
 	private final String name;
 	
