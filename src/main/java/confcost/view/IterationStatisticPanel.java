@@ -23,7 +23,7 @@ public class IterationStatisticPanel extends JPanel {
 		this.setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(0, 140));
 		
-		JLabel label = new JLabel("Statistic of pass: " + pass + ", values in ms");
+		JLabel label = new JLabel("Statistic of pass: " + pass + ", values in ns");
 		this.add(label, BorderLayout.NORTH);
 		
 		JScrollPane tableContainer = new JScrollPane();
@@ -32,7 +32,7 @@ public class IterationStatisticPanel extends JPanel {
 		this.add(tableContainer, BorderLayout.CENTER);
 	}
 	
-	class IterationStatisticTableModel extends AbstractTableModel {
+	public class IterationStatisticTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1445146757994573243L;
 
 		private String[] columnNames = {"Metric", "Min", "Mean", "Squared Mean",

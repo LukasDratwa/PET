@@ -67,7 +67,7 @@ public class TabStatistics extends JPanel implements StatModelListener {
 		listIterations.addListSelectionListener(new ListSelectionListener() {	
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				passPanel.set(listIterations.getSelectedValue());
+				passPanel.set(listIterations.getSelectedValuesList());
 			}
 		});
 		JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

@@ -3,6 +3,7 @@ package confcost.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -25,8 +26,10 @@ public class PassPanel extends JPanel {
 	private static final long serialVersionUID = -795649707680699060L;
 	
 	private ModelList<CryptoIteration> iterations;
+	private JScrollPane scrollPaneIterations;
 	private final @NonNull IterationPanel iterationPanel;
 	private IterationStatisticPanel iterationStatistic;
+	private IterationStatisticComparisonPanel iterationStatisticComparison = null;
 
 	public PassPanel() {
 		this.setLayout(new BorderLayout());
@@ -47,22 +50,47 @@ public class PassPanel extends JPanel {
 			}
 		});
 		iterationList.setModel(this.iterations);
-		JScrollPane scrollPaneIterations = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPaneIterations = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPaneIterations.setViewportView(iterationList);
 		scrollPaneIterations.setMaximumSize(new Dimension(300, 0));
 		this.add(scrollPaneIterations, BorderLayout.WEST);
 	}
 	
-	public void set(CryptoPass pass) {
-		System.out.println("Displaying "+pass);
-		if (pass != null) {
-			this.iterations.set(pass.getIterations());
-		
-			if(iterationStatistic != null) {
-				this.remove(iterationStatistic);
+	public void set(List<CryptoPass> passes) {
+		if(passes.size() == 1) {
+			CryptoPass pass = passes.get(0);
+			System.out.println("Displaying " + pass);
+			if (pass != null) {
+				this.add(iterationPanel, BorderLayout.CENTER);
+				this.add(scrollPaneIterations, BorderLayout.WEST);
+				
+				this.iterations.set(pass.getIterations());
+			
+				if(iterationStatistic != null) {
+					this.remove(iterationStatistic);
+				}
+				if(iterationStatisticComparison != null) {
+					this.remove(iterationStatisticComparison);
+				}
+				
+				iterationStatistic = new IterationStatisticPanel(pass);
+				this.add(iterationStatistic, BorderLayout.SOUTH);
+				this.revalidate();
+				this.repaint();
 			}
-			iterationStatistic = new IterationStatisticPanel(pass);
-			this.add(iterationStatistic, BorderLayout.SOUTH);
+		} else if(passes.size() > 1) {
+			System.out.println("Displaying multiple passes");
+			
+			// Remove not needed elements
+			this.removeAll();
+			if(iterationStatisticComparison != null) {
+				this.remove(iterationStatisticComparison);
+			}
+			
+			
+			iterationStatisticComparison = new IterationStatisticComparisonPanel(passes);
+			this.add(iterationStatisticComparison, BorderLayout.CENTER);
+			
 			this.revalidate();
 			this.repaint();
 		}
