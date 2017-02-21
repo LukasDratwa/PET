@@ -6,22 +6,22 @@ public class CryptoIteration {
 	
 	// time needed for the cryptographic operations
 	/**
-	 * Time to initialize the cryptographic algorithm in ms
+	 * Time to initialize the cryptographic algorithm in micro seconds μs
 	 */
 	private long initTime;
 	
 	/**
-	 * Time to initialize the cryptographic algorithm on the remote end in ms
+	 * Time to initialize the cryptographic algorithm on the remote end in micro seconds μs
 	 */
 	private long remoteInitTime;
 	
 	/**
-	 * Time to encrypt the message in ms
+	 * Time to encrypt the message in micro seconds μs
 	 */
 	private long encryptionTime;
 	
 	/**
-	 * Time to decrypt the message in ms
+	 * Time to decrypt the message in micro seconds μs
 	 */
 	private long decryptionTime;
 	

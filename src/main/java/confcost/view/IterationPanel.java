@@ -30,10 +30,10 @@ public class IterationPanel extends JPanel {
 			String text = ci.getAlgorithm() + " | " + ci.getKeyExchange() + "\n"
 				+ "    key length: " + ci.getKeyLength() + " bits\n"
 				+ "    message length: " + ci.getMessageLength() + " bits\n"
-				+ "    init time: " + ci.getInitTime() + " ms\n"
-				+ "    remote time init: " + ci.getRemoteInitTime() + " ms\n"
-				+ "    encryption time: " + ci.getEncryptionTime() + " ms\n"
-				+ "    decryption time: " + ci.getDecryptionTime() + " ms";
+				+ "    init time: " + ci.getInitTime() + " μs\n"
+				+ "    remote time init: " + ci.getRemoteInitTime() + " μs\n"
+				+ "    encryption time: " + ci.getEncryptionTime() + " μs\n"
+				+ "    decryption time: " + ci.getDecryptionTime() + " μs";
 			data.setText(text);
 		}
 	}

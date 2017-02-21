@@ -197,10 +197,15 @@ public class SendController {
 		    // Receive decryption time
 		    decryptionTime = new DataInputStream(socket.getInputStream()).readLong();
 		    
-		    ci.setInitTime(initTime/1000000);
-		    ci.setRemoteInitTime(remoteInitTime/1000000);
-		    ci.setEncryptionTime(encryptionTime/1000000);
-		    ci.setDecryptionTime(decryptionTime/1000000);
+//		    ci.setInitTime(initTime/1000000);
+//		    ci.setRemoteInitTime(remoteInitTime/1000000);
+//		    ci.setEncryptionTime(encryptionTime/1000000);
+//		    ci.setDecryptionTime(decryptionTime/1000000);
+		    
+		    ci.setInitTime(initTime/1000);
+		    ci.setRemoteInitTime(remoteInitTime/1000);
+		    ci.setEncryptionTime(encryptionTime/1000);
+		    ci.setDecryptionTime(decryptionTime/1000);
 		    
 		    cp.add(ci);
 		}
