@@ -23,7 +23,7 @@ public class IterationStatisticPanel extends JPanel {
 		this.setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(0, 140));
 		
-		JLabel label = new JLabel("Statistic of pass: " + pass + ", values in ns");
+		JLabel label = new JLabel("Statistic of pass: " + pass + ", values in μs");
 		this.add(label, BorderLayout.NORTH);
 		
 		JScrollPane tableContainer = new JScrollPane();
