@@ -46,7 +46,7 @@ public class IterationStatisticComparisonPanel extends JPanel {
 				switch(x) {
 					case 0:
 						// Init
-						scrollpanelHeader.setText("Metric: Init time");
+						scrollpanelHeader.setText("Metric: Init time (in μs)");
 						
 						rowValues[i][0] = pass.toString();
 						rowValues[i][1] = pass.getCryptoPassStatistic().getSumStatisticsInitTime().getMin();
@@ -60,7 +60,7 @@ public class IterationStatisticComparisonPanel extends JPanel {
 						
 					case 1:
 						// Remote init
-						scrollpanelHeader.setText("Metric: Remote init time");
+						scrollpanelHeader.setText("Metric: Remote init time (in μs)");
 						
 						rowValues[i][0] = pass.toString();
 						rowValues[i][1] = pass.getCryptoPassStatistic().getSumStatisticsRemoteInitTime().getMin();
@@ -74,7 +74,7 @@ public class IterationStatisticComparisonPanel extends JPanel {
 						
 					case 2:
 						// Encryption
-						scrollpanelHeader.setText("Metric: Encryption time");
+						scrollpanelHeader.setText("Metric: Encryption time (in μs)");
 						
 						rowValues[i][0] = pass.toString();
 						rowValues[i][1] = pass.getCryptoPassStatistic().getSumStatisticsEncryption().getMin();
@@ -88,7 +88,7 @@ public class IterationStatisticComparisonPanel extends JPanel {
 						
 					case 3:
 						// Decryption
-						scrollpanelHeader.setText("Metric: Decryption time");
+						scrollpanelHeader.setText("Metric: Decryption time (in μs)");
 						
 						rowValues[i][0] = pass.toString();
 						rowValues[i][1] = pass.getCryptoPassStatistic().getSumStatisticsDecryption().getMin();
@@ -102,7 +102,7 @@ public class IterationStatisticComparisonPanel extends JPanel {
 						
 					case 4:
 						// Msg length
-						scrollpanelHeader.setText("Metric: Message length");
+						scrollpanelHeader.setText("Metric: Message length (in μs)");
 						
 						rowValues[i][0] = pass.toString();
 						rowValues[i][1] = pass.getCryptoPassStatistic().getSumStatisticsMsgLength().getMin();
@@ -116,7 +116,7 @@ public class IterationStatisticComparisonPanel extends JPanel {
 						
 					case 5:
 						// Key Length
-						scrollpanelHeader.setText("Metric: Key length");
+						scrollpanelHeader.setText("Metric: Key length (in μs)");
 						
 						rowValues[i][0] = pass.toString();
 						rowValues[i][1] = pass.getCryptoPassStatistic().getSumStatisticsKeyLength().getMin();
