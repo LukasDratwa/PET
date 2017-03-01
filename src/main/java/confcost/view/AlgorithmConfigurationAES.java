@@ -43,6 +43,7 @@ public class AlgorithmConfigurationAES extends AlgorithmConfiguration {
 			panelWestNorth.add(lblWestMsglength);
 			
 			textFieldWestMsglength = new JFormattedTextField(numberFormat);
+			textFieldWestMsglength.setText("512");
 			panelWestNorth.add(textFieldWestMsglength);
 			textFieldWestMsglength.setColumns(10);
 			

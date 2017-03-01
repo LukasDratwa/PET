@@ -47,6 +47,7 @@ public class AlgorithmConfigurationRC2 extends AlgorithmConfiguration {
 			panelWestNorth.add(lblWestMsglength);
 			
 			textFieldWestMsglength = new JFormattedTextField(numberFormat);
+			textFieldWestMsglength.setText("512");
 			panelWestNorth.add(textFieldWestMsglength);
 			textFieldWestMsglength.setColumns(10);
 			
@@ -64,20 +65,7 @@ public class AlgorithmConfigurationRC2 extends AlgorithmConfiguration {
 			comboBoxKeyLength.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {128, 192, 256, 512, 1024}));
 			panelCenterNorth.add(comboBoxKeyLength);
 			comboBoxKeyLength.setSelectedIndex(0);
-			
-			JButton btnTest = new JButton("Test");
-			btnTest.addActionListener(new ActionListener(){
 
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					System.out.println("test");
-					
-				}
-				
-			});
-			panelCenterNorth.add(btnTest);
-			
-			
 			initSendClickedListener();
 		}
 

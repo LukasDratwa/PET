@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -26,6 +28,7 @@ import confcost.model.Model;
 import confcost.model.SendModeInstance;
 import confcost.network.Frame;
 import confcost.util.HexString;
+import confcost.view.ProgressBarWindow;
 
 /**
  * Responsible for sending data in accordance with a {@link SendModeInstance}.
@@ -86,6 +89,22 @@ public class SendController {
 																							instance.getMessageLength(),
 																							iterations);
 		
+		final BlockingQueue<String> queueText = new LinkedBlockingQueue<String>();
+		Thread thread = new Thread(){    		
+    		@Override
+    		public void run(){
+    			while (true) {
+                    try {
+                        String dataString = queueText.take();
+                        ProgressBarWindow.setListValue(dataString);
+                    } catch (InterruptedException e) {
+                        System.err.println("Error occurred:" + e);
+                    }
+                }
+    		}
+    	};
+    	thread.start();
+		
 		for (int i = 0; i < iterations; i++) {
 			CryptoIteration ci = new CryptoIteration(instance.getSendMode().messageExchange,
 																								instance.getSendMode().keyExchange,
@@ -110,6 +129,8 @@ public class SendController {
 			    encryptionTime = System.nanoTime();
 				message = e.encrypt(message);
 				encryptionTime = System.nanoTime() - encryptionTime;
+				
+				
 				
 				// Send encrypted message
 			    System.out.println("SendController::send >> Sending "+new HexString(message));
@@ -191,6 +212,9 @@ public class SendController {
 				new Frame(message).write(socket);
 			    System.out.println("SendController::send >> Message sent.");
 			}else throw new IllegalStateException("Unsupported encryption method: "+instance.getSendMode().messageExchange);
+			
+			// set progress text
+			queueText.offer("Iteration " + (i+1) + " of " + iterations + ": Encryption");
 
 		    // Receive key generation time
 		    remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();

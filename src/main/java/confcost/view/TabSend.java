@@ -140,7 +140,7 @@ public class TabSend extends JPanel {
 		JLabel lblIterations = new JLabel("Iterations");
 		panel_1.add(lblIterations);
 		
-		SpinnerModel sm = new SpinnerNumberModel(1, 1, 999999, 1);
+		SpinnerModel sm = new SpinnerNumberModel(10, 1, 999999, 1);
 		spinnerIterations = new JSpinner(sm);
 		panel_1.add(spinnerIterations);
 		

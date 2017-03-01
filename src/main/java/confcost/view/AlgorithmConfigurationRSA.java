@@ -49,6 +49,7 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 		panelWestNorth.add(lblWestMsglength);
 		
 		textFieldWestMsglength = new JFormattedTextField(numberFormat);
+		textFieldWestMsglength.setText("64");
 		panelWestNorth.add(textFieldWestMsglength);
 		textFieldWestMsglength.setColumns(10);
 		
