@@ -1,18 +1,24 @@
-package confcost.view;
+package confcost.view.send;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.SendButtonListener;
+import confcost.controller.encryption.Encryption;
 import confcost.model.SendMode;
 
 /**
@@ -23,27 +29,114 @@ import confcost.model.SendMode;
  */
 public abstract class AlgorithmConfiguration extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private JButton btnSend;
+	private JButton sendButton;
 	private String header;
-	private TabSend tabSend;
 	
-	private final @NonNull SendMode sendMode;
+	/**
+	 * The encryption to configure
+	 */
+	protected final Class<? extends Encryption> encryption;
+	
+	/**
+	 * Panel for generic configuration parameters. This will be set by createGenericContent().
+	 */
+	private JPanel genericInfo;
+	
+	/**
+	 * Panel for algorithm specific configuration parameters. This will be set by createSpecificContent().
+	 */
+	private JPanel specificInfo;
+	
 	private List<SendButtonListener> sendButtonListeners = new LinkedList<SendButtonListener>();
 
-	public AlgorithmConfiguration(String header, TabSend tabSend, SendMode sendMode) {
-		this.tabSend = tabSend;
-		this.sendMode = sendMode;
+	/**
+	 * Constructor
+	 * 
+	 * @param encryption	The encryption to be configured
+	 */
+	public AlgorithmConfiguration(final @NonNull Class<? extends Encryption> encryption) {
 		setLayout(new BorderLayout(0, 0));
-		this.header = header;
 		
-		btnSend = new JButton("Send");
-		add(btnSend, BorderLayout.SOUTH);
+		this.encryption = encryption;
+		this.header = Encryption.getName(encryption);
+		if (this.header == null) this.header = "<Unknown encryption>";
 		
-		JLabel lblAlgorithmHeader = new JLabel(header);
-		lblAlgorithmHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblAlgorithmHeader.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblAlgorithmHeader, BorderLayout.NORTH);
+		sendButton = new JButton("Send");
+		this.sendButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				notifySendButtonPressed();
+			}
+		});
+		add(sendButton, BorderLayout.SOUTH);
+		
+		// Add title
+		JLabel title = new JLabel(header);
+		title.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		title.setHorizontalAlignment(SwingConstants.CENTER);
+		add(title, BorderLayout.NORTH);
+		
+		// Add main config panel
+		JPanel content = new JPanel();
+		
+		content.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		
+		c.gridwidth = 2;
+		content.add(new JSeparator(), c);
+		c.gridwidth = 1;
+		c.gridy++;
+
+		this.genericInfo = createGenericContent();
+		if (this.genericInfo != null) {
+			content.add(this.genericInfo, c);
+			c.gridy++;
+			c.gridx = 0;
+			c.gridwidth = 2;
+			content.add(new JSeparator(), c);
+			c.gridwidth = 1;
+		}
+		
+		c.gridx++;
+		this.specificInfo = createSpecificContent();
+		if (this.specificInfo != null) {
+			content.add(this.specificInfo, c);
+			c.gridy++;
+			c.gridx = 0;
+			c.gridwidth = 2;
+			content.add(new JSeparator(), c);
+			c.gridwidth = 1;
+		}
+		
+		// Add spacers
+		c.gridx = 0;
+		c.gridy++;
+		c.weightx = 2;
+		c.weighty = 2;
+		content.add(new JPanel(), c);
+		
+		this.add(content, BorderLayout.CENTER);	
 	}
+	
+	/**
+	 * Used to create the generic content pane.
+	 * 
+	 * @return the pane or <code>null</code>
+	 */
+	protected abstract JPanel createGenericContent();
+	
+	/**
+	 * Used to create the specific content pane.
+	 * 
+	 * @return the pane or <code>null</code>
+	 */
+	protected abstract JPanel createSpecificContent();
+	
+	public abstract SendMode getModeInfo();
 	
 	protected abstract void initSendClickedListener();
 
@@ -51,7 +144,7 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	 * @return the btnSend
 	 */
 	public JButton getBtnSend() {
-		return btnSend;
+		return sendButton;
 	}
 
 	/**
@@ -68,33 +161,19 @@ public abstract class AlgorithmConfiguration extends JPanel {
 		this.header = header;
 	}
 
+	/**
+	 * Adds a {@link SendButtonListener}
+	 * @param listener
+	 */
 	public void addSendButtonListener(SendButtonListener listener) {
 		this.sendButtonListeners.add(listener);
 	}
 	
-	public void notifySendButtonListeners() {
+	/**
+	 * Notifies all registered {@link SendButtonListener}.
+	 */
+	public void notifySendButtonPressed() {
 		for (SendButtonListener l : sendButtonListeners)
 			l.sendButtonClicked(this);
-	}
-
-	/**
-	 * @return the sendMode
-	 */
-	public SendMode getSendMode() {
-		return sendMode;
-	}
-
-	/**
-	 * @return the tabSend
-	 */
-	public TabSend getTabSend() {
-		return tabSend;
-	}
-
-	/**
-	 * @param tabSend the tabSend to set
-	 */
-	public void setTabSend(TabSend tabSend) {
-		this.tabSend = tabSend;
 	}
 }

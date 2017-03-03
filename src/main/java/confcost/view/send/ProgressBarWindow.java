@@ -1,8 +1,8 @@
-package confcost.view;
+package confcost.view.send;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -14,6 +14,11 @@ import javax.swing.JTextArea;
  *
  */
 public class ProgressBarWindow extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8832288233526217626L;
+	
 	JProgressBar progressBar;
 	static JScrollPane scrollPane;
 	static JTextArea textArea;

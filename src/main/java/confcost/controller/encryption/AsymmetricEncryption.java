@@ -15,6 +15,7 @@ import javax.crypto.Cipher;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.model.SendMode;
 import confcost.util.HexString;
 
 /**
@@ -27,8 +28,13 @@ public abstract class AsymmetricEncryption extends Encryption {
 	protected PublicKey publicKey;
 	protected PrivateKey privateKey;
 	
-	public AsymmetricEncryption(final @NonNull String algorithm, final @NonNull String provider) {
-		super(algorithm, provider);
+	/**
+	 * Constructor
+	 * 
+	 * @param provider	The security provider
+	 */
+	public AsymmetricEncryption(final @NonNull SendMode mode) {
+		super(mode);
 	}
 	
 	/**
@@ -41,8 +47,8 @@ public abstract class AsymmetricEncryption extends Encryption {
 	 */
 	public void setPublicKey(byte[] bytes) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
 		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytes);
-		this.publicKey = KeyFactory.getInstance(this.algorithm, this.provider).generatePublic(pubKeySpec);
-		System.out.println("GAE::setPublicKey >> Setting PubKey" + new HexString(bytes));
+		this.publicKey = KeyFactory.getInstance(getAlgorithm(), this.provider).generatePublic(pubKeySpec);
+		System.out.println("GAE::setPublicKey >> Setting PubKey " + new HexString(bytes));
 	}
 	
 	/**
@@ -59,7 +65,9 @@ public abstract class AsymmetricEncryption extends Encryption {
 	public byte[] encrypt(@NonNull final byte[] message) throws GeneralSecurityException {
 		if (this.publicKey == null) throw new IllegalStateException("No public key set!");
 		
-		Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+		System.out.println("AsymmetricEncryption::encrypt >> Encrypting message of "+message.length+" byte");
+		
+		Cipher cipher = Cipher.getInstance(getAlgorithm(), this.provider);
 		cipher.init(Cipher.ENCRYPT_MODE, this.publicKey);
 		
 		return cipher.doFinal(message);
@@ -70,7 +78,7 @@ public abstract class AsymmetricEncryption extends Encryption {
 		if (this.privateKey == null) throw new IllegalStateException("No private key set!");
 		
 		System.out.println("GAE::decrypt >> Decrypting");
-		Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+		Cipher cipher = Cipher.getInstance(getAlgorithm(), this.provider);
 		cipher.init(Cipher.DECRYPT_MODE, this.privateKey);
 		return cipher.doFinal(message);
 	}

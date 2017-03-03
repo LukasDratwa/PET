@@ -1,4 +1,4 @@
-package confcost.view;
+package confcost.view.statistics;
 
 import java.awt.BorderLayout;
 
@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import confcost.model.CryptoPass;
 import confcost.model.StatModel;
 import confcost.model.StatModelListener;
+import confcost.view.MainFrame;
 
 /**
  * {@link JPanel} to represent a tab for the statistics-configurations.

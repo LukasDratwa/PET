@@ -1,6 +1,10 @@
 package confcost.model;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+import confcost.controller.encryption.Encryption;
+import confcost.controller.ke.KeyExchange;
 
 public class CryptoIteration {
 	
@@ -28,10 +32,12 @@ public class CryptoIteration {
 	// inputs of the cryptographic algorithm
 	private final int keyLength;
 	private final long messageLength;
-	private final @NonNull CProtocol algorithm;
-	private final @NonNull KEProtocol keyExchange;
+	private final @NonNull Class<? extends Encryption> algorithm;
+	private final @Nullable Class<? extends KeyExchange> keyExchange;
 	
-	public CryptoIteration(final @NonNull CProtocol algorithm, final @NonNull KEProtocol keyExchange, final int keyLength, final long messageLength) {
+	public CryptoIteration(final @NonNull Class<? extends Encryption> algorithm, 
+			final @Nullable Class<? extends KeyExchange> keyExchange, 
+			final int keyLength, final long messageLength) {
 		this.algorithm = algorithm;
 		this.keyExchange = keyExchange;
 		this.keyLength = keyLength;
@@ -69,10 +75,10 @@ public class CryptoIteration {
 	public int getKeyLength() {
 		return keyLength;
 	}
-	public CProtocol getAlgorithm() {
+	public final @NonNull Class<? extends Encryption> getAlgorithm() {
 		return algorithm;
 	}
-	public KEProtocol getKeyExchange() {
+	public final @Nullable Class<? extends KeyExchange> getKeyExchange() {
 		return keyExchange;
 	}
 	public long getMessageLength() {
@@ -81,6 +87,7 @@ public class CryptoIteration {
 	
 	@Override
 	public @NonNull String toString() {
-		return this.algorithm+"/"+this.keyExchange+" ("+this.keyLength+","+this.messageLength+") ";
+		return Encryption.getName(this.algorithm)+"/"+KeyExchange.getName(this.keyExchange)
+		+" ("+this.keyLength+","+this.messageLength+") ";
 	}
 }

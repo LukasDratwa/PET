@@ -1,4 +1,4 @@
-package confcost.view;
+package confcost.view.send;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import confcost.controller.encryption.RSAEncryption;
 import confcost.model.SendMode;
 
 /**
@@ -27,8 +28,8 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 	private JTextField textFieldWestMsglength;
 	private JComboBox<Integer> comboBoxKeyLength;
 
-	public AlgorithmConfigurationRSA(TabSend tabSend, SendMode sendMode) {
-		super("RSA", tabSend, sendMode);
+	public AlgorithmConfigurationRSA() {
+		super(RSAEncryption.class);
 		
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 		DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
@@ -108,5 +109,11 @@ public class AlgorithmConfigurationRSA extends AlgorithmConfiguration {
 	 */
 	public void setComboBoxKeyLength(JComboBox<Integer> comboBoxKeyLength) {
 		this.comboBoxKeyLength = comboBoxKeyLength;
+	}
+
+	@Override
+	public SendMode getModeInfo() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

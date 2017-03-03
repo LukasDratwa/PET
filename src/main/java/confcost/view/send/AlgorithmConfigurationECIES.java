@@ -1,4 +1,4 @@
-package confcost.view;
+package confcost.view.send;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import confcost.controller.encryption.ECIESEncryption;
 import confcost.model.SendMode;
 
 public class AlgorithmConfigurationECIES extends AlgorithmConfiguration {
@@ -21,8 +22,8 @@ public class AlgorithmConfigurationECIES extends AlgorithmConfiguration {
 	private JTextField textFieldWestMsglength;
 	private JComboBox<Integer> comboBoxKeyLength;
 
-	public AlgorithmConfigurationECIES(TabSend tabSend, SendMode sendMode) {
-		super("ECIES", tabSend, sendMode);
+	public AlgorithmConfigurationECIES() {
+		super(ECIESEncryption.class);
 		
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 		DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
@@ -102,5 +103,11 @@ public class AlgorithmConfigurationECIES extends AlgorithmConfiguration {
 	 */
 	public void setComboBoxKeyLength(JComboBox<Integer> comboBoxKeyLength) {
 		this.comboBoxKeyLength = comboBoxKeyLength;
+	}
+
+	@Override
+	public SendMode getModeInfo() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

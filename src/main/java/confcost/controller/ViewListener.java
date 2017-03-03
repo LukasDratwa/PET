@@ -1,6 +1,6 @@
 package confcost.controller;
 
-import confcost.view.TabSend;
+import confcost.view.send.TabSend;
 
 /**
  * Listener class to listen to listen to {@link View} events.

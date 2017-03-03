@@ -12,12 +12,23 @@ import java.security.spec.X509EncodedKeySpec;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.model.SendMode;
 import confcost.util.HexString;
 
 public class ECIESEncryption extends AsymmetricEncryption{
+	public static final @NonNull String NAME = "ECIES";
 
-	public ECIESEncryption(@NonNull String provider) {
-		super("ECIES", provider);
+	@Override
+	public @NonNull String getAlgorithm() {
+		return NAME;
+	}
+	
+	/**
+	 * Constructor
+	 * @param provider	The security provider
+	 */
+	public ECIESEncryption(final @NonNull SendMode mode) {
+		super(mode);
 	}
 
 	@Override
@@ -26,7 +37,7 @@ public class ECIESEncryption extends AsymmetricEncryption{
 		System.out.println("ECIESEncryption::generateKeyPair >> Generating key pair");
 		ECGenParameterSpec brainpoolP256R1 = new ECGenParameterSpec(
 	            "brainpoolP256R1");
-		final KeyPairGenerator gen = KeyPairGenerator.getInstance(this.algorithm, this.provider);
+		final KeyPairGenerator gen = KeyPairGenerator.getInstance(getAlgorithm(), this.provider);
 		gen.initialize(brainpoolP256R1);
 		final KeyPair keyPair = gen.genKeyPair();
 		this.publicKey = keyPair.getPublic();

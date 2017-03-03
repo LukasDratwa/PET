@@ -1,32 +1,18 @@
-package confcost.view;
+package confcost.view.send;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
-import javax.swing.AbstractListModel;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
+import javax.swing.JTabbedPane;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.SendButtonListener;
-import confcost.model.SendMode;
-import net.miginfocom.swing.MigLayout;
+import confcost.controller.SettingsListener;
+import confcost.controller.encryption.Encryption;
+import confcost.model.Model;
 
 /**
  * {@link JPanel} to represent a tab for the send-configurations.
@@ -36,181 +22,104 @@ import net.miginfocom.swing.MigLayout;
  */
 public class TabSend extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private AlgorithmConfiguration actualPanelSendConfiguration = null;
-	private List<AlgorithmConfiguration> possibleAlgorithmConfigurations  = new ArrayList<AlgorithmConfiguration>();;
-	private JTextField textFieldHost;
-	private JTextField textFieldPort;
-	private JSpinner spinnerIterations;
+
+	/**
+	 * The {@link JTabbedPane} containing all algorithm configurations
+	 */
+	private JTabbedPane algoSelectionPane;
 	
-	private String[] getPossibleAlgorithmConfigurationsAsStringArray() {
-		String[] result = new String[possibleAlgorithmConfigurations.size()];
-		for(int i=0; i<result.length; i++) {
-			result[i] = possibleAlgorithmConfigurations.get(i).getHeader();
-		}
-		return result;
-	}
+	private List<AlgorithmConfiguration> algorithmConfigurations  = new ArrayList<AlgorithmConfiguration>();
+
+	/**
+	 * The {@link GeneralSettings}
+	 */
+	private GeneralSettings settings;
 	
-	private AlgorithmConfiguration getAlgorithmConfigrationWithHeader(String header) {
-		for(AlgorithmConfiguration ac : possibleAlgorithmConfigurations) {
-			if(ac.getHeader().equals(header)) {
-				return ac;
-			}
-		}
-		return null;
-	}
-	
-	public TabSend(MainFrame mainFrame, Collection<SendMode> modes) {
-		for(SendMode mode : modes) {
-			switch(mode.messageExchange.getName()) {
-				case "RSA":
-					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRSA(this, mode));
-					break;
-				
-				case "AES":
-					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationAES(this, mode));
-					break;
-					
-				case "ECIES":
-					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationECIES(this, mode));
-					break;
-					
-				case "RC2":
-					possibleAlgorithmConfigurations.add(new AlgorithmConfigurationRC2(this, mode));
-					break;
-			}
-		}
-		
-		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-		DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
-		decimalFormat.setGroupingUsed(false);
-		
+	/**
+	 * Constructor
+	 * @param model	The main model
+	 */
+	public TabSend(Model model) {
 		setLayout(new BorderLayout(0, 0));
 		
-		JPanel panelSendAlgorithms = new JPanel();
-		add(panelSendAlgorithms, BorderLayout.WEST);
-		panelSendAlgorithms.setLayout(new BorderLayout(0, 0));
+		this.algoSelectionPane = createAlgorithmSelectionPane(model);
+		this.add(this.algoSelectionPane, BorderLayout.CENTER);
 		
-		JLabel lblAlgorithms = new JLabel("Algorithms:");
-		panelSendAlgorithms.add(lblAlgorithms, BorderLayout.NORTH);
-		
-		JList<String> list = new JList<String>();
-		list.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				AlgorithmConfiguration ac = getAlgorithmConfigrationWithHeader(list.getSelectedValue());
-				
-				if(ac != null) {
-					if(actualPanelSendConfiguration != null) {
-						remove(actualPanelSendConfiguration);
-						
-					}
-					
-					add(ac, BorderLayout.CENTER);
-					actualPanelSendConfiguration = ac;
-				}
-				
-				SwingUtilities.updateComponentTreeUI(TabSend.this);
-				mainFrame.pack();
-			}
-		});
-		list.setModel(new AbstractListModel<String>() {
-			private static final long serialVersionUID = 1L;
-			
-			String[] values = getPossibleAlgorithmConfigurationsAsStringArray();
-			public int getSize() {
-				return values.length;
-			}
-			public String getElementAt(int index) {
-				return values[index];
-			}
-		});
-		panelSendAlgorithms.add(list, BorderLayout.CENTER);
-		
-		JPanel panelSendConfigurationGeneral = new JPanel();
-		add(panelSendConfigurationGeneral, BorderLayout.EAST);
-		panelSendConfigurationGeneral.setLayout(new MigLayout("", "[91px,grow]", "[][30px][grow][grow]"));
-		
-		JLabel lblGeneralConfiguration = new JLabel("General Configuration");
-		panelSendConfigurationGeneral.add(lblGeneralConfiguration, "cell 0 0,alignx left,aligny center");
-		
-		JPanel panel_1 = new JPanel();
-		panelSendConfigurationGeneral.add(panel_1, "cell 0 1,alignx left,aligny top");
-		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		JLabel lblIterations = new JLabel("Iterations");
-		panel_1.add(lblIterations);
-		
-		SpinnerModel sm = new SpinnerNumberModel(10, 1, 999999, 1);
-		spinnerIterations = new JSpinner(sm);
-		panel_1.add(spinnerIterations);
-		
-		JPanel panel_2 = new JPanel();
-		panelSendConfigurationGeneral.add(panel_2, "cell 0 2,grow");
-		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		JLabel lblHost = new JLabel("Host");
-		panel_2.add(lblHost);
-		
-		textFieldHost = new JTextField();
-		panel_2.add(textFieldHost);
-		textFieldHost.setColumns(10);
-		
-		JPanel panel_3 = new JPanel();
-		panelSendConfigurationGeneral.add(panel_3, "cell 0 3,grow");
-		
-		JLabel lblPort = new JLabel("Port");
-		panel_3.add(lblPort);
-		
-		textFieldPort = new JFormattedTextField(numberFormat);
-		panel_3.add(textFieldPort);
-		textFieldPort.setColumns(10);
+		// Add the settings panel
+		this.settings = new GeneralSettings();
+		this.add(this.settings, BorderLayout.EAST);		
 	}
 	
-	public void addSendButtonListener(final @NonNull SendButtonListener listener) {
-		for (AlgorithmConfiguration c : possibleAlgorithmConfigurations) {
-			c.addSendButtonListener(listener);
+	private JTabbedPane createAlgorithmSelectionPane(final Model model) {
+		JTabbedPane pane = new JTabbedPane();
+		
+		for (Class<? extends Encryption> encryption : model.getEncryptions()) {
+			AlgorithmConfiguration config = AlgorithmConfigurationFactory.create(encryption, model);
+			algorithmConfigurations.add(config);
+			pane.addTab(config.getHeader(), config);
 		}
+		if (pane.getTabCount() == 0) throw new IllegalStateException("No encryption methods could be found!");
+		
+		pane.setTabPlacement(JTabbedPane.LEFT);
+		
+		return pane;
+	}
+	
+	/**
+	 * Returns the currently selected {@link AlgorithmConfiguration}, or <code>null</code>.
+	 * 
+	 * @return	the config
+	 */
+	public AlgorithmConfiguration getCurrentConfig() {
+		return (AlgorithmConfiguration) this.algoSelectionPane.getComponentAt(this.algoSelectionPane.getSelectedIndex());
 	}
 
 	/**
 	 * @return the textFieldHost
 	 */
-	public JTextField getTextFieldHost() {
-		return textFieldHost;
+	public void setHost(final @NonNull String host) {
+		settings.setHost(host);
 	}
 
 	/**
-	 * @param textFieldHost the textFieldHost to set
+	 * Sets the port.
+	 * @param port the port 
 	 */
-	public void setTextFieldHost(JTextField textFieldHost) {
-		this.textFieldHost = textFieldHost;
+	public void setPort(int port) {
+		settings.setPort(port);
+	}
+	
+	/**
+	 * Sets the number of iterations.
+	 * @param iterations	The iterations
+	 */
+	public void setIterations(int iterations) {
+		settings.setIterations(iterations);
 	}
 
 	/**
-	 * @return the textFieldPort
+	 * Sets whether or not key exchange should be performed every iteration
+	 * @param b	The value
 	 */
-	public JTextField getTextFieldPort() {
-		return textFieldPort;
+	public void setKeyExchangeEveryIteration(boolean b) {
+		this.settings.setKeyExchangeEveryIteration(b);
+	}
+	
+	/**
+	 * Adds a new {@link SendButtonListener} to be notified.
+	 * @param listener	The listener
+	 */
+	public void addSendButtonListener(final @NonNull SendButtonListener listener) {
+		for (AlgorithmConfiguration c : algorithmConfigurations) {
+			c.addSendButtonListener(listener);
+		}
 	}
 
 	/**
-	 * @param textFieldPort the textFieldPort to set
+	 * Adds a new {@link SettingsListener} to be notified.
+	 * @param listener	The listener
 	 */
-	public void setTextFieldPort(JTextField textFieldPort) {
-		this.textFieldPort = textFieldPort;
-	}
-
-	/**
-	 * @return the spinnerIterations
-	 */
-	public JSpinner getSpinnerIterations() {
-		return spinnerIterations;
-	}
-
-	/**
-	 * @param spinnerIterations the spinnerIterations to set
-	 */
-	public void setSpinnerIterations(JSpinner spinnerIterations) {
-		this.spinnerIterations = spinnerIterations;
+	public void addSettingsListener(SettingsListener listener) {
+		this.settings.addSettingsListener(listener);
 	}
 }

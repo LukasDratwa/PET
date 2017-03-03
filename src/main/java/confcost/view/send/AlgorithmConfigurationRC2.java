@@ -1,32 +1,29 @@
-package confcost.view;
+package confcost.view.send;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import confcost.controller.encryption.RC2Encryption;
 import confcost.model.SendMode;
-
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 
 public class AlgorithmConfigurationRC2 extends AlgorithmConfiguration {
 	private static final long serialVersionUID = 1629830821L;
 	private JTextField textFieldWestMsglength;
 	private JComboBox<Integer> comboBoxKeyLength;
 	
-	public AlgorithmConfigurationRC2(TabSend tabSend, SendMode sendMode) {
-			super("RC2", tabSend, sendMode);
+	public AlgorithmConfigurationRC2() {
+			super(RC2Encryption.class);
 			
 			NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 			DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
@@ -105,5 +102,11 @@ public class AlgorithmConfigurationRC2 extends AlgorithmConfiguration {
 		 */
 		public void setComboBoxKeyLength(JComboBox<Integer> comboBoxKeyLength) {
 			this.comboBoxKeyLength = comboBoxKeyLength;
+		}
+
+		@Override
+		public SendMode getModeInfo() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}

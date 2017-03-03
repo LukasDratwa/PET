@@ -1,10 +1,12 @@
-package confcost.controller;
+package confcost.controller.receive;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.eclipse.jdt.annotation.NonNull;
+
+import confcost.controller.Controller;
 
 /**
  * This {@link Thread} receives incoming connections.
@@ -35,7 +37,7 @@ public class ReceiveThread extends Thread {
 				Socket s = serverSocket.accept();
 				System.out.println("Incoming: "+s.getInetAddress());
 				
-				new DispatchThread(s).start();
+				new HandlerThread(s).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -1,5 +1,7 @@
 package confcost.controller.encryption;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.security.Key;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -7,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.ke.KeyExchange;
+import confcost.model.SendMode;
 
 /**
  * Provides the interface for symmetric encryption methods.
@@ -15,19 +18,31 @@ import confcost.controller.ke.KeyExchange;
  *
  */
 public abstract class SymmetricEncryption extends Encryption {
-	protected final KeyExchange keyExchange;
-	
 	protected Key key;
+	
+	protected @NonNull KeyExchange keyExchange;
 	
 	/**
 	 * Create a new {@link AsymmetricEncryption} with the specified key exchange protocol
 	 * 
 	 * @param ke
 	 */
-	public SymmetricEncryption(final @NonNull String algorithm, final @NonNull String provider, final @NonNull KeyExchange ke) {
-		super(algorithm, provider);
+	public SymmetricEncryption(final @NonNull SendMode mode) {
+		super(mode);
 		
-		keyExchange = ke;
+		// Initialize KeyExchange
+		Constructor<? extends KeyExchange> c;
+		try {
+			c = mode.keyExchange.getConstructor((Class<?>[])null);
+			keyExchange = c.newInstance((Object[])null);
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public KeyExchange getKeyExchange() {
+		return this.keyExchange;
 	}
 	
 	/**
@@ -35,7 +50,7 @@ public abstract class SymmetricEncryption extends Encryption {
 	 * @param bitLength
 	 */
 	public void generateKey(final int bitLength, final @NonNull byte[] secret) {
-		this.key = new SecretKeySpec(shortenKey(keyExchange.getKey(), bitLength), this.algorithm);
+		this.key = new SecretKeySpec(shortenKey(keyExchange.getKey(), bitLength), this.getAlgorithm());
 	}
 	
 	public void setKey(Key key) {

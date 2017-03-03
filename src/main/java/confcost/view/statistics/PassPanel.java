@@ -1,4 +1,4 @@
-package confcost.view;
+package confcost.view.statistics;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,8 +17,11 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.model.CryptoIteration;
 import confcost.model.CryptoPass;
+import confcost.view.ModelList;
 
 /**
+ * A {@link JPanel} containing all encryption passes in a list.
+ * 
  * <hr>Created on 12.02.2017<hr>
  * @author <a href="mailto:lukasdratwa@yahoo.de">Lukas Dratwa</a>, Marc Eichler
  */
@@ -79,7 +82,7 @@ public class PassPanel extends JPanel {
 				this.repaint();
 			}
 		} else if(passes.size() > 1) {
-			System.out.println("Displaying multiple passes");
+			System.out.println("Displaying "+passes.size()+" passes");
 			
 			// Remove not needed elements
 			this.removeAll();

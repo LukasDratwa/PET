@@ -1,4 +1,4 @@
-package confcost.view;
+package confcost.view.send;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -7,22 +7,24 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import confcost.controller.encryption.AESEncryption;
+import confcost.controller.ke.DiffieHellmanKeyExchange;
 import confcost.model.SendMode;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
 
 public class AlgorithmConfigurationAES extends AlgorithmConfiguration {
 	private static final long serialVersionUID = 2580203504731330945L;
 	private JTextField textFieldWestMsglength;
 	private JComboBox<Integer> comboBoxKeyLength;
 	
-	public AlgorithmConfigurationAES(TabSend tabSend, SendMode sendMode) {
-			super("AES", tabSend, sendMode);
+	public AlgorithmConfigurationAES() {
+			super(AESEncryption.class);
 			
 			NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 			DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
@@ -102,5 +104,12 @@ public class AlgorithmConfigurationAES extends AlgorithmConfiguration {
 		 */
 		public void setComboBoxKeyLength(JComboBox<Integer> comboBoxKeyLength) {
 			this.comboBoxKeyLength = comboBoxKeyLength;
+		}
+
+		@Override
+		public SendMode getModeInfo() {
+			return new SendMode(DiffieHellmanKeyExchange.class, AESEncryption.class, 
+					comboBoxKeyLength.getItemAt(comboBoxKeyLength.getSelectedIndex()),
+					comboBoxKeyLength.getItemAt(comboBoxKeyLength.getSelectedIndex()));
 		}
 	}

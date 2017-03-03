@@ -1,11 +1,13 @@
 package confcost.controller.encryption;
 
 import java.security.GeneralSecurityException;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.eclipse.jdt.annotation.NonNull;
-import confcost.controller.ke.KeyExchange;
+
+import confcost.model.SendMode;
 
 /**
  * Bouncy Castle RC2 Encryption
@@ -14,35 +16,51 @@ import confcost.controller.ke.KeyExchange;
  *
  */
 public class RC2Encryption extends SymmetricEncryption {
+	public static final @NonNull String NAME = "RC2";
 
-	public RC2Encryption(final @NonNull String provider, final @NonNull KeyExchange keyExchange) {
-		super("RC2", provider, keyExchange);
+	static {
+		// Register this encryption for use
+		Encryption.register(RC2Encryption.class, NAME);
 	}
 	
 	@Override
-	public @NonNull byte[] encrypt(@NonNull byte @NonNull [] message) throws GeneralSecurityException {
+	public @NonNull String getAlgorithm() {
+		return NAME;
+	}
+
+	/**
+	 * Constructor
+	 * @param provider	The security provider
+	 * @param keyExchange	The selected key exchange protocol
+	 */
+	public RC2Encryption(final @NonNull SendMode mode) {
+		super(mode);
+	}
+	
+	@Override
+	public final @NonNull byte[] encrypt(final @NonNull byte @NonNull [] message) throws GeneralSecurityException {
 		if (this.key == null) throw new IllegalStateException("No key set!");
 
-		Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+		Cipher cipher = Cipher.getInstance(getAlgorithm(), this.provider);
 		cipher.init(Cipher.ENCRYPT_MODE, this.key);
 		return cipher.doFinal(message);
 	}
 	
 	@Override
-	public @NonNull byte[] decrypt(@NonNull byte @NonNull [] message) throws GeneralSecurityException {
+	public final @NonNull byte[] decrypt(final @NonNull byte @NonNull [] message) throws GeneralSecurityException {
 		if (this.key == null) throw new IllegalStateException("No key set!");
 
-		Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+		Cipher cipher = Cipher.getInstance(getAlgorithm(), this.provider);
 		cipher.init(Cipher.DECRYPT_MODE, this.key);
 		return cipher.doFinal(message);
 	}
 	
 	@Override
 	public void generateKey(final int bitLength, final @NonNull byte[] secret) {
-		this.key = new SecretKeySpec(this.shortenKey(keyExchange.getKey(), bitLength), this.algorithm);
+		this.key = new SecretKeySpec(this.shortenKey(keyExchange.getKey(), bitLength), getAlgorithm());
 	}
 	
-	private byte[] shortenKey(final byte[] key, int length) {
+	private final byte[] shortenKey(final byte[] key, int length) {
 		final byte[] shortKey = new byte[length/8];
 		
 		System.arraycopy(key, 0,  shortKey, 0, Math.min(key.length, shortKey.length));
