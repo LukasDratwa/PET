@@ -20,7 +20,7 @@ import confcost.view.send.TabSend;
  * @author Marc Eichler
  *
  */
-public class Controller implements ViewListener, SendButtonListener, SettingsListener {
+public class Controller implements SendButtonListener, SettingsListener {
 	/**
 	 * The default network host
 	 */
@@ -139,12 +139,6 @@ public class Controller implements ViewListener, SendButtonListener, SettingsLis
 		 		}	
 		     }
 		}.start();	
-	}
-
-	@Override
-	public void notifyCryptoPassSelected(TabSend tab) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
