@@ -10,6 +10,7 @@ import java.security.spec.RSAKeyGenParameterSpec;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.model.SendMode;
 import confcost.util.HexString;
 
 /**
@@ -19,16 +20,31 @@ import confcost.util.HexString;
  *
  */
 public class RSAEncryption extends AsymmetricEncryption {
+	public static final @NonNull String NAME = "RSA";
 
-	public RSAEncryption(@NonNull String provider) {
-		super("RSA", provider);
+	static {
+		// Register this encryption for use
+		Encryption.register(RSAEncryption.class, NAME);
+	}
+	
+	@Override
+	public @NonNull String getAlgorithm() {
+		return NAME;
+	}
+
+	/**
+	 * Constructs a new {@link RSAEncryption} based on the specified {@link SendMode}
+	 * @param mode	The {@link SendMode}
+	 */
+	public RSAEncryption(final @NonNull SendMode mode) {
+		super(mode);
 	}
 
 	@Override
 	public void generateKeyPair(int keyLength)
 			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
-		System.out.println("RSAEncryption::generateKeyPair >> Generating key pair");
-		final KeyPairGenerator gen = KeyPairGenerator.getInstance(this.algorithm, this.provider);
+		System.out.println("RSAEncryption::generateKeyPair >> Generating key pair ("+keyLength+" bit)");
+		final KeyPairGenerator gen = KeyPairGenerator.getInstance(getAlgorithm(), this.provider);
 		gen.initialize(new RSAKeyGenParameterSpec(keyLength, new BigInteger("3")));
 		final KeyPair keyPair = gen.genKeyPair();
 		this.publicKey = keyPair.getPublic();

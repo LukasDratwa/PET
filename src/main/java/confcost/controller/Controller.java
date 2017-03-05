@@ -1,126 +1,144 @@
 package confcost.controller;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.controller.receive.ReceiveThread;
+import confcost.controller.send.SendController;
 import confcost.model.Model;
-import confcost.view.AlgorithmConfiguration;
-import confcost.view.AlgorithmConfigurationAES;
-import confcost.view.AlgorithmConfigurationRSA;
+import confcost.model.SendMode;
 import confcost.view.MainFrame;
-import confcost.view.TabSend;
+import confcost.view.send.AlgorithmConfiguration;
+import confcost.view.send.GeneralSettings;
 
 /**
- * Main Controller class
+ * Main controller class.
  * 
  * @author Marc Eichler
  *
  */
-public class Controller implements ViewListener, SendButtonListener {
-	private static final String HOST = "localhost";
-	private static final int PORT = 1111;
+public class Controller implements SendButtonListener, SettingsListener {
+	/**
+	 * The default network host
+	 */
+	private static final String DEFAULT_HOST = "localhost";
 	
+	/**
+	 * The default port to listen on and send to
+	 */
+	private static final int DEFAULT_PORT = 1111;
+
+	/**
+	 * Default value for whether the key exchange should be performed every iteration
+	 */
+	private static final boolean DEFAULT_KEY_EXCHANGE_EVERY_ITERATION = false;
+
+	/**
+	 * Default iteration count
+	 */
+	private static final int DEFAULT_ITERATIONS = 100;
+	
+	/**
+	 * The main {@link Model}
+	 */
 	private final @NonNull Model model;
+	
+	/**
+	 * The {@link MainFrame}
+	 */
 	private final @NonNull MainFrame view;
 	
+	/**
+	 * The {@link ReceiveThread}
+	 */
 	private final ReceiveThread receiveThread;
 	
+	/**
+	 * The {@link SendController}
+	 */
 	private final SendController sendController;
 	
+	/**
+	 * The currently selected host
+	 */
+	private @NonNull String host = DEFAULT_HOST;
+	
+	/**
+	 * The currently selected port
+	 */
+	private int port = DEFAULT_PORT;
+	
+	/**
+	 * True iff key exchange is supposed to be performed for every iteration
+	 */
+	private boolean keyExchangeEveryIteration = DEFAULT_KEY_EXCHANGE_EVERY_ITERATION;
+	
+	/**
+	 * The currently selected iterations
+	 */
+	private int iterations = DEFAULT_ITERATIONS;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param model	The main model
+	 * @param view	The main view
+	 * @throws IOException	If an IO error occurred
+	 */
 	public Controller(@NonNull Model model, @NonNull MainFrame view) throws IOException {
 		this.model = model;
 		this.view = view;
 		this.sendController = new SendController(model);
-		
+
 		this.view.addSendButtonListener(this);
+		this.view.addSettingsListener(this);
 		
-		this.receiveThread = new ReceiveThread(this, PORT);
+		this.receiveThread = new ReceiveThread(model, DEFAULT_PORT);
 	}
 	
-	public void start() throws UnknownHostException, IOException {
+	/**
+	 * Starts the {@link Controller}.
+	 */
+	public void start() {
+		view.setHost(host);
+		view.setPort(port);
+		view.setIterations(iterations);
+		view.setKeyExchangeEveryIteration(keyExchangeEveryIteration);
+		
 		view.setVisible(true);
 		
 		receiveThread.start();
-		sendController.connect();
 	}
 	
+	/**
+	 * Stops the {@link Controller}.
+	 */
 	public void stop() {
 		receiveThread.interrupt();
 	}
 
-	public void sendButtonClicked(AlgorithmConfiguration ac) {
-		int keyLength = 1024;
-		int msgLength = 117;
-		String host = HOST;
-		int port = PORT;
-		int iterations = 1;
-		
-		System.out.println("\n");
-		
-		// RSA
-		if(ac.getClass().equals(AlgorithmConfigurationRSA.class)) {
-			System.out.println("RSA");
-			AlgorithmConfigurationRSA acRSA = (AlgorithmConfigurationRSA) ac;
-			
-			keyLength = (Integer) acRSA.getComboBoxKeyLength().getModel().getSelectedItem();
-			
-			if(!acRSA.getTextFieldWestMsglength().getText().equals("")) {
-				msgLength = Integer.parseInt(acRSA.getTextFieldWestMsglength().getText());
-			}
-			
-			if(!acRSA.getTabSend().getTextFieldHost().getText().equals("")) {
-				host = acRSA.getTabSend().getTextFieldHost().getText();
-			}
-		}
-		
-		// AES
-		if(ac.getClass().equals(AlgorithmConfigurationAES.class)) {
-			System.out.println("AES");
-			AlgorithmConfigurationAES acAES = (AlgorithmConfigurationAES) ac;
-			
-			keyLength = (Integer) acAES.getComboBoxKeyLength().getModel().getSelectedItem();
-			
-			if(!acAES.getTextFieldWestMsglength().getText().equals("")) {
-				msgLength = Integer.parseInt(acAES.getTextFieldWestMsglength().getText());
-			}
-			
-			if(!acAES.getTabSend().getTextFieldHost().getText().equals("")) {
-				host = acAES.getTabSend().getTextFieldHost().getText();
-			}
-			
-			if(!acAES.getTabSend().getTextFieldPort().getText().equals("")) {
-				port = Integer.parseInt(acAES.getTabSend().getTextFieldPort().getText());
-			}
-			
-			if(!acAES.getTabSend().getSpinnerIterations().getValue().toString().equals("")) {
-				iterations = Integer.parseInt(acAES.getTabSend().getSpinnerIterations().getValue().toString());
-			}
-		}
-		
-		// General settings
-		if(!ac.getTabSend().getTextFieldPort().getText().equals("")) {
-			port = Integer.parseInt(ac.getTabSend().getTextFieldPort().getText());
-		}
-		
-		if(!ac.getTabSend().getSpinnerIterations().getValue().toString().equals("")) {
-			iterations = Integer.parseInt(ac.getTabSend().getSpinnerIterations().getValue().toString());
-		}
-		
-		System.out.println("SEND: " + host + ":" + port + ", msgLength=" + msgLength + ", keyLength=" + keyLength + ", iterations: " + iterations);
-		
-		try {
-			sendController.send(ac.getSendMode().getInstance(keyLength, msgLength), iterations, host, port);
-		} catch (GeneralSecurityException | IOException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void sendButtonClicked(final AlgorithmConfiguration ac) {
+		new Thread(){
+		     @Override
+		     public void run(){		 		
+		 		SendMode s = ac.getModeInfo();
+		 		try {
+		 			sendController.send(s, iterations, keyExchangeEveryIteration, host, port);
+		 		} catch (ReflectiveOperationException | IOException e) {
+		 			e.printStackTrace();
+		 			view.displayError("Unable to send", e);
+		 		}	
+		     }
+		}.start();	
 	}
 
 	@Override
-	public void notifyCryptoPassSelected(TabSend tab) {
-		// TODO Auto-generated method stub
-		
+	public void notifySaveButtonPressed(GeneralSettings settings) {
+		this.host = settings.getHost();
+		this.port = settings.getPort();
+		this.keyExchangeEveryIteration = settings.getKeyExchangeEveryIteration();
+		this.iterations = settings.getIterations();
 	}
 }

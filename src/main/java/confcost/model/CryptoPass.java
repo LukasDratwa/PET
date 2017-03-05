@@ -4,18 +4,24 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+import confcost.controller.encryption.Encryption;
+import confcost.controller.ke.KeyExchange;
 
 public class CryptoPass {
 	private List<CryptoIteration> iterations;
 	
-	private final @NonNull CProtocol algorithm;
-	private final @NonNull KEProtocol keyExchange;
+	private final @NonNull Class<? extends Encryption> algorithm;
+	private final @Nullable Class<? extends KeyExchange> keyExchange;
 	private final int keyLength;
 	private final int messageLength;
 	private final int numIterations;
 	private CryptoPassStatistic cryptoPassStatistic = null;
 	
-	public CryptoPass(CProtocol algorithm, KEProtocol keyExchange, final int keyLength, final int messageLength, int iterations) {
+	public CryptoPass(final @NonNull Class<? extends Encryption> algorithm, 
+			final @Nullable Class<? extends KeyExchange> keyExchange, 
+			final int keyLength, final int messageLength, int iterations) {
 		this.iterations = new LinkedList<>();
 		
 		this.algorithm = algorithm;
@@ -36,14 +42,15 @@ public class CryptoPass {
 	}
 	
 	public String toString() {
-		return this.algorithm+"/"+this.keyExchange+" ("+this.keyLength+","+this.messageLength+") *"+numIterations;
+		return Encryption.getName(this.algorithm)+"/"+KeyExchange.getName(this.keyExchange)+
+				" ("+this.keyLength+","+this.messageLength+") *"+numIterations;
 	}
 	
-	public CProtocol getAlgorithm() {
+	public final @NonNull Class<? extends Encryption> getAlgorithm() {
 		return this.algorithm;
 	}
 	
-	public KEProtocol getKeyExchange() {
+	public final @NonNull Class<? extends KeyExchange> getKeyExchange() {
 		return this.keyExchange;
 	}
 	

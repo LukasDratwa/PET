@@ -3,48 +3,61 @@ package confcost.confcost;
 import java.io.IOException;
 
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import confcost.controller.Controller;
 import confcost.model.Model;
 import confcost.view.MainFrame;
 
 /**
- * Hello world!
- *
+ * The application main class
  */
 public class App 
 {
-	@SuppressWarnings("unused")
-	private static void setLookAndFeel() {
+	/**
+	 * Sets the L&amp;F to the specified L&amp;F. If no L&amp;F with the specified name exists, the systems' L&amp;F is used instead. 
+	 * @param lf	The L&amp;F name
+	 */
+	public void setLookAndFeel(final String lf) {
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (UnsupportedLookAndFeelException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-			System.err.println("Unable to set look and feel!");
-			e.printStackTrace();
-	    } 
-	}
-	
-	private static void setNimbusLookAndFeel() {
-		try {
+			boolean found = false;
+			
 		    for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Nimbus".equals(info.getName())) {
+		        if (info.getName().equals(lf)) {
 		            UIManager.setLookAndFeel(info.getClassName());
+		            found = true;
 		            break;
 		        }
 		    }
-		} catch (Exception e) {
+		    
+		    if (!found)
+		    	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 		    e.printStackTrace();
 		}
 	}
 	
-    public static void main( String[] args ) throws IOException
-    {
-    	setNimbusLookAndFeel();
+	/**
+	 * Starts the application.
+	 * 
+	 * @throws IOException	If an IO error occurred
+	 */
+	public void start() throws IOException {
         Model model = new Model();
         MainFrame view = new MainFrame("confcost", model);
         Controller controller = new Controller(model, view);
         controller.start();
+	}
+	
+	/**
+	 * The main function
+	 * @param args	Command line arguments
+	 * @throws IOException	If an IO error occurred
+	 */
+    public static void main( String[] args ) throws IOException {
+    	App app = new App();
+    	app.setLookAndFeel("Nimbus");
+    	app.start();
     }
 }

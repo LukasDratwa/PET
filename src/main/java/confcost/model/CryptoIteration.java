@@ -1,37 +1,43 @@
 package confcost.model;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+import confcost.controller.encryption.Encryption;
+import confcost.controller.ke.KeyExchange;
 
 public class CryptoIteration {
 	
 	// time needed for the cryptographic operations
 	/**
-	 * Time to initialize the cryptographic algorithm in ms
+	 * Time to initialize the cryptographic algorithm in micro seconds μs
 	 */
 	private long initTime;
 	
 	/**
-	 * Time to initialize the cryptographic algorithm on the remote end in ms
+	 * Time to initialize the cryptographic algorithm on the remote end in micro seconds μs
 	 */
 	private long remoteInitTime;
 	
 	/**
-	 * Time to encrypt the message in ms
+	 * Time to encrypt the message in micro seconds μs
 	 */
 	private long encryptionTime;
 	
 	/**
-	 * Time to decrypt the message in ms
+	 * Time to decrypt the message in micro seconds μs
 	 */
 	private long decryptionTime;
 	
 	// inputs of the cryptographic algorithm
 	private final int keyLength;
 	private final long messageLength;
-	private final @NonNull CProtocol algorithm;
-	private final @NonNull KEProtocol keyExchange;
+	private final @NonNull Class<? extends Encryption> algorithm;
+	private final @Nullable Class<? extends KeyExchange> keyExchange;
 	
-	public CryptoIteration(final @NonNull CProtocol algorithm, final @NonNull KEProtocol keyExchange, final int keyLength, final long messageLength) {
+	public CryptoIteration(final @NonNull Class<? extends Encryption> algorithm, 
+			final @Nullable Class<? extends KeyExchange> keyExchange, 
+			final int keyLength, final long messageLength) {
 		this.algorithm = algorithm;
 		this.keyExchange = keyExchange;
 		this.keyLength = keyLength;
@@ -69,10 +75,10 @@ public class CryptoIteration {
 	public int getKeyLength() {
 		return keyLength;
 	}
-	public CProtocol getAlgorithm() {
+	public final @NonNull Class<? extends Encryption> getAlgorithm() {
 		return algorithm;
 	}
-	public KEProtocol getKeyExchange() {
+	public final @Nullable Class<? extends KeyExchange> getKeyExchange() {
 		return keyExchange;
 	}
 	public long getMessageLength() {
@@ -81,6 +87,7 @@ public class CryptoIteration {
 	
 	@Override
 	public @NonNull String toString() {
-		return this.algorithm+"/"+this.keyExchange+" ("+this.keyLength+","+this.messageLength+") ";
+		return Encryption.getName(this.algorithm)+"/"+KeyExchange.getName(this.keyExchange)
+		+" ("+this.keyLength+","+this.messageLength+") ";
 	}
 }

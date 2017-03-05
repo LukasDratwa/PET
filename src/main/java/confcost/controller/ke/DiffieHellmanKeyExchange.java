@@ -8,6 +8,7 @@ import java.security.AlgorithmParameterGenerator;
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.InvalidParameterException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -36,6 +37,12 @@ import confcost.util.HexString;
  *
  */
 public class DiffieHellmanKeyExchange extends KeyExchange {
+	public static final String NAME = "Diffie Hellman";
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
 	
 	private int keyLength = 0;
 	
@@ -107,9 +114,28 @@ public class DiffieHellmanKeyExchange extends KeyExchange {
 	}
 	
 	@Override
-	public void setKeyLength(int bit) {
+	public void setKeyLength(final int bit) {
 		if (bit <= 0) throw new IllegalArgumentException("Invalid bit length: "+bit);
-		this.keyLength = bit;
+		
+		System.out.println("DiffieHellmanKeyExchange::setKeyLength >> "+bit+" bit");
+		
+		// Key length must be multiple of 64 and range from 512 to 1024, or 2048
+		if (bit >= 1024 && bit != 2048) {
+			throw new InvalidParameterException("DH key size must be multiple of 64 and range from 512 to 1024 (inclusive), or 2048. The specific key size "+bit+" is not supported");
+		}
+		
+		int modBit = bit;
+		// Key too small, increase it
+		if (bit < 512) modBit = 512;
+		
+		// Key not multiple of 64, round up to next multiple
+		if ((bit%64) != 0) {
+			modBit = bit+(bit%64)+64;
+		}
+		
+		if (modBit != bit) System.out.println("DiffieHellmanKeyExchange::setKeyLength >> Modified DH key to be "+modBit+" bit");
+		
+		this.keyLength = modBit;
 	}
 	
 	public byte[] getKey() {

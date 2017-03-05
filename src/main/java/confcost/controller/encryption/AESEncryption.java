@@ -6,7 +6,7 @@ import javax.crypto.Cipher;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import confcost.controller.ke.KeyExchange;
+import confcost.model.SendMode;
 
 /**
  * Bouncy Castle AES Encryption
@@ -15,16 +15,27 @@ import confcost.controller.ke.KeyExchange;
  *
  */
 public class AESEncryption extends SymmetricEncryption {
-
-	public AESEncryption(final @NonNull String provider, final @NonNull KeyExchange keyExchange) {
-		super("AES", provider, keyExchange);
+	public static final @NonNull String NAME = "AES";
+	public static final @NonNull String PROVIDER = "BC";
+	
+	@Override
+	public @NonNull String getAlgorithm() {
+		return NAME;
+	}
+	
+	/**
+	 * Constructs an {@link AESEncryption} based on the specified {@link SendMode}.
+	 * @param sendMode	The {@link SendMode}
+	 */
+	public AESEncryption(final @NonNull SendMode sendMode) {
+		super(sendMode);
 	}
 	
 	@Override
 	public @NonNull byte[] encrypt(@NonNull byte @NonNull [] message) throws GeneralSecurityException {
 		if (this.key == null) throw new IllegalStateException("No key set!");
 
-		Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+		Cipher cipher = Cipher.getInstance(NAME, this.provider);
 		cipher.init(Cipher.ENCRYPT_MODE, this.key);
 		return cipher.doFinal(message);
 	}
@@ -33,7 +44,7 @@ public class AESEncryption extends SymmetricEncryption {
 	public @NonNull byte[] decrypt(@NonNull byte @NonNull [] message) throws GeneralSecurityException {
 		if (this.key == null) throw new IllegalStateException("No key set!");
 
-		Cipher cipher = Cipher.getInstance(this.algorithm, this.provider);
+		Cipher cipher = Cipher.getInstance(NAME, this.provider);
 		cipher.init(Cipher.DECRYPT_MODE, this.key);
 		return cipher.doFinal(message);
 	}

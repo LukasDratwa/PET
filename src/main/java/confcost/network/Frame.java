@@ -34,8 +34,9 @@ public class Frame {
 	/**
 	 * Reads data from the {@link Socket} and returns the read {@link Frame}.
 	 * 
-	 * @param socket
-	 * @return
+	 * @param socket	the {@link Socket}
+	 * @return	The {@link Frame}
+	 * @throws IOException	if an IO error occured
 	 */
 	public static Frame get(@NonNull Socket socket) throws IOException {
 		DataInputStream in = new DataInputStream(socket.getInputStream());
@@ -51,10 +52,10 @@ public class Frame {
 	}
 	
 	/**
-	 * Writes the {@link Frame} to the specified Socket.
+	 * Writes the {@link Frame} to the specified {@link Socket}.
 	 * 
-	 * @param socket
-	 * @throws IOException
+	 * @param socket	The {@link Socket}
+	 * @throws IOException	if an IO error occured
 	 */
 	public void write(@NonNull Socket socket) throws IOException {
 		DataOutputStream out = new DataOutputStream(socket.getOutputStream());
