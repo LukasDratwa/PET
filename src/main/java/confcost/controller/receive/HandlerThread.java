@@ -44,18 +44,18 @@ public class HandlerThread extends Thread {
 	public void run() {
 		try {
 			// Receive key exchange and encryption method
-			System.out.println("DispatchThread >> Receiving setup data");
+			System.out.println("HandlerThread >> Receiving setup data");
 			SendMode mode = (SendMode)new ObjectInputStream(socket.getInputStream()).readObject();
 			final int iterations = new DataInputStream(socket.getInputStream()).readInt();
 			final boolean generateKeyEveryIteration = new DataInputStream(socket.getInputStream()).readBoolean();
 			
-			System.out.println("DispatchThread >> Setup:");
-			System.out.println("DispatchThread >> \tKey exchange: " + mode.keyExchange);
-			System.out.println("DispatchThread >> \tEncryption: " + mode.messageExchange);
-			System.out.println("DispatchThread >> \tMessage length: " + mode.messageLength);
-			System.out.println("DispatchThread >> \tKey length: " + mode.keyLength);
-			System.out.println("DispatchThread >> \tIterations: " + iterations);
-			System.out.println("DispatchThread >> \tGenerate key every iteration? " + generateKeyEveryIteration);
+			System.out.println("HandlerThread >> Setup:");
+			System.out.println("HandlerThread >> \tKey exchange: " + mode.keyExchange);
+			System.out.println("HandlerThread >> \tEncryption: " + mode.messageExchange);
+			System.out.println("HandlerThread >> \tMessage length: " + mode.messageLength);
+			System.out.println("HandlerThread >> \tKey length: " + mode.keyLength);
+			System.out.println("HandlerThread >> \tIterations: " + iterations);
+			System.out.println("HandlerThread >> \tGenerate key every iteration? " + generateKeyEveryIteration);
 	 		
 			// Create Encryption object
 	 		Encryption encryption;
@@ -69,7 +69,7 @@ public class HandlerThread extends Thread {
 				return;
 			}
 	    	
-			System.out.println("DispatchThread >> Key length: "+mode.keyLength);
+			System.out.println("HandlerThread >> Key length: "+mode.keyLength);
 
 //			final BlockingQueue<Integer> queueProgressBar = new LinkedBlockingQueue<Integer>();
 //			final BlockingQueue<String> queueText = new LinkedBlockingQueue<String>();
@@ -100,12 +100,12 @@ public class HandlerThread extends Thread {
 			
 			// Initial key generation key
 			if (!generateKeyEveryIteration) {
-			    System.out.println("DispatchThread >> Generating initial keys.");
+			    System.out.println("HandlerThread >> Generating initial keys.");
 				// Get public key
 				if (encryption instanceof AsymmetricEncryption) {
 					AsymmetricEncryption ae = (AsymmetricEncryption)encryption;
 					ae.generateKeyPair(mode.keyLength);
-					System.out.println("DispatchThread >> Sending public key");
+					System.out.println("HandlerThread >> Sending public key");
 					new Frame(ae.getPublicKey().getEncoded()).write(socket);
 				} 
 				// Perform key exchange
@@ -113,11 +113,11 @@ public class HandlerThread extends Thread {
 					SymmetricEncryption se = (SymmetricEncryption) encryption;
 					KeyExchange ke = se.getKeyExchange();
 
-				    System.out.println("DispatchThread >> Exchanging keys.");
+				    System.out.println("HandlerThread >> Exchanging keys.");
 					ke.receive(socket);
 
 					se.generateKey(mode.keyLength, ke.getKey());
-				    System.out.println("DispatchThread >> Generated Key: "+new HexString(se.getKey().getEncoded()));
+				    System.out.println("HandlerThread >> Generated Key: "+new HexString(se.getKey().getEncoded()));
 				    
 				}
 			}
@@ -125,18 +125,18 @@ public class HandlerThread extends Thread {
 			
 			try{
 				for (int i = 0; i < iterations; i++) {
-					System.out.println("DispatchThread >> *** Iteration "+(i+1)+"/"+iterations);
+					System.out.println("HandlerThread >> *** Iteration "+(i+1)+"/"+iterations);
 					long initTime = -1;
 					long decryptTime = -1;
 					
 					// Key generation key
 					if (generateKeyEveryIteration) {
-					    System.out.println("DispatchThread >> Generating iteration keys.");
+					    System.out.println("HandlerThread >> Generating iteration keys.");
 						// Get public key
 						if (encryption instanceof AsymmetricEncryption) {
 							AsymmetricEncryption ae = (AsymmetricEncryption)encryption;
 							ae.generateKeyPair(mode.keyLength);
-							System.out.println("DispatchThread >> Sending public key");
+							System.out.println("HandlerThread >> Sending public key");
 							new Frame(ae.getPublicKey().getEncoded()).write(socket);
 						} 
 						// Perform key exchange
@@ -144,30 +144,30 @@ public class HandlerThread extends Thread {
 							SymmetricEncryption se = (SymmetricEncryption) encryption;
 							KeyExchange ke = se.getKeyExchange();
 
-						    System.out.println("DispatchThread >> Exchanging keys.");
+						    System.out.println("HandlerThread >> Exchanging keys.");
 							ke.receive(socket);
 							
 							// Generate key
 							initTime = System.nanoTime();
 							se.generateKey(mode.keyLength, ke.getKey());
 						    initTime = System.nanoTime() - initTime;
-						    System.out.println("DispatchThread >> Key: "+new HexString(se.getKey().getEncoded()));
+						    System.out.println("HandlerThread >> Key: "+new HexString(se.getKey().getEncoded()));
 						}
 					}
 					
 					// Retrieve and decrypt message
 					byte[] message = Frame.get(socket).data;
-					System.out.println("DispatchThread >> Received: "+new HexString(message));
+					System.out.println("HandlerThread >> Received: "+new HexString(message));
 
 				    decryptTime = System.nanoTime();
 					message = encryption.decrypt(message);
 					decryptTime = System.nanoTime() - decryptTime;
-					System.out.println("DispatchThread >> Encrypted: "+new HexString(message));
+					System.out.println("HandlerThread >> Encrypted: "+new HexString(message));
 					
-					System.out.println("DispatchThread >> Done.");
+					System.out.println("HandlerThread >> Done.");
 					
 				    // Send back measured times
-					System.out.println("DispatchThread >> Measured "+initTime +", "+decryptTime);
+					System.out.println("HandlerThread >> Measured "+initTime +", "+decryptTime);
 				    new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
 				    new DataOutputStream(socket.getOutputStream()).writeLong(decryptTime);
 				    
