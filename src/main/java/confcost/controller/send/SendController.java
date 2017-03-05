@@ -36,7 +36,15 @@ import confcost.util.HexString;
  * @author Marc Eichler
  *
  */
-public class SendController {	
+public class SendController {
+	/**
+	 * The socket timeout in ms
+	 */
+	private static final int SOCKET_TIMEOUT = 1000*60*60; // 1h
+	
+	/**
+	 * The main {@link Model}
+	 */
 	private final @NonNull Model model;
 
 	/**
@@ -84,7 +92,7 @@ public class SendController {
 		
 		// Create socket
 		Socket socket = new Socket(hostname, port);
-	    socket.setSoTimeout(10000);
+	    socket.setSoTimeout(SOCKET_TIMEOUT);
 		System.out.println("SendController >> Connected.");
 		
 		Connection connection;
