@@ -11,7 +11,7 @@ import confcost.model.Connection;
 public interface ConnectionListener {
 	/**
 	 * Callback method for when a {@link Connection} has changed
-	 * @param connection
+	 * @param connection	the changed {@link Connection}
 	 */
 	public void notifyConnectionChanged(Connection connection);
 }

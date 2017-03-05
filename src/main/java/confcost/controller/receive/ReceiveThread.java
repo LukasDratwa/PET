@@ -30,7 +30,7 @@ public class ReceiveThread extends Thread {
 	 * 
 	 * @param model	The main {@link Model}
 	 * @param port	The port to listen on
-	 * @throws IOException 
+	 * @throws IOException 	If an IO error occured
 	 */
 	public ReceiveThread(@NonNull Model model, @NonNull int port) throws IOException {
 		this.serverSocket = new ServerSocket(port);

@@ -163,7 +163,7 @@ public abstract class AlgorithmConfiguration extends JPanel {
 
 	/**
 	 * Adds a {@link SendButtonListener}
-	 * @param listener
+	 * @param listener	the listener
 	 */
 	public void addSendButtonListener(SendButtonListener listener) {
 		this.sendButtonListeners.add(listener);

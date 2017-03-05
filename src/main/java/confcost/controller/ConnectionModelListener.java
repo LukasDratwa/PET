@@ -10,15 +10,16 @@ import confcost.model.ConnectionModel;
  */
 public interface ConnectionModelListener {
 	/**
-	 * Callback method for when a {@link ConnectionModel} has changed
-	 * @param connection	The connection
+	 * Callback method for when a {@link Connection} was added to a {@link ConnectionModel}.
+	 * @param model	The {@link ConnectionModel}
+	 * @param connection	The {@link Connection}
 	 */
 	public void notifyConnectionAdded(ConnectionModel model, Connection connection);
 	
 	/**
 	 * Callback method for when one of the models' {@link Connection}s has been changed
-	 * @param model	The model
-	 * @param connection	The connection
+	 * @param model	The {@link ConnectionModel}
+	 * @param connection	The {@link Connection}
 	 */
 	public void notifyAnyConnectionChanged(ConnectionModel model, Connection connection);
 }

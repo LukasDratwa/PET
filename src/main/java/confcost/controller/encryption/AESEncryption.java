@@ -24,9 +24,8 @@ public class AESEncryption extends SymmetricEncryption {
 	}
 	
 	/**
-	 * Constructor
-	 * @param provider	The security provider
-	 * @param keyExchange	The key exchange protocol
+	 * Constructs an {@link AESEncryption} based on the specified {@link SendMode}.
+	 * @param sendMode	The {@link SendMode}
 	 */
 	public AESEncryption(final @NonNull SendMode sendMode) {
 		super(sendMode);

@@ -10,6 +10,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.model.SendMode;
 import confcost.view.send.AlgorithmConfiguration;
+import confcost.view.send.AlgorithmConfigurationFactory;
 
 /**
  * Generic superclass for encryption algorithms.
@@ -86,8 +87,7 @@ public abstract class Encryption {
 	
 	/**
 	 * Constructor
-	 * @param algorithm	The encryption algorithm
-	 * @param provider	The security provider
+	 * @param mode	The {@link SendMode}
 	 */
 	public Encryption(final @NonNull SendMode mode) {
 		this.mode = mode;
@@ -102,7 +102,7 @@ public abstract class Encryption {
 	 * Decrypts the specified message
 	 * @param message	The message
 	 * @return	The decrypted message
-	 * @throws GeneralSecurityException
+	 * @throws GeneralSecurityException	If a security error occured
 	 */
 	public abstract @NonNull byte[] decrypt(final @NonNull byte @NonNull[] message) throws GeneralSecurityException;
 
@@ -110,7 +110,7 @@ public abstract class Encryption {
 	 * Encrypts the specified message
 	 * @param message	The message
 	 * @return	The encrypted message
-	 * @throws GeneralSecurityException
+	 * @throws GeneralSecurityException	If a security error occured
 	 */
 	public abstract @NonNull byte[] encrypt(final @NonNull byte @NonNull[] message) throws GeneralSecurityException;
 }

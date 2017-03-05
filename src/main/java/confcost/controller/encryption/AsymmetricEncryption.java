@@ -1,14 +1,10 @@
 package confcost.controller.encryption;
 
 import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
@@ -31,7 +27,7 @@ public abstract class AsymmetricEncryption extends Encryption {
 	/**
 	 * Constructor
 	 * 
-	 * @param provider	The security provider
+	 * @param mode	The {@link SendMode}
 	 */
 	public AsymmetricEncryption(final @NonNull SendMode mode) {
 		super(mode);
@@ -39,13 +35,10 @@ public abstract class AsymmetricEncryption extends Encryption {
 	
 	/**
 	 * Sets the {@link PublicKey}.
-	 * 
 	 * @param bytes The public key as bytes
-	 * @throws InvalidKeySpecException
-	 * @throws NoSuchAlgorithmException
-	 * @throws NoSuchProviderException
+	 * @throws GeneralSecurityException	If a security error occured
 	 */
-	public void setPublicKey(byte[] bytes) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
+	public void setPublicKey(byte[] bytes) throws GeneralSecurityException {
 		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytes);
 		this.publicKey = KeyFactory.getInstance(getAlgorithm(), this.provider).generatePublic(pubKeySpec);
 		System.out.println("GAE::setPublicKey >> Setting PubKey " + new HexString(bytes));
@@ -55,11 +48,9 @@ public abstract class AsymmetricEncryption extends Encryption {
 	 * Generates a {@link KeyPair} of the specified bit length.
 	 * 
 	 * @param keyLength	The key length in bit
-	 * @throws NoSuchAlgorithmException
-	 * @throws NoSuchProviderException
-	 * @throws InvalidAlgorithmParameterException
+	 * @throws GeneralSecurityException If a security error occured
 	 */
-	public abstract void generateKeyPair(int keyLength) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException;
+	public abstract void generateKeyPair(int keyLength) throws GeneralSecurityException;
 	
 	@Override
 	public byte[] encrypt(@NonNull final byte[] message) throws GeneralSecurityException {

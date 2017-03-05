@@ -1,7 +1,6 @@
 package confcost.controller;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -12,7 +11,6 @@ import confcost.model.SendMode;
 import confcost.view.MainFrame;
 import confcost.view.send.AlgorithmConfiguration;
 import confcost.view.send.GeneralSettings;
-import confcost.view.send.TabSend;
 
 /**
  * Main controller class.
@@ -86,7 +84,7 @@ public class Controller implements SendButtonListener, SettingsListener {
 	 * 
 	 * @param model	The main model
 	 * @param view	The main view
-	 * @throws IOException
+	 * @throws IOException	If an IO error occurred
 	 */
 	public Controller(@NonNull Model model, @NonNull MainFrame view) throws IOException {
 		this.model = model;
@@ -101,11 +99,8 @@ public class Controller implements SendButtonListener, SettingsListener {
 	
 	/**
 	 * Starts the {@link Controller}.
-	 * 
-	 * @throws UnknownHostException
-	 * @throws IOException
 	 */
-	public void start() throws UnknownHostException, IOException {
+	public void start() {
 		view.setHost(host);
 		view.setPort(port);
 		view.setIterations(iterations);
@@ -114,8 +109,6 @@ public class Controller implements SendButtonListener, SettingsListener {
 		view.setVisible(true);
 		
 		receiveThread.start();
-
-		sendController.connect();
 	}
 	
 	/**

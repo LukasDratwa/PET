@@ -60,9 +60,9 @@ public class SendMode implements Serializable {
 	/**
 	 * Returns a new instance of this {@link SendMode}.
 	 * 
-	 * @param keyLength
-	 * @param messageLength
-	 * @return
+	 * @param keyLength	The key length
+	 * @param messageLength	The message length
+	 * @return	The {@link SendModeInstance}
 	 */
 	public SendModeInstance getInstance(int keyLength, int messageLength) {
 		return new SendModeInstance(this, keyLength, messageLength);

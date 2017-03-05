@@ -24,8 +24,8 @@ public class ECIESEncryption extends AsymmetricEncryption{
 	}
 	
 	/**
-	 * Constructor
-	 * @param provider	The security provider
+	 * Constructs a new {@link ECIESEncryption} based on the specified {@link SendMode}.
+	 * @param mode	The {@link SendMode}
 	 */
 	public ECIESEncryption(final @NonNull SendMode mode) {
 		super(mode);

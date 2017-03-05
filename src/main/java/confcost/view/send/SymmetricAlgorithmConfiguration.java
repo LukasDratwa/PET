@@ -73,8 +73,7 @@ public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	}
 	
 	/**
-	 * Returns the current message length
-	 * @return
+	 * @return	the current message length
 	 */
 	public int getMessageLength() {
 		return Integer.parseInt(messageLength.getText());

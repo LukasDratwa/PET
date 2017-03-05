@@ -33,8 +33,8 @@ public class RSAEncryption extends AsymmetricEncryption {
 	}
 
 	/**
-	 * Constructor
-	 * @param provider	The security provider
+	 * Constructs a new {@link RSAEncryption} based on the specified {@link SendMode}
+	 * @param mode	The {@link SendMode}
 	 */
 	public RSAEncryption(final @NonNull SendMode mode) {
 		super(mode);

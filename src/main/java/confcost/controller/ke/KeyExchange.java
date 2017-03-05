@@ -2,15 +2,10 @@ package confcost.controller.ke;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
+import java.security.GeneralSecurityException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.Security;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.InvalidParameterSpecException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,36 +67,36 @@ public abstract class KeyExchange {
 	 * Perform the key exchange on the specified socket on the application's sending side.
 	 * 
 	 * @param socket	The socket
-	 * @throws NoSuchProviderException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws InvalidAlgorithmParameterException 
-	 * @throws InvalidKeyException 
-	 * @throws IOException 
-	 * @throws InvalidKeySpecException 
-	 * @throws InvalidParameterSpecException 
+	 * @throws IOException If an IO error occurred
+	 * @throws GeneralSecurityException	If a security error occurred
 	 */
-	public abstract void send(@NonNull Socket socket) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, IOException, InvalidKeySpecException, InvalidParameterSpecException;
+	public abstract void send(@NonNull Socket socket) throws IOException, GeneralSecurityException;
 	
 	/**
 	 * Perform the key exchange on the specified socket on the application's receiving side.
 	 * 
 	 * @param socket	The socket
-	 * @throws InvalidKeySpecException 
-	 * @throws IOException 
-	 * @throws InvalidKeyException 
-	 * @throws InvalidAlgorithmParameterException 
-	 * @throws InvalidParameterSpecException 
+	 * @throws IOException If an IO error occurred
+	 * @throws GeneralSecurityException	If a security error occurred
 	 */
-	public abstract void receive(@NonNull Socket socket) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, IOException, InvalidKeySpecException, InvalidParameterSpecException;
+	public abstract void receive(@NonNull Socket socket) throws IOException, GeneralSecurityException;
 	
 	/**
-	 * Sets the key length.
+	 * Sets the key length to the specified number of bit.
+	 * @param bit	The length in bit
 	 */
 	public abstract void setKeyLength(int bit);
 	
+	/**
+	 * Returns the local {@link KeyPair}
+	 * @return	the {@link KeyPair} or <code>null</code>
+	 */
 	public KeyPair getLocalKeyPair() {
 		return this.localKeyPair;
 	}
 	
+	/**
+	 * @return	the key
+	 */
 	public abstract byte[] getKey();
 }

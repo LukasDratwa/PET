@@ -1,7 +1,6 @@
 package confcost.confcost;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -17,8 +16,8 @@ import confcost.view.MainFrame;
 public class App 
 {
 	/**
-	 * Sets the L&F to the specified L&F. If no L&F with the specified name exists, the systems' L&F is used instead. 
-	 * @param lf	The L&F name
+	 * Sets the L&amp;F to the specified L&amp;F. If no L&amp;F with the specified name exists, the systems' L&amp;F is used instead. 
+	 * @param lf	The L&amp;F name
 	 */
 	public void setLookAndFeel(final String lf) {
 		try {
@@ -42,10 +41,9 @@ public class App
 	/**
 	 * Starts the application.
 	 * 
-	 * @throws UnknownHostException
-	 * @throws IOException
+	 * @throws IOException	If an IO error occurred
 	 */
-	public void start() throws UnknownHostException, IOException {
+	public void start() throws IOException {
         Model model = new Model();
         MainFrame view = new MainFrame("confcost", model);
         Controller controller = new Controller(model, view);
@@ -54,11 +52,10 @@ public class App
 	
 	/**
 	 * The main function
-	 * @param args	CL args
-	 * @throws UnknownHostException
-	 * @throws IOException
+	 * @param args	Command line arguments
+	 * @throws IOException	If an IO error occurred
 	 */
-    public static void main( String[] args ) throws UnknownHostException, IOException {
+    public static void main( String[] args ) throws IOException {
     	App app = new App();
     	app.setLookAndFeel("Nimbus");
     	app.start();

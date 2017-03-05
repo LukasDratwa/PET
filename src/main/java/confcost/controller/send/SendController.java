@@ -8,7 +8,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -53,15 +52,10 @@ public class SendController {
 
 	/**
 	 * Creates a new {@link SendController}.
-	 * 
-	 * @param host	The receiver host name or IP
-	 * @param port	The receiver port
+	 * @param model	The main {@link Model}
 	 */
 	public SendController(final @NonNull Model model) {
 		this.model = model;
-	}
-	
-	public void connect() throws UnknownHostException, IOException {
 	}
 	
 	/**
@@ -71,8 +65,9 @@ public class SendController {
 	 * @param generateKeyEveryIteration	true iff a new key should be generated for every iteration
 	 * @param hostname	The host
 	 * @param port	The port
-	 * @throws IOException 
-	 * @throws {@link ReflectiveOperationException}
+	 * @throws IOException If an IO error occured
+	 * @throws ReflectiveOperationException	If a reflective operation failed 
+	 * 			(usually because an {@link Encryption} or {@link KeyExchange} could not be instanced)
 	 */
 	public void send(final @NonNull SendMode mode, final int iterations, 
 			final boolean generateKeyEveryIteration, 
@@ -201,12 +196,13 @@ public class SendController {
 			
 			// Generate and encrypt message
 			byte[] message = generateMessage(mode.messageLength);
+		    System.out.println("SendController::send >> Generated message "+new HexString(message));
 		    encryptionTime = System.nanoTime();
 			message = encryption.encrypt(message);
 			encryptionTime = System.nanoTime() - encryptionTime;
 			
 			// Send encrypted message
-		    System.out.println("SendController::send >> Sending message "+new HexString(message));
+		    System.out.println("SendController::send >> Sending encrypted message "+new HexString(message));
 			new Frame(message).write(socket);
 
 		    // Receive key generation time
@@ -277,10 +273,9 @@ public class SendController {
 	}
 	
 	/**
-	 * Generates a new message of specified length
-	 * 
+	 * Generates a random message of specified length.
 	 * @param messageLength	The length in bit
-	 * @return
+	 * @return	the generated message
 	 */
 	public byte[] generateMessage(int messageLength) {
 		int byteLength = (int) Math.ceil(messageLength/8);

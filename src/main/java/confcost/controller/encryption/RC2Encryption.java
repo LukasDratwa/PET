@@ -29,9 +29,8 @@ public class RC2Encryption extends SymmetricEncryption {
 	}
 
 	/**
-	 * Constructor
-	 * @param provider	The security provider
-	 * @param keyExchange	The selected key exchange protocol
+	 * Constructs an {@link RC2Encryption} based on the specified {@link SendMode}
+	 * @param mode	The {@link SendMode}
 	 */
 	public RC2Encryption(final @NonNull SendMode mode) {
 		super(mode);

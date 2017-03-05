@@ -52,8 +52,8 @@ public class ConnectionList extends JPanel implements ConnectionModelListener {
 	}
 	
 	/**
-	 * Adds a new panel for the specified connection
-	 * @param connection
+	 * Adds a new panel for the specified {@link Connection}
+	 * @param connection	the {@link Connection}
 	 */
 	public void addConnectionPanel(Connection connection) {
 		this.content.add(new ConnectionPanel(connection));

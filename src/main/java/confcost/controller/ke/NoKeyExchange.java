@@ -83,9 +83,8 @@ public class NoKeyExchange extends KeyExchange {
 	
 	/**
 	 * Generates a new secret of specified length
-	 * 
 	 * @param length	The length in bit
-	 * @return
+	 * @return	the secret
 	 */
 	public byte[] generateSecret(int length) {
 		int byteLength = (int) Math.ceil(length/8);

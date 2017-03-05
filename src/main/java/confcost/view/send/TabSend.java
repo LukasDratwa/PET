@@ -75,15 +75,16 @@ public class TabSend extends JPanel {
 	}
 
 	/**
-	 * @return the textFieldHost
+	 * Sets the host to the specified value.
+	 * @param host	The new host
 	 */
 	public void setHost(final @NonNull String host) {
 		settings.setHost(host);
 	}
 
 	/**
-	 * Sets the port.
-	 * @param port the port 
+	 * Sets the port to the specified value.
+	 * @param port 	The new port
 	 */
 	public void setPort(int port) {
 		settings.setPort(port);

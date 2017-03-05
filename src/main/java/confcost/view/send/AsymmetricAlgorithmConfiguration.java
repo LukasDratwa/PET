@@ -56,13 +56,15 @@ public class AsymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	}
 
 	/**
-	 * Returns the current message length
-	 * @return
+	 * @return	the current message length in bit.
 	 */
 	public int getMessageLength() {
 		return Integer.parseInt(messageLength.getText());
 	}
 	
+	/**
+	 * @return	the current key length in bit.
+	 */
 	public int getKeyLength() {
 		return (Integer)keyLength.getSelectedItem();
 	}
