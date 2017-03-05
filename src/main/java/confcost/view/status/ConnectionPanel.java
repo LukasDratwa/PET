@@ -24,6 +24,13 @@ public class ConnectionPanel extends JPanel implements ConnectionListener {
 	 */
 	private static final long serialVersionUID = -3029747330127915913L;
 
+	private static final String DIVIDER = " / ";
+	private static final String MESSAGE_LENGTH_PRE = "M: ";
+	private static final String MESSAGE_LENGTH_POST = "b";
+	
+	private static final String KEY_LENGTH_PRE = "K: ";
+	private static final String KEY_LENGTH_POST = "b";
+
 	/**
 	 * The {@link Connection} to display
 	 */
@@ -71,11 +78,17 @@ public class ConnectionPanel extends JPanel implements ConnectionListener {
 		c.gridx = 0;
 		String encryption = Encryption.getName(connection.getMode().messageExchange);
 		if (connection.getMode().keyExchange != null)
-			encryption = encryption.concat(" / "+KeyExchange.getName(connection.getMode().keyExchange));
+			encryption = encryption.concat(DIVIDER+KeyExchange.getName(connection.getMode().keyExchange));
 		else {
-			encryption = encryption.concat(" / "+"<none>");
+			encryption = encryption.concat(DIVIDER+"<none>");
 		}
 		this.add(new JLabel(encryption), c);
+		
+		// Add encryption, key exchange
+		c.gridy++;
+		c.gridx = 0;
+		this.add(new JLabel(MESSAGE_LENGTH_PRE+this.connection.getMode().messageLength+MESSAGE_LENGTH_POST+DIVIDER+
+				KEY_LENGTH_PRE+this.connection.getMode().keyLength+KEY_LENGTH_POST), c);
 
 		// Add status label
 		c.gridwidth = 1;
