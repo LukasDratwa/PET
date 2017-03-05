@@ -2,7 +2,6 @@ package confcost.controller;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -134,8 +133,9 @@ public class Controller implements ViewListener, SendButtonListener, SettingsLis
 		 		SendMode s = ac.getModeInfo();
 		 		try {
 		 			sendController.send(s, iterations, keyExchangeEveryIteration, host, port);
-		 		} catch (GeneralSecurityException | IOException e) {
+		 		} catch (ReflectiveOperationException | IOException e) {
 		 			e.printStackTrace();
+		 			view.displayError("Unable to send", e);
 		 		}	
 		     }
 		}.start();	

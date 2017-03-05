@@ -171,14 +171,13 @@ public class Connection {
 	}
 
 	/**
-	 * In case of an error, set the causing exception
-	 * @param e
+	 * Sets the status to {@link Status#ERROR} and sets the cause 
+	 * @param cause	The cause
 	 */
-	public void setError(Exception e) {
-		if (this.status != Status.ERROR)
-			throw new IllegalStateException("Trying to set error, while connection is not in Status "+Status.ERROR);
+	public void setError(Exception cause) {
+		this.status = Status.ERROR;
 		
-		error = e;
+		error = cause;
 		
 		this.notifyConnectionChanged();
 	}

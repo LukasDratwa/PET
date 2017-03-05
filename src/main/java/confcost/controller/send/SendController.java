@@ -10,9 +10,13 @@ import java.math.BigInteger;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.Random;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -21,12 +25,12 @@ import confcost.controller.encryption.Encryption;
 import confcost.controller.encryption.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
 import confcost.model.Connection;
+import confcost.model.Connection.Status;
 import confcost.model.CryptoIteration;
 import confcost.model.CryptoPass;
 import confcost.model.Model;
 import confcost.model.SendMode;
 import confcost.model.SendModeInstance;
-import confcost.model.Connection.Status;
 import confcost.network.Frame;
 import confcost.util.HexString;
 
@@ -67,19 +71,69 @@ public class SendController {
 	 * @param generateKeyEveryIteration	true iff a new key should be generated for every iteration
 	 * @param hostname	The host
 	 * @param port	The port
+	 * @throws IOException 
+	 * @throws {@link ReflectiveOperationException}
 	 */
-	public void send(SendMode mode, int iterations, final boolean generateKeyEveryIteration, final @NonNull String hostname, final int port) throws GeneralSecurityException, IOException {
- 		// Create Encryption object
- 		Encryption encryption;
-		try {
-			Constructor<? extends Encryption> c = mode.messageExchange.getConstructor(SendMode.class);
-			encryption = c.newInstance(mode);
-		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			e.printStackTrace();
-			return;
-		}
+	public void send(final @NonNull SendMode mode, final int iterations, 
+			final boolean generateKeyEveryIteration, 
+			final @NonNull String hostname, final int port) throws ReflectiveOperationException, IOException {
 
+		// Print information
+		this.printDebug(mode, iterations, generateKeyEveryIteration, hostname, port);
+		
+ 		// Create Encryption object
+		Encryption encryption = createEncryption(mode);
+
+		// Create socket
+		Socket socket = new Socket(hostname, port);
+	    socket.setSoTimeout(SOCKET_TIMEOUT);
+		System.out.println("SendController >> Connected.");
+
+		// Create Connection object
+		Connection connection;
+		if (socket.getInetAddress().isLoopbackAddress())
+			connection = new Connection(Connection.Type.LOCAL, mode, iterations, socket.getInetAddress());
+		else
+			connection = new Connection(Connection.Type.OUT, mode, iterations, socket.getInetAddress());
+		model.getConnectionModel().addConnection(connection);
+		
+		try {
+			performExchange(socket, encryption, iterations, generateKeyEveryIteration, mode, connection);
+		} catch (GeneralSecurityException e) {
+			e.printStackTrace();
+			connection.setError(e);
+		}
+		
+		System.out.println("SendController >> Done.");
+	}
+	
+	/**
+	 * Creates an encryption based on the specified {@link SendMode}
+	 * @param mode	The {@link SendMode}
+	 * @return	The {@link Encryption}
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
+	private Encryption createEncryption(final @NonNull SendMode mode) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		Constructor<? extends Encryption> c = mode.messageExchange.getConstructor(SendMode.class);
+		Encryption encryption = c.newInstance(mode);
+		return encryption;
+	}
+	
+	/**
+	 * Prints a debug message, containing the initial setup
+	 * @param hostname	The host name
+	 * @param port	The port
+	 * @param mode	The {@link SendMode}
+	 * @param iterations	The number of iterations
+	 * @param generateKeyEveryIteration	true iff a new key should be generated for every iteration
+	 */
+	private void printDebug(final @NonNull SendMode mode, final int iterations, 
+			boolean generateKeyEveryIteration, final @NonNull String hostname, final int port) {
 		System.out.println("SendController >> Setup:");
 		System.out.println("SendController >> \tHost:" + hostname+":"+port);
 		System.out.println("SendController >> \tKey exchange: " + mode.keyExchange);
@@ -89,20 +143,24 @@ public class SendController {
 		System.out.println("SendController >> \tIterations: " + iterations);
 		System.out.println("SendController >> \tKey Exchange every iteration? " + generateKeyEveryIteration);
 		System.out.println("SendController >> Sending "+mode+" to "+hostname+":"+port);
-		
-		// Create socket
-		Socket socket = new Socket(hostname, port);
-	    socket.setSoTimeout(SOCKET_TIMEOUT);
-		System.out.println("SendController >> Connected.");
-		
-		Connection connection;
-		if (socket.getInetAddress().isLoopbackAddress())
-			connection = new Connection(Connection.Type.LOCAL, mode, iterations, socket.getInetAddress());
-		else
-			connection = new Connection(Connection.Type.OUT, mode, iterations, socket.getInetAddress());
-			
-		model.getConnectionModel().addConnection(connection);
-		
+	}
+	
+	/**
+	 * Performs the message exchanges with the remote end
+	 * @throws IOException 
+	 * @param socket
+	 * @param encryption
+	 * @param iterations
+	 * @param generateKeyEveryIteration
+	 * @param mode
+	 * @param connection
+	 * @throws IOException
+	 * @throws GeneralSecurityException 
+	 */
+	private void performExchange(@NonNull Socket socket, @NonNull Encryption encryption, 
+			final int iterations, final boolean generateKeyEveryIteration, 
+			final @NonNull SendMode mode, final @NonNull Connection connection) throws IOException, GeneralSecurityException {
+	
 		// Perform setup information exchange
 		new ObjectOutputStream(socket.getOutputStream()).writeObject(mode);
 		new DataOutputStream(socket.getOutputStream()).writeInt(iterations); 
@@ -114,44 +172,13 @@ public class SendController {
 			mode.messageLength,
 			iterations);
 		
-		final BlockingQueue<String> queueText = new LinkedBlockingQueue<String>();
-		Thread thread = new Thread(){    		
-    		@Override
-    		public void run(){
-//    			while (true) {
-//                    try {
-//                        String dataString = queueText.take();
-//                        ProgressBarWindow.setListValue(dataString);
-//                    } catch (InterruptedException e) {
-//                        System.err.println("Error occurred:" + e);
-//                    }
-//                }
-    		}
-    	};
-    	thread.start();
-		
     	connection.setStatus(Status.TRANSMITTING);
+    	
+    	// Measured init time in ns
+    	long initTime = -1;
 		// Retrieve key
 		if (!generateKeyEveryIteration) {
-		    System.out.println("SendController::send >> Retrieving initial keys.");
-			// Get public key
-			if (encryption instanceof AsymmetricEncryption) {
-				AsymmetricEncryption e = (AsymmetricEncryption)encryption;
-				e.setPublicKey(Frame.get(socket).data); // Get public key
-			} 
-			// Perform key exchange
-			else if (encryption instanceof SymmetricEncryption) {
-				SymmetricEncryption se = (SymmetricEncryption) encryption;
-				KeyExchange ke = se.getKeyExchange();
-
-			    System.out.println("SendController::send >> Exchanging keys.");
-			    ke.setKeyLength(mode.keyLength);
-				ke.send(socket);
-				
-				// Generate key
-				se.generateKey(mode.keyLength, ke.getKey());
-			    System.out.println("SendController::send >> Key: "+new HexString(se.getKey().getEncoded()));
-			}
+			initTime = generateKey(socket, encryption, mode);
 		}
 		
 		for (int i = 0; i < iterations; i++) {
@@ -162,7 +189,6 @@ public class SendController {
 				mode.messageLength);
 			
 			// Measured time in ns
-			long initTime = -1;
 			long remoteInitTime = -1;
 			long encryptionTime = -1;
 			long decryptionTime = -1;
@@ -170,27 +196,7 @@ public class SendController {
 			
 			// Retrieve key
 			if (generateKeyEveryIteration) {
-			    System.out.println("SendController::send >> Retrieving iteration keys.");
-				// Get public key
-				if (encryption instanceof AsymmetricEncryption) {
-					AsymmetricEncryption e = (AsymmetricEncryption)encryption;
-					e.setPublicKey(Frame.get(socket).data); // Get public key
-				} 
-				// Perform key exchange
-				else if (encryption instanceof SymmetricEncryption) {
-					SymmetricEncryption se = (SymmetricEncryption) encryption;
-					KeyExchange ke = se.getKeyExchange();
-
-				    System.out.println("SendController::send >> Exchanging keys.");
-				    ke.setKeyLength(mode.keyLength);
-					ke.send(socket);
-					
-					// Generate key
-					initTime = System.nanoTime();
-					se.generateKey(mode.keyLength, ke.getKey());
-					initTime = System.nanoTime() - initTime;
-				    System.out.println("SendController::send >> Key: "+new HexString(se.getKey().getEncoded()));
-				}
+				initTime = generateKey(socket, encryption, mode);
 			}
 			
 			// Generate and encrypt message
@@ -202,31 +208,72 @@ public class SendController {
 			// Send encrypted message
 		    System.out.println("SendController::send >> Sending message "+new HexString(message));
 			new Frame(message).write(socket);
-			
-			// set progress text
-			queueText.offer("Iteration " + (i+1) + " of " + iterations + ": Encryption");
 
 		    // Receive key generation time
 		    remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();
 		    // Receive decryption time
 		    decryptionTime = new DataInputStream(socket.getInputStream()).readLong();
 		    
+		    // Set elapsed time
 		    ci.setInitTime(initTime/1000);
 		    ci.setRemoteInitTime(remoteInitTime/1000);
 		    ci.setEncryptionTime(encryptionTime/1000);
 		    ci.setDecryptionTime(decryptionTime/1000);
 		    
 		    cp.add(ci);
+		    
+		    // Update connection progress
 	    	connection.setProgress(i+1);
 		}
 		
 		connection.setStatus(Status.DONE);
 	    
 		this.model.addCryptoPass(cp);
+	}
+	
+	/**
+	 * Performs the key generation / key exchange and measures the elapsed time.
+	 * 
+	 * @param socket	The socket to the receiving end
+	 * @param encryption	The {@link Encryption}
+	 * @param mode	The {@link SendMode}
+	 * @return	The elapsed time
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchProviderException
+	 * @throws IOException
+	 * @throws InvalidParameterSpecException 
+	 * @throws InvalidAlgorithmParameterException 
+	 * @throws InvalidKeyException 
+	 */
+	private long generateKey(@NonNull Socket socket, @NonNull Encryption encryption, 
+			final @NonNull SendMode mode) throws GeneralSecurityException, IOException {
+	    System.out.println("SendController::send >> Retrieving initial keys.");
+	    long time = -1;
+	    
+		// Get public key
+		if (encryption instanceof AsymmetricEncryption) {
+			AsymmetricEncryption e = (AsymmetricEncryption)encryption;
+			
+			e.setPublicKey(Frame.get(socket).data); // Get public key
+		} 
+		// Perform key exchange
+		else if (encryption instanceof SymmetricEncryption) {
+			SymmetricEncryption se = (SymmetricEncryption) encryption;
+			KeyExchange ke = se.getKeyExchange();
+
+		    System.out.println("SendController::send >> Exchanging keys.");
+		    ke.setKeyLength(mode.keyLength);
+			ke.send(socket);
+
+			// Generate key
+			time = System.nanoTime();
+			se.generateKey(mode.keyLength, ke.getKey());
+			time = System.nanoTime() - time;
+		    System.out.println("SendController::send >> Key: "+new HexString(se.getKey().getEncoded()));
+		}
 		
-	    // Close socket
-		socket.close();
-		System.out.println("SendController >> Done.");
+		return time;
 	}
 	
 	/**

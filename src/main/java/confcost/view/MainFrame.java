@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
@@ -83,7 +84,21 @@ public class MainFrame extends JFrame {
 		InfoBar infoBar = new InfoBar(model);
 		contentPane.add(infoBar, BorderLayout.SOUTH);
 	}
-
+	
+	/**
+	 * Displays an error message.
+	 * 
+	 * @param message	The error message
+	 * @param cause	The causing exception or <code>null</code>
+	 */
+	public void displayError(String message, Exception cause) {
+		System.out.println("Displaying "+message+": "+cause.toString());
+		String text = message + ((cause!=null)?"\n"+cause.toString():"");
+		JOptionPane.showMessageDialog(this,
+			    text,
+			    "Error",
+			    JOptionPane.ERROR_MESSAGE);
+	}
 	/**
 	 * Adds a new {@link SendButtonListener} to be notified.
 	 * @param listener	The listener
