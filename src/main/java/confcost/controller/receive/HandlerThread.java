@@ -87,6 +87,8 @@ public class HandlerThread extends Thread {
 				this.model.getConnectionModel().addConnection(connection);
 			}
 			
+			long initTime = -1;
+			
 			// Initial key generation key
 			if (!generateKeyEveryIteration) {
 			    System.out.println("HandlerThread >> Generating initial keys.");
@@ -105,12 +107,13 @@ public class HandlerThread extends Thread {
 				    System.out.println("HandlerThread >> Exchanging keys.");
 					ke.receive(socket);
 
+					initTime = System.nanoTime();
 					se.generateKey(mode.keyLength, ke.getKey());
+				    initTime = System.nanoTime() - initTime;
 				    System.out.println("HandlerThread >> Generated Key: "+new HexString(se.getKey().getEncoded()));
 				    
 				}
 			}
-			
 			
 			try{
 				if (connection != null) {
@@ -118,7 +121,6 @@ public class HandlerThread extends Thread {
 				}
 				for (int i = 0; i < iterations; i++) {
 					System.out.println("HandlerThread >> *** Iteration "+(i+1)+"/"+iterations);
-					long initTime = -1;
 					long decryptTime = -1;
 					
 					// Key generation key
