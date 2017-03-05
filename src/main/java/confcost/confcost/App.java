@@ -16,6 +16,11 @@ import confcost.view.MainFrame;
 public class App 
 {
 	/**
+	 * The application's version
+	 */
+	public static final String VERSION = "RC1";
+	
+	/**
 	 * Sets the L&amp;F to the specified L&amp;F. If no L&amp;F with the specified name exists, the systems' L&amp;F is used instead. 
 	 * @param lf	The L&amp;F name
 	 */
@@ -45,6 +50,8 @@ public class App
 	 */
 	public void start() throws IOException {
         Model model = new Model();
+		model.setVersion(App.VERSION);
+		
         MainFrame view = new MainFrame("confcost", model);
         Controller controller = new Controller(model, view);
         controller.start();

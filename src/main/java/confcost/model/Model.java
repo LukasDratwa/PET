@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import confcost.controller.encryption.Encryption;
 import confcost.controller.ke.KeyExchange;
@@ -16,14 +17,35 @@ import confcost.controller.ke.KeyExchange;
  *
  */
 public class Model {
+	/**
+	 * The enabled {@link Encryption}s
+	 */
 	private final @NonNull List<Class<? extends Encryption>> encryptions;
+	
+	/**
+	 * The enabled {@link KeyExchange}s
+	 */
 	private final @NonNull List<Class<? extends KeyExchange>> keyExchanges;
 
+	/**
+	 * The {@link ReceiveModel}
+	 */
 	private final @NonNull ReceiveModel recvModel = new ReceiveModel();
 
+	/**
+	 * The {@link StatModel}
+	 */
 	private final @NonNull StatModel statModel = new StatModel();
 	
+	/**
+	 * The {@link ConnectionModel}
+	 */
 	private final @NonNull ConnectionModel connectionModel = new ConnectionModel();
+	
+	/**
+	 * The current software version
+	 */
+	private @Nullable String version = null;
 	
 	/**
 	 * Create a new {@link Model}
@@ -57,19 +79,48 @@ public class Model {
 		return keyExchanges;
 	}
 	
+	/**
+	 * Adds a {@link StatModelListener}
+	 * @param listener	the listener
+	 */
 	public void addListener(StatModelListener listener) {
 		this.statModel.addListener(listener);
 	}
 
+	/**
+	 * Adds a new {@link CryptoPass} to the {@link StatModel}
+	 * @param cp	The {@link CryptoPass}
+	 */
 	public void addCryptoPass(CryptoPass cp) {
 		this.statModel.add(cp);
 	}
 	
+	/**
+	 * @return	The {@link StatModel}
+	 */
 	public StatModel getStatModel() {
 		return this.statModel;
 	}
 
+	/**
+	 * @return	The {@link ConnectionModel}
+	 */
 	public ConnectionModel getConnectionModel() {
 		return this.connectionModel;
+	}
+	
+	/**
+	 * @return	the current software version or <code>null</code>
+	 */
+	public final @Nullable String getVersion() {
+		return this.version;
+	}
+	
+	/**
+	 * Sets the software version
+	 * @param version	The version or <code>null</code>
+	 */
+	public void setVersion(final @Nullable String version) {
+		this.version = version;
 	}
 }

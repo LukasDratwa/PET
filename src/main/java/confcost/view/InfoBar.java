@@ -45,18 +45,18 @@ public class InfoBar extends JPanel implements ConnectionModelListener {
 		connectionLabel = new JLabel(NO_CONNECTIONS);
 		this.add(connectionLabel, BorderLayout.CENTER);
 		
+		this.add(new JLabel(model.getVersion()), BorderLayout.EAST);
+		
 		this.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 	}
 
 	@Override
 	public void notifyConnectionAdded(ConnectionModel model, Connection connection) {
-		// TODO Auto-generated method stub
 		this.update();
 	}
 
 	@Override
 	public void notifyAnyConnectionChanged(ConnectionModel model, Connection connection) {
-		// TODO Auto-generated method stub
 		this.update();
 	}
 	
