@@ -12,7 +12,7 @@ import confcost.controller.ConnectionListener;
 /**
  * Represents the status of a connection with the same or another instance of this application.
  * 
- * @author Marc
+ * @author Marc Eichler
  *
  */
 public class Connection {
@@ -116,6 +116,10 @@ public class Connection {
 		this.listener = new HashSet<>();
 	}
 	
+	/**
+	 * Sets the {@link Status}.
+	 * @param status	The new status
+	 */
 	public void setStatus(Status status) {
 		this.status = status;
 		
@@ -136,36 +140,51 @@ public class Connection {
 		this.notifyConnectionChanged();
 	}
 	
+	/**
+	 * @return	the {@link SendMode}
+	 */
 	public SendMode getMode() {
 		return mode;
 	}
 
-	public void setMode(SendMode mode) {
-		this.mode = mode;
-		
-		this.notifyConnectionChanged();
-	}
-
+	/**
+	 * @return the maximum number of iterations
+	 */
 	public int getIterations() {
 		return iterations;
 	}
 
+	/**
+	 * @return The number of performed iterations
+	 */
 	public int getCurrentIteration() {
 		return completedIteration;
 	}
 
+	/**
+	 * @return	the {@link Type}
+	 */
 	public Type getType() {
 		return type;
 	}
 
+	/**
+	 * @return the {@link InetAddress}
+	 */
 	public InetAddress getHost() {
 		return addr;
 	}
 
+	/**
+	 * @return	the current {@link Status}
+	 */
 	public Status getStatus() {
 		return status;
 	}
 
+	/**
+	 * @return The error's cause or <code>null</code>
+	 */
 	public Exception getError() {
 		return error;
 	}
