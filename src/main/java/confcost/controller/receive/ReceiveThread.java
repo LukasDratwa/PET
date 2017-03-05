@@ -6,7 +6,7 @@ import java.net.Socket;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import confcost.controller.Controller;
+import confcost.model.Model;
 
 /**
  * This {@link Thread} receives incoming connections.
@@ -15,29 +15,35 @@ import confcost.controller.Controller;
  *
  */
 public class ReceiveThread extends Thread {
-	private final @NonNull Controller controller;
-
+	/**
+	 * The {@link ServerSocket} to accept incoming connections
+	 */
 	private final @NonNull ServerSocket serverSocket;
+	
+	/**
+	 * The main {@link Model}
+	 */
+	private final @NonNull Model model;
 
 	/**
 	 * Creates a new ReceiveThread
 	 * 
-	 * @param controller	The {@link Controller}
-	 * @param port			The port to listen on
+	 * @param model	The main {@link Model}
+	 * @param port	The port to listen on
 	 * @throws IOException 
 	 */
-	public ReceiveThread(@NonNull Controller controller, @NonNull int port) throws IOException {
-		this.controller = controller;
+	public ReceiveThread(@NonNull Model model, @NonNull int port) throws IOException {
 		this.serverSocket = new ServerSocket(port);
+		this.model = model;
 	}
 	
 	public void run() {
 		try {
 			while (true) {
-				Socket s = serverSocket.accept();
-				System.out.println("Incoming: "+s.getInetAddress());
+				Socket socket = serverSocket.accept();
+				System.out.println("Incoming: "+socket.getInetAddress());
 				
-				new HandlerThread(s).start();
+				new HandlerThread(socket, this.model).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

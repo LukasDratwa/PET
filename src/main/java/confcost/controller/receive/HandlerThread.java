@@ -8,10 +8,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import confcost.controller.encryption.AsymmetricEncryption;
 import confcost.controller.encryption.Encryption;
 import confcost.controller.encryption.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
+import confcost.model.Connection;
+import confcost.model.Connection.Status;
+import confcost.model.Model;
 import confcost.model.SendMode;
 import confcost.network.Frame;
 import confcost.util.HexString;
@@ -26,18 +31,22 @@ public class HandlerThread extends Thread {
 	/**
 	 * The {@link Socket} to the host
 	 */
-	private final Socket socket;
+	private final @NonNull Socket socket;
+	
+	/**
+	 * The main {@link Model}
+	 */
+	private final @NonNull Model model;
 	
 	/**
 	 * Create the {@link HandlerThread}.
 	 * 
 	 * @param socket	The {@link Socket}
+	 * @param model		The main {@link Model}
 	 */
-	public HandlerThread(Socket socket) {
+	public HandlerThread(@NonNull Socket socket, @NonNull Model model) {
 		this.socket = socket;
-		//final BlockingQueue<Integer>  = new LinkedBlockingQueue<Integer>();
-		
-		
+		this.model = model;
 	}
 	
 	@Override
@@ -71,32 +80,12 @@ public class HandlerThread extends Thread {
 	    	
 			System.out.println("HandlerThread >> Key length: "+mode.keyLength);
 
-//			final BlockingQueue<Integer> queueProgressBar = new LinkedBlockingQueue<Integer>();
-//			final BlockingQueue<String> queueText = new LinkedBlockingQueue<String>();
-//			Thread thread = new Thread(){
-//	    		ProgressBarWindow pbw;
-//	    		
-//	    		@Override
-//	    		public void run(){
-//	    			pbw = new ProgressBarWindow(/*enc.getName()*/"ASDF", iterations);
-//	    			while (true) {
-//	                    try {
-//	                        int dataInt = queueProgressBar.take();
-//	                        pbw.setProgressBarValue(dataInt);
-//	                    } catch (InterruptedException e) {
-//	                        System.err.println("Error occurred:" + e);
-//	                    }
-//	                    
-//	                    try {
-//	                        String dataString = queueText.take();
-//	                        ProgressBarWindow.setListValue(dataString);
-//	                    } catch (InterruptedException e) {
-//	                        System.err.println("Error occurred:" + e);
-//	                    }
-//	                }
-//	    		}
-//	    	};
-//	    	thread.start();
+			// If connection is not local, create a new Connection. Otherwise, the SendController will handle the Connection
+			Connection connection = null;
+			if (!socket.getInetAddress().isLoopbackAddress()) {
+				connection = new Connection(Connection.Type.IN, mode, iterations, socket.getInetAddress());
+				this.model.getConnectionModel().addConnection(connection);
+			}
 			
 			// Initial key generation key
 			if (!generateKeyEveryIteration) {
@@ -124,6 +113,9 @@ public class HandlerThread extends Thread {
 			
 			
 			try{
+				if (connection != null) {
+					connection.setStatus(Status.TRANSMITTING);
+				}
 				for (int i = 0; i < iterations; i++) {
 					System.out.println("HandlerThread >> *** Iteration "+(i+1)+"/"+iterations);
 					long initTime = -1;
@@ -171,13 +163,16 @@ public class HandlerThread extends Thread {
 				    new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
 				    new DataOutputStream(socket.getOutputStream()).writeLong(decryptTime);
 				    
-				    // update progress bar
-//				    queueProgressBar.offer(i+1);
-//				    // set progress text
-//					queueText.offer("Iteration " + (i+1) + " of " + iterations + ": Decryption");
+				    if (connection != null) {
+				    	connection.setProgress(i+1);
+			    	}
 				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
+				if (connection != null) {
+					connection.setStatus(Status.ERROR);
+					connection.setError(e1);
+				}
 			}
 
 			// Close the socket
@@ -185,7 +180,12 @@ public class HandlerThread extends Thread {
 				socket.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				if (connection != null && connection.getStatus() != Status.ERROR) {
+					connection.setStatus(Status.ERROR);
+					connection.setError(e);
+				}
 			}
+			if (connection != null) connection.setStatus(Status.DONE);
 			
 		}catch(Exception e){
 			e.printStackTrace();

@@ -97,7 +97,7 @@ public class Controller implements ViewListener, SendButtonListener, SettingsLis
 		this.view.addSendButtonListener(this);
 		this.view.addSettingsListener(this);
 		
-		this.receiveThread = new ReceiveThread(this, DEFAULT_PORT);
+		this.receiveThread = new ReceiveThread(model, DEFAULT_PORT);
 	}
 	
 	/**

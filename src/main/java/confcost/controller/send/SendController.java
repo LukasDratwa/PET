@@ -87,7 +87,12 @@ public class SendController {
 	    socket.setSoTimeout(10000);
 		System.out.println("SendController >> Connected.");
 		
-		Connection connection = new Connection(Connection.Type.OUT, mode, iterations, socket.getInetAddress());
+		Connection connection;
+		if (socket.getInetAddress().isLoopbackAddress())
+			connection = new Connection(Connection.Type.LOCAL, mode, iterations, socket.getInetAddress());
+		else
+			connection = new Connection(Connection.Type.OUT, mode, iterations, socket.getInetAddress());
+			
 		model.getConnectionModel().addConnection(connection);
 		
 		// Perform setup information exchange
