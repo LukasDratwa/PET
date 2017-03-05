@@ -49,13 +49,17 @@ public abstract class KeyExchange {
 		return registeredKeyExchanges.keySet();
 	}
 	
-	protected KeyPair localKeyPair = null;
-	
-	protected PublicKey remotePubKey = null;
-	
+	/**
+	 * @param ke	The key exchange
+	 * @return the registered name of the key exchange or null
+	 */
 	public static final @NonNull String getName(Class<? extends KeyExchange> ke) {
 		return registeredKeyExchanges.get(ke);
 	}
+	
+	protected KeyPair localKeyPair = null;
+	
+	protected PublicKey remotePubKey = null;
 	
 	/**
 	 * Returns the name of the key exchange protocol.
