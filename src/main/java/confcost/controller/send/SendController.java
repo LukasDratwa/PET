@@ -65,7 +65,7 @@ public class SendController {
 	 * @param generateKeyEveryIteration	true iff a new key should be generated for every iteration
 	 * @param hostname	The host
 	 * @param port	The port
-	 * @throws IOException If an IO error occured
+	 * @throws IOException If an IO error occurred
 	 * @throws ReflectiveOperationException	If a reflective operation failed 
 	 * 			(usually because an {@link Encryption} or {@link KeyExchange} could not be instanced)
 	 */
