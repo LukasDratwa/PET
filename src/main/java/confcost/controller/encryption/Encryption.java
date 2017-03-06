@@ -18,7 +18,7 @@ import confcost.view.send.AlgorithmConfigurationFactory;
  * <p>
  * To add an additional encryption method, the following steps must be taken:
  * 1. Implement a new subclass of {@link Encryption}
- * 2. Register this subclass to {@link Encryption} (see {@link Encryption#register(Class, String)})
+ * 2. Register this subclass to {@link Encryption} (see {@link Encryption#register(Class, String, Integer[])})
  * 3. (optional) Create a subclass of {@link AlgorithmConfiguration} or expand the functionality
  * 	of an existing subclass and add the creation logic to 
  * {@link AlgorithmConfigurationFactory#create(Class, confcost.model.Model)}
@@ -31,31 +31,43 @@ public abstract class Encryption {
 	static {
 		// Add security provider
 		Security.addProvider(new BouncyCastleProvider());
-		
+
 		registeredEncryptions = new HashMap<>();
+		availableKeyLengths = new HashMap<>();
 		
 		// Register all encryptions to be used
-		register(AESEncryption.class, AESEncryption.NAME);
-		register(ECIESEncryption.class, ECIESEncryption.NAME);
-		register(RC2Encryption.class, RC2Encryption.NAME);
-		register(RSAEncryption.class, RSAEncryption.NAME);
+		register(AESEncryption.class,	AESEncryption.NAME, 	AESEncryption.KEY_LENGTHS);
+		register(ECIESEncryption.class,	ECIESEncryption.NAME, 	ECIESEncryption.KEY_LENGTHS);
+		register(RC2Encryption.class,	RC2Encryption.NAME, 	RC2Encryption.KEY_LENGTHS);
+		register(RSAEncryption.class,	RSAEncryption.NAME, 	RSAEncryption.KEY_LENGTHS);
 	}
 	
+	/**
+	 * The default security provider
+	 */
 	private static final String DEFAULT_PROVIDER = "BC";
-	
+
 	/**
 	 * The registered encryptions
 	 */
 	private static Map<@NonNull Class<? extends Encryption>, @NonNull String> registeredEncryptions;
-	
+
+	/**
+	 * The registered key length
+	 */
+	private static Map<@NonNull Class<? extends Encryption>, @NonNull Integer[]> availableKeyLengths;
+
 	/**
 	 * Registers an encryption.
 	 * @param encryption	The {@link Encryption}
 	 * @param name	A unique, printable name
+	 * @param keyLengths	The available key lengths in bit
 	 */
-	public static void register(Class<? extends Encryption> encryption, final @NonNull String name) {
+	public static void register(Class<? extends Encryption> encryption, 
+			final @NonNull String name, final @NonNull Integer[] keyLengths) {
 		System.out.println("Registering " + encryption + " ("+name+")");
 		registeredEncryptions.put(encryption, name);
+		availableKeyLengths.put(encryption, keyLengths);
 	}
 	
 	/**
@@ -69,10 +81,19 @@ public abstract class Encryption {
 	 * Returns a printable name for the provided algorithm.
 	 * 
 	 * @param encryption	The algorithm
-	 * @return	The printable name
+	 * @return	The printable name, or <code>null</code>
 	 */
-	public static String getName(Class<? extends Encryption> encryption) {
+	public static String getName(final @NonNull Class<? extends Encryption> encryption) {
 		return registeredEncryptions.get(encryption);
+	}
+	
+	/**
+	 * Returns the registered key lengths for the specified algorithm
+	 * @param encryption	The algorithm
+	 * @return	The key lengths
+	 */
+	public static Integer[] getKeyLength(final @NonNull Class<? extends Encryption> encryption) {
+		return availableKeyLengths.get(encryption);
 	}
 
 	/**

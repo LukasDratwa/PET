@@ -20,12 +20,15 @@ import confcost.util.HexString;
  *
  */
 public class RSAEncryption extends AsymmetricEncryption {
+	/**
+	 * A printable, unique name of the algorithm
+	 */
 	public static final @NonNull String NAME = "RSA";
 
-	static {
-		// Register this encryption for use
-		Encryption.register(RSAEncryption.class, NAME);
-	}
+	/**
+	 * The supported key length
+	 */
+	public static final @NonNull Integer[] KEY_LENGTHS = { 128, 256, 512, 1024, 2048, 4096, 8192 };
 	
 	@Override
 	public @NonNull String getAlgorithm() {

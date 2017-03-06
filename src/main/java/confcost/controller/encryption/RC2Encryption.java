@@ -16,12 +16,15 @@ import confcost.model.SendMode;
  *
  */
 public class RC2Encryption extends SymmetricEncryption {
+	/**
+	 * A printable, unique name of the algorithm
+	 */
 	public static final @NonNull String NAME = "RC2";
 
-	static {
-		// Register this encryption for use
-		Encryption.register(RC2Encryption.class, NAME);
-	}
+	/**
+	 * The supported key length
+	 */
+	public static final @NonNull Integer[] KEY_LENGTHS = { 64, 128 };
 	
 	@Override
 	public @NonNull String getAlgorithm() {

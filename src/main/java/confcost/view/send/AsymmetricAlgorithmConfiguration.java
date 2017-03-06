@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.encryption.AsymmetricEncryption;
-import confcost.model.Model;
+import confcost.controller.encryption.Encryption;
 import confcost.model.SendMode;
 
 /**
@@ -78,12 +78,6 @@ public class AsymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	}
 
 	@Override
-	protected void initSendClickedListener() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	protected JPanel createGenericContent() {
 		JPanel panel = new JPanel();
 		
@@ -97,7 +91,7 @@ public class AsymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 		// Add key length field
 		panel.add(new JLabel("Key length"), c);
 		keyLength = new JComboBox<Integer>();
-		keyLength.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {128, 256, 512, 1024, 2048}));
+		keyLength.setModel(new DefaultComboBoxModel<Integer>(Encryption.getKeyLength(encryption)));
 		c.gridx++;
 		panel.add(keyLength, c);
 
@@ -106,6 +100,7 @@ public class AsymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 		c.gridy++;
 		panel.add(new JLabel("Message length"), c);
 		DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getIntegerInstance();
+		decimalFormat.setGroupingUsed(false);
 		messageLength = new JFormattedTextField(decimalFormat);
 		messageLength.setText(""+DEFAULT_MESSAGE_LENGTH);
 		c.gridx++;

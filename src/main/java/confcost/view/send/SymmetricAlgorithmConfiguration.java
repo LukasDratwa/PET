@@ -6,12 +6,14 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import confcost.controller.encryption.Encryption;
 import confcost.controller.encryption.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
 import confcost.model.Model;
@@ -46,9 +48,9 @@ public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	private JTextField messageLength;
 	
 	/**
-	 * The encryption to be configured
+	 * Key length
 	 */
-	Class<? extends SymmetricEncryption> encryption;
+	private JComboBox<Integer> keyLength;
 	
 	/**
 	 * Constructor
@@ -57,7 +59,6 @@ public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	 */
 	public SymmetricAlgorithmConfiguration(Class<? extends SymmetricEncryption> encryption, final Model model) {
 		super(encryption);
-		this.encryption = encryption;
 		
 		for (Class<? extends KeyExchange> ke : model.getKeyExchanges()) {
 			keyExchanges.addItem(new KeyExchangeWrapper(ke));
@@ -71,7 +72,14 @@ public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	public Class<? extends KeyExchange> getSelectedKeyExchange() {
 		return ((KeyExchangeWrapper)this.keyExchanges.getSelectedItem()).ke;
 	}
-	
+
+	/**
+	 * @return	the current key length in bit.
+	 */
+	public int getKeyLength() {
+		return (Integer)keyLength.getSelectedItem();
+	}
+
 	/**
 	 * @return	the current message length
 	 */
@@ -83,14 +91,8 @@ public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	public SendMode getModeInfo() {
 		return new SendMode(this.encryption, 
 				this.getSelectedKeyExchange(), 
-				this.getMessageLength(), 
+				this.getKeyLength(), 
 				this.getMessageLength());
-	}
-
-	@Override
-	protected void initSendClickedListener() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -111,6 +113,13 @@ public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 		panel.add(this.keyExchanges, c);
 		c.gridy++;
 		c.gridx = 0;
+
+		// Add key length field
+		panel.add(new JLabel("Key length"), c);
+		keyLength = new JComboBox<Integer>();
+		keyLength.setModel(new DefaultComboBoxModel<Integer>(Encryption.getKeyLength(this.encryption)));
+		c.gridx++;
+		panel.add(keyLength, c);
 		
 		// Add message length field
 		c.gridx = 0;

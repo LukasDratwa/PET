@@ -32,7 +32,7 @@ public class Controller implements SendButtonListener, SettingsListener {
 	/**
 	 * Default value for whether the key exchange should be performed every iteration
 	 */
-	private static final boolean DEFAULT_KEY_EXCHANGE_EVERY_ITERATION = false;
+	private static final boolean DEFAULT_KEY_EXCHANGE_EVERY_ITERATION = true;
 
 	/**
 	 * Default iteration count

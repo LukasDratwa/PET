@@ -94,7 +94,7 @@ public class SendController {
 		
 		try {
 			performExchange(socket, encryption, iterations, generateKeyEveryIteration, mode, connection);
-		} catch (GeneralSecurityException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			connection.setError(e);
 		}

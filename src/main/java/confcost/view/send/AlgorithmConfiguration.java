@@ -55,9 +55,10 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	 * @param encryption	The encryption to be configured
 	 */
 	public AlgorithmConfiguration(final @NonNull Class<? extends Encryption> encryption) {
+		this.encryption = encryption;
+		
 		setLayout(new BorderLayout(0, 0));
 		
-		this.encryption = encryption;
 		this.header = Encryption.getName(encryption);
 		if (this.header == null) this.header = "<Unknown encryption>";
 		
@@ -136,9 +137,11 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	 */
 	protected abstract JPanel createSpecificContent();
 	
+	/**
+	 * TODO
+	 * @return
+	 */
 	public abstract SendMode getModeInfo();
-	
-	protected abstract void initSendClickedListener();
 
 	/**
 	 * @return the btnSend

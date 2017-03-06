@@ -1,5 +1,6 @@
 package confcost.controller.encryption;
 
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -37,8 +38,9 @@ public abstract class AsymmetricEncryption extends Encryption {
 	 * Sets the {@link PublicKey}.
 	 * @param bytes The public key as bytes
 	 * @throws GeneralSecurityException	If a security error occured
+	 * @throws IOException 
 	 */
-	public void setPublicKey(byte[] bytes) throws GeneralSecurityException {
+	public void setPublicKey(byte[] bytes) throws GeneralSecurityException, IOException {
 		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytes);
 		this.publicKey = KeyFactory.getInstance(getAlgorithm(), this.provider).generatePublic(pubKeySpec);
 		System.out.println("GAE::setPublicKey >> Setting PubKey " + new HexString(bytes));

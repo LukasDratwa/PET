@@ -15,8 +15,15 @@ import confcost.model.SendMode;
  *
  */
 public class AESEncryption extends SymmetricEncryption {
+	/**
+	 * A printable, unique name of the algorithm
+	 */
 	public static final @NonNull String NAME = "AES";
-	public static final @NonNull String PROVIDER = "BC";
+	
+	/**
+	 * The supported key length
+	 */
+	public static final @NonNull Integer[] KEY_LENGTHS = { 128, 192, 256 };
 	
 	@Override
 	public @NonNull String getAlgorithm() {
