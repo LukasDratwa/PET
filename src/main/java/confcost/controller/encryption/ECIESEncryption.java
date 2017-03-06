@@ -7,8 +7,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.ECGenParameterSpec;
-import java.security.spec.KeySpec;
-import java.security.spec.X509EncodedKeySpec;
 
 import org.bouncycastle.jce.provider.asymmetric.ec.KeyFactory;
 import org.eclipse.jdt.annotation.NonNull;
@@ -57,8 +55,6 @@ public class ECIESEncryption extends AsymmetricEncryption{
 	
 	@Override
 	public void setPublicKey(byte[] bytes) throws IOException  {
-		//ECPublicKeySpec pubKeySpec = new ECPubKeySpec(bytes);
-		KeySpec pubKeySpec = new X509EncodedKeySpec(bytes);
 		this.publicKey = KeyFactory.createPublicKeyFromDERStream(bytes);
 		System.out.println("GAE::setPublicKey >> Setting PubKey " + new HexString(bytes));
 	}
