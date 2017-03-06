@@ -95,7 +95,10 @@ public class HandlerThread extends Thread {
 				// Get public key
 				if (encryption instanceof AsymmetricEncryption) {
 					AsymmetricEncryption ae = (AsymmetricEncryption)encryption;
+
+					initTime = System.nanoTime();
 					ae.generateKeyPair(mode.keyLength);
+				    initTime = System.nanoTime() - initTime;
 					System.out.println("HandlerThread >> Sending public key");
 					new Frame(ae.getPublicKey().getEncoded()).write(socket);
 				} 
@@ -129,7 +132,9 @@ public class HandlerThread extends Thread {
 						// Get public key
 						if (encryption instanceof AsymmetricEncryption) {
 							AsymmetricEncryption ae = (AsymmetricEncryption)encryption;
+							initTime = System.nanoTime();
 							ae.generateKeyPair(mode.keyLength);
+						    initTime = System.nanoTime() - initTime;
 							System.out.println("HandlerThread >> Sending public key");
 							new Frame(ae.getPublicKey().getEncoded()).write(socket);
 						} 
