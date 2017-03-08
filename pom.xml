@@ -16,11 +16,6 @@
 
   <dependencies>
   <!-- https://mvnrepository.com/artifact/com.miglayout/miglayout -->
-<dependency>
-    <groupId>com.miglayout</groupId>
-    <artifactId>miglayout</artifactId>
-    <version>3.7.3.1</version>
-</dependency>
   
   		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16 -->
         <dependency>
