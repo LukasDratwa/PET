@@ -86,7 +86,7 @@ public class Controller implements SendButtonListener, SettingsListener {
 	 * @param view	The main view
 	 * @throws IOException	If an IO error occurred
 	 */
-	public Controller(@NonNull Model model, @NonNull MainFrame view) throws IOException {
+	public Controller(final @NonNull Model model, final @NonNull MainFrame view) throws IOException {
 		this.model = model;
 		this.view = view;
 		this.sendController = new SendController(model);
