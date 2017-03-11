@@ -3,6 +3,10 @@ package confcost.model;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.controller.algorithm.Encryption;
+import confcost.controller.algorithm.Signature;
+import confcost.controller.ke.KeyExchange;
+
 public class CryptoIteration {
 	
 	/**
@@ -75,6 +79,18 @@ public class CryptoIteration {
 	
 	@Override
 	public @NonNull String toString() {
-		return "TODO ("+iteration+")";
+		final @NonNull SendMode mode = this.pass.getSendMode();
+		StringBuilder ret = new StringBuilder("["+(iteration+1)+"] ");
+		if (mode.signature != null) {
+			ret.append(Signature.getName(mode.signature) + " with ");
+		} 
+		
+		ret.append(Encryption.getName(mode.encryption));
+		
+		if (mode.keyExchange != null) {
+			ret.append("/"+KeyExchange.getName(mode.keyExchange));
+		}
+		
+		return ret.toString();
 	}
 }
