@@ -23,7 +23,6 @@ import confcost.model.CryptoIteration;
 import confcost.model.CryptoPass;
 import confcost.model.Model;
 import confcost.model.SendMode;
-import confcost.model.SendModeInstance;
 import confcost.network.Frame;
 import confcost.util.HexString;
 

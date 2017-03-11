@@ -28,11 +28,6 @@ public class Model {
 	private final @NonNull List<Class<? extends KeyExchange>> keyExchanges;
 
 	/**
-	 * The {@link ReceiveModel}
-	 */
-	private final @NonNull ReceiveModel recvModel = new ReceiveModel();
-
-	/**
 	 * The {@link StatModel}
 	 */
 	private final @NonNull StatModel statModel = new StatModel();
