@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import confcost.controller.algorithm.Encryption;
 import confcost.controller.algorithm.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
@@ -41,6 +43,7 @@ public class SymmetricEncryptionConfiguration extends EncryptionConfiguration {
 	 * A drop down menu of available key exchange protocols
 	 */
 	private JComboBox<KeyExchangeWrapper> keyExchanges;
+	static { System.out.println("STATIC SYMMETRIC"); }
 	
 	/**
 	 * Message length
@@ -57,10 +60,9 @@ public class SymmetricEncryptionConfiguration extends EncryptionConfiguration {
 	 * @param encryption	The encryption to configure
 	 * @param model			The main {@link Model}
 	 */
-	public SymmetricEncryptionConfiguration(Class<? extends SymmetricEncryption> encryption, final Model model) {
+	public SymmetricEncryptionConfiguration(final @NonNull Class<? extends SymmetricEncryption> encryption, 
+			final @NonNull Model model) {
 		super(encryption);
-		
-		keyExchanges = new JComboBox<>();
 		
 		for (Class<? extends KeyExchange> ke : model.getKeyExchanges()) {
 			keyExchanges.addItem(new KeyExchangeWrapper(ke));
@@ -113,7 +115,7 @@ public class SymmetricEncryptionConfiguration extends EncryptionConfiguration {
 		// Add key exchange field
 		panel.add(new JLabel("Key exchange protocol"), c);
 		c.gridx++;
-		this.keyExchanges =  new JComboBox<>();
+		this.keyExchanges = new JComboBox<>();
 		panel.add(this.keyExchanges, c);
 		c.gridy++;
 		c.gridx = 0;
