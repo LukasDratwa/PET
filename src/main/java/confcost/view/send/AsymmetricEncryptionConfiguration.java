@@ -13,8 +13,8 @@ import javax.swing.JTextField;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import confcost.controller.encryption.AsymmetricEncryption;
-import confcost.controller.encryption.Encryption;
+import confcost.controller.algorithm.AsymmetricEncryption;
+import confcost.controller.algorithm.Encryption;
 import confcost.model.SendMode;
 
 /**
@@ -23,7 +23,7 @@ import confcost.model.SendMode;
  * @author Marc Eichler
  *
  */
-public class AsymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
+public class AsymmetricEncryptionConfiguration extends EncryptionConfiguration {
 
 	/**
 	 * 
@@ -50,7 +50,7 @@ public class AsymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	 * 
 	 * @param encryption	The encryption to configure
 	 */
-	public AsymmetricAlgorithmConfiguration(final @NonNull Class<? extends AsymmetricEncryption> encryption) {
+	public AsymmetricEncryptionConfiguration(final @NonNull Class<? extends AsymmetricEncryption> encryption) {
 		super(encryption);
 			
 	}
@@ -70,11 +70,13 @@ public class AsymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	}
 
 	@Override
-	public SendMode getModeInfo() {
-		return new SendMode(this.encryption, 
+	public SendMode getModeInfo(final int iterations, final boolean generateKeyEveryIteration) {
+		return new SendMode(null,
+				this.encryption, 
 				null, 
 				this.getKeyLength(), 
-				this.getMessageLength());
+				this.getMessageLength(),
+				iterations, generateKeyEveryIteration);
 	}
 
 	@Override

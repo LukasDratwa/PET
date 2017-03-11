@@ -1,14 +1,10 @@
 package confcost.model;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
-import confcost.controller.encryption.Encryption;
-import confcost.controller.ke.KeyExchange;
+import org.eclipse.jdt.annotation.NonNull;
 
 public class CryptoIteration {
 	
-	// time needed for the cryptographic operations
 	/**
 	 * Time to initialize the cryptographic algorithm in micro seconds μs
 	 */
@@ -28,20 +24,20 @@ public class CryptoIteration {
 	 * Time to decrypt the message in micro seconds μs
 	 */
 	private long decryptionTime;
+
+	private final int iteration;
+
+	private final @NonNull CryptoPass pass;
 	
-	// inputs of the cryptographic algorithm
-	private final int keyLength;
-	private final long messageLength;
-	private final @NonNull Class<? extends Encryption> algorithm;
-	private final @Nullable Class<? extends KeyExchange> keyExchange;
-	
-	public CryptoIteration(final @NonNull Class<? extends Encryption> algorithm, 
-			final @Nullable Class<? extends KeyExchange> keyExchange, 
-			final int keyLength, final long messageLength) {
-		this.algorithm = algorithm;
-		this.keyExchange = keyExchange;
-		this.keyLength = keyLength;
-		this.messageLength = messageLength;
+	/**
+	 * Creates a new {@link CryptoIteration}
+	 * 
+	 * @param iteration	The current iteration
+	 * @param mode	The {@link SendMode}
+	 */
+	public CryptoIteration(final int iteration, final @NonNull CryptoPass pass) {
+		this.iteration = iteration;
+		this.pass = pass;
 	}
 
 	public void setInitTime(final long initializationTime) {
@@ -72,22 +68,13 @@ public class CryptoIteration {
 	public long getDecryptionTime() {
 		return decryptionTime;
 	}
-	public int getKeyLength() {
-		return keyLength;
-	}
-	public final @NonNull Class<? extends Encryption> getAlgorithm() {
-		return algorithm;
-	}
-	public final @Nullable Class<? extends KeyExchange> getKeyExchange() {
-		return keyExchange;
-	}
-	public long getMessageLength() {
-		return messageLength;
+	
+	public final @NonNull CryptoPass getPass() {
+		return this.pass;
 	}
 	
 	@Override
 	public @NonNull String toString() {
-		return Encryption.getName(this.algorithm)+"/"+KeyExchange.getName(this.keyExchange)
-		+" ("+this.keyLength+","+this.messageLength+") ";
+		return "TODO ("+iteration+")";
 	}
 }

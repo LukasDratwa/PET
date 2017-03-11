@@ -7,20 +7,20 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import confcost.controller.encryption.Encryption;
+import confcost.controller.algorithm.Algorithm;
 import confcost.controller.ke.KeyExchange;
 
 /**
- * Main Model class
+ * Main model class
  * 
  * @author Marc Eichler
  *
  */
 public class Model {
 	/**
-	 * The enabled {@link Encryption}s
+	 * The enabled {@link Algorithm}s
 	 */
-	private final @NonNull List<Class<? extends Encryption>> encryptions;
+	private final @NonNull List<Class<? extends Algorithm>> algorithms;
 	
 	/**
 	 * The enabled {@link KeyExchange}s
@@ -51,13 +51,15 @@ public class Model {
 	 * Create a new {@link Model}
 	 */
 	public Model() {
-		encryptions = new LinkedList<>();
+		algorithms = new LinkedList<>();
 		keyExchanges = new LinkedList<>();
-		
-		for (final @NonNull Class<? extends Encryption> e : Encryption.getRegisteredEncryptions()) {
-			this.encryptions.add(e);
-		}
 
+		// Add registered algorithms
+		for (final @NonNull Class<? extends Algorithm> e : Algorithm.getRegisteredAlgorithms()) {
+			this.algorithms.add(e);
+		}
+		
+		// Add key exchanges
 		for (final @NonNull Class<? extends KeyExchange> e : KeyExchange.getRegisteredKeyExchanges()) {
 			this.keyExchanges.add(e);
 		}
@@ -67,8 +69,8 @@ public class Model {
 	 * Returns a list of all encryption classes
 	 * @return	the encryptions
 	 */
-	public Collection<Class<? extends Encryption>> getEncryptions() {
-		return encryptions;
+	public Collection<Class<? extends Algorithm>> getAlgorithms() {
+		return algorithms;
 	}
 
 	/**

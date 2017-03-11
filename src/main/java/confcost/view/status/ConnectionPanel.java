@@ -12,7 +12,7 @@ import javax.swing.JProgressBar;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.ConnectionListener;
-import confcost.controller.encryption.Encryption;
+import confcost.controller.algorithm.Encryption;
 import confcost.controller.ke.KeyExchange;
 import confcost.model.Connection;
 import confcost.model.Connection.Status;
@@ -76,7 +76,7 @@ public class ConnectionPanel extends JPanel implements ConnectionListener {
 		// Add encryption, key exchange
 		c.gridy++;
 		c.gridx = 0;
-		String encryption = Encryption.getName(connection.getMode().messageExchange);
+		String encryption = Encryption.getName(connection.getMode().encryption);
 		if (connection.getMode().keyExchange != null)
 			encryption = encryption.concat(DIVIDER+KeyExchange.getName(connection.getMode().keyExchange));
 		else {
@@ -107,7 +107,7 @@ public class ConnectionPanel extends JPanel implements ConnectionListener {
 		c.gridy++;
 		c.gridx = 0;
 		c.gridwidth = 2;
-		this.progressBar = new JProgressBar(0, connection.getIterations());
+		this.progressBar = new JProgressBar(0, connection.getMode().iterations);
 		this.add(this.progressBar, c);
 		
 		// Add error label
@@ -130,7 +130,7 @@ public class ConnectionPanel extends JPanel implements ConnectionListener {
 	 */
 	public void update() {
 		this.status.setText(""+connection.getStatus());
-		this.progress.setText(connection.getCurrentIteration()+"/"+connection.getIterations());
+		this.progress.setText(connection.getCurrentIteration()+"/"+connection.getMode().iterations);
 
 		this.progressBar.setValue(connection.getCurrentIteration());
 		this.progressBar.setStringPainted(true);

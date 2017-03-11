@@ -1,4 +1,4 @@
-package confcost.controller.encryption;
+package confcost.controller.algorithm;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
@@ -31,7 +31,7 @@ public class RSAEncryption extends AsymmetricEncryption {
 	public static final @NonNull Integer[] KEY_LENGTHS = { 128, 256, 512, 1024, 2048, 4096, 8192 };
 	
 	@Override
-	public @NonNull String getAlgorithm() {
+	public @NonNull String getName() {
 		return NAME;
 	}
 
@@ -47,7 +47,7 @@ public class RSAEncryption extends AsymmetricEncryption {
 	public void generateKeyPair(int keyLength)
 			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
 		System.out.println("RSAEncryption::generateKeyPair >> Generating key pair ("+keyLength+" bit)");
-		final KeyPairGenerator gen = KeyPairGenerator.getInstance(getAlgorithm(), this.provider);
+		final KeyPairGenerator gen = KeyPairGenerator.getInstance(getName(), this.provider);
 		gen.initialize(new RSAKeyGenParameterSpec(keyLength, new BigInteger("3")));
 		final KeyPair keyPair = gen.genKeyPair();
 		this.publicKey = keyPair.getPublic();

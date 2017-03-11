@@ -8,6 +8,7 @@ import javax.swing.JTextArea;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.model.CryptoIteration;
+import confcost.model.SendMode;
 
 public class IterationPanel extends JPanel {
 	private static final long serialVersionUID = 8861998372720649766L;
@@ -27,9 +28,10 @@ public class IterationPanel extends JPanel {
 		if (ci == null) {
 			data.setText("");
 		} else {
-			String text = ci.getAlgorithm() + " | " + ci.getKeyExchange() + "\n"
-				+ "    key length: " + ci.getKeyLength() + " bits\n"
-				+ "    message length: " + ci.getMessageLength() + " bits\n"
+			final @NonNull SendMode mode = ci.getPass().getSendMode();
+			String text = mode.encryption + " | " + ci.getPass().getSendMode().keyExchange + "\n"
+				+ "    key length: " + mode.keyLength + " bits\n"
+				+ "    message length: " + mode.messageLength + " bits\n"
 				+ "    init time: " + ci.getInitTime() + " μs\n"
 				+ "    remote time init: " + ci.getRemoteInitTime() + " μs\n"
 				+ "    encryption time: " + ci.getEncryptionTime() + " μs\n"

@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.SendButtonListener;
 import confcost.controller.SettingsListener;
-import confcost.controller.encryption.Encryption;
+import confcost.controller.algorithm.Algorithm;
 import confcost.model.Model;
 
 /**
@@ -53,7 +53,7 @@ public class TabSend extends JPanel {
 	private JTabbedPane createAlgorithmSelectionPane(final Model model) {
 		JTabbedPane pane = new JTabbedPane();
 		
-		for (Class<? extends Encryption> encryption : model.getEncryptions()) {
+		for (Class<? extends Algorithm> encryption : model.getAlgorithms()) {
 			AlgorithmConfiguration config = AlgorithmConfigurationFactory.create(encryption, model);
 			algorithmConfigurations.add(config);
 			pane.addTab(config.getHeader(), config);

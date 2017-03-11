@@ -1,8 +1,12 @@
-package confcost.controller.encryption;
+package confcost.controller.algorithm;
 
 import java.lang.reflect.Constructor;
-import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
 
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -19,14 +23,14 @@ import confcost.model.SendMode;
  */
 public abstract class SymmetricEncryption extends Encryption {
 	/**
-	 * The currently set {@link Key}
-	 */
-	protected @Nullable Key key;
-	
-	/**
 	 * The {@link KeyExchange}
 	 */
 	protected @NonNull KeyExchange keyExchange;
+	
+	/**
+	 * The {@link SecretKey}
+	 */
+	protected @Nullable SecretKey secretKey;
 	
 	/**
 	 * Create a new {@link AsymmetricEncryption} with the specified key exchange protocol
@@ -54,28 +58,26 @@ public abstract class SymmetricEncryption extends Encryption {
 	}
 	
 	/**
+	 * @return the {@link SecretKey}
+	 */
+	public final @NonNull SecretKey getSecretKey() {
+		return this.secretKey;
+	}
+	
+	/**
 	 * Generates an appropriate key based on the specified length and secret.
 	 * @param bitLength	The length of the key in bit
 	 * @param secret	The secret
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchProviderException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public void generateKey(final int bitLength, final @NonNull byte[] secret) {
-		this.key = new SecretKeySpec(shortenKey(keyExchange.getKey(), bitLength), this.getAlgorithm());
+	public void generateKey(final int bitLength, final @NonNull byte[] secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
+		SecretKeySpec spec = new SecretKeySpec(shortenKey(keyExchange.getKey(), bitLength), this.getName());
+		SecretKeyFactory kf = SecretKeyFactory.getInstance(this.getName(), this.provider);
+		this.secretKey = kf.generateSecret(spec);
 	}
-	
-	/**
-	 * Sets the {@link Key}.
-	 * @param key	the {@link Key}
-	 */
-	public void setKey(Key key) {
-		this.key = key;
-	}
-	
-	/**
-	 * @return	the {@link Key}
-	 */
-	public final @Nullable Key getKey() {
-		return this.key;
-	}
+
 	
 	/**
 	 * Returns a the specified key, shortened to <code>length</code> bit.
@@ -83,7 +85,7 @@ public abstract class SymmetricEncryption extends Encryption {
 	 * @param length	The length in bit
 	 * @return	The shortened key
 	 */
-	private byte[] shortenKey(final byte[] key, int length) {
+	private byte[] shortenKey(final @NonNull byte[] key, int length) {
 		final byte[] shortKey = new byte[length/8];
 		
 		System.arraycopy(key, 0,  shortKey, 0, shortKey.length);

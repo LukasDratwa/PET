@@ -1,5 +1,7 @@
 package confcost.model;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 public class Comparator {
 	
 		
@@ -38,25 +40,22 @@ public class Comparator {
 	}
 	*/
 	
-	public CryptoIteration calculateAverage(CryptoIteration[] iterationArray) {
+	public CryptoIteration calculateAverage(CryptoPass pass) {
 		long initTime = 0;
 		long remoteInitTime = 0;
 		long encryptTime = 0;
 		long decryptTime = 0;
-		int keyLength = 0;
-		long messageLength = 0;
-		
-		int arrLength = iterationArray.length;
-		for(int i = 0; i < arrLength; i++) {
-			initTime += iterationArray[i].getInitTime() / arrLength;
-			remoteInitTime += iterationArray[i].getRemoteInitTime() / arrLength;
-			encryptTime += iterationArray[i].getEncryptionTime() / arrLength;
-			decryptTime += iterationArray[i].getDecryptionTime() / arrLength;
-			keyLength += iterationArray[i].getKeyLength() / arrLength;
-			messageLength += iterationArray[i].getMessageLength() / arrLength;
+
+		CryptoIteration[] iterations = (CryptoIteration[]) pass.getIterations().toArray();
+		int size = iterations.length;
+		for(int i = 0; i < size; i++) {
+			initTime += iterations[i].getInitTime() / size;
+			remoteInitTime += iterations[i].getRemoteInitTime() / size;
+			encryptTime += iterations[i].getEncryptionTime() / size;
+			decryptTime += iterations[i].getDecryptionTime() / size;
 		}
 		
-		CryptoIteration avg = new CryptoIteration(iterationArray[0].getAlgorithm(), iterationArray[0].getKeyExchange(), keyLength, messageLength);
+		CryptoIteration avg = new CryptoIteration(-1, pass);
 		avg.setInitTime(initTime);
 		avg.setRemoteInitTime(remoteInitTime);
 		avg.setEncryptionTime(encryptTime);
@@ -64,26 +63,30 @@ public class Comparator {
 		return avg;
 	}
 	
-	public String compare(CryptoIteration[] arr1, CryptoIteration[] arr2) {
+	public String compare(final @NonNull CryptoPass pass1, final @NonNull CryptoPass pass2) {
 		String comparison = "";
-		CryptoIteration priAlgoValues = calculateAverage(arr1);
-		CryptoIteration secAlgoValues = calculateAverage(arr2);
+		final @NonNull CryptoIteration avg1 = calculateAverage(pass1);
+		final @NonNull CryptoIteration avg2 = calculateAverage(pass2);
+
+		final @NonNull SendMode mode1 = pass1.getSendMode();
+		final @NonNull SendMode mode2 = pass2.getSendMode();
+		
 		double percentage;
 		
-		percentage = priAlgoValues.getInitTime() / secAlgoValues.getInitTime();
-		comparison += "initialization time: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName() + "\n";
+		percentage = avg1.getInitTime() / avg2.getInitTime();
+		comparison += "initialization time: " + mode1.encryption.getName() + " " + percentage + " times as long as " + mode2.encryption.getName() + "\n";
 		
-		percentage = priAlgoValues.getEncryptionTime() / secAlgoValues.getEncryptionTime();
-		comparison += "encryption time: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName() + "\n";
+		percentage = avg1.getEncryptionTime() / avg2.getEncryptionTime();
+		comparison += "encryption time: " + mode1.encryption.getName() + " " + percentage + " times as long as " + mode2.encryption.getName() + "\n";
 		
-		percentage = priAlgoValues.getDecryptionTime() / secAlgoValues.getDecryptionTime();
-		comparison += "decryption time: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName() + "\n";
+		percentage = avg1.getDecryptionTime() / avg2.getDecryptionTime();
+		comparison += "decryption time: " + mode1.encryption.getName() + " " + percentage + " times as long as " + mode2.encryption.getName() + "\n";
 		
-		percentage = priAlgoValues.getKeyLength() / secAlgoValues.getKeyLength();
-		comparison += "key length: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName();
+		percentage = mode1.keyLength / mode2.keyLength;
+		comparison += "key length: " + mode1.encryption.getName() + " " + percentage + " times as long as " + mode2.encryption.getName();
 		
-		percentage = priAlgoValues.getMessageLength() / secAlgoValues.getMessageLength();
-		comparison += "message length: " + priAlgoValues.getAlgorithm().getName() + " " + percentage + " times as long as " + secAlgoValues.getAlgorithm().getName();
+		percentage = mode1.messageLength / mode2.messageLength;
+		comparison += "message length: " + mode1.encryption.getName() + " " + percentage + " times as long as " + mode2.encryption.getName();
 		
 		return comparison;
 	}

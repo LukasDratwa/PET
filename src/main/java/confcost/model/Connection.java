@@ -66,11 +66,6 @@ public class Connection {
 	private SendMode mode;
 	
 	/**
-	 * The number of iterations to be performed
-	 */
-	private int iterations;
-	
-	/**
 	 * The other end
 	 */
 	private final InetAddress addr;
@@ -100,13 +95,11 @@ public class Connection {
 	 */
 	public Connection(final @NonNull Type type, 
 			final @NonNull SendMode mode, 
-			final int iterations, 
 			final @NonNull InetAddress addr) {
 		
 		this.type = type;
 		
 		this.mode = mode;
-		this.iterations = iterations;
 		this.addr = addr;
 		
 		this.status = Status.SETUP;
@@ -145,13 +138,6 @@ public class Connection {
 	 */
 	public SendMode getMode() {
 		return mode;
-	}
-
-	/**
-	 * @return the maximum number of iterations
-	 */
-	public int getIterations() {
-		return iterations;
 	}
 
 	/**

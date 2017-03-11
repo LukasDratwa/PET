@@ -1,8 +1,7 @@
 package confcost.model;
 
-import java.util.List;
-
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * <hr>Created on 12.02.2017<hr>
@@ -16,7 +15,7 @@ public class CryptoPassStatistic {
 							  sumStatisticsMsgLength,
 							  sumStatisticsKeyLength;
 	
-	public CryptoPassStatistic(List<CryptoIteration> iterations) {
+	public CryptoPassStatistic(final @NonNull CryptoPass pass) {
 		sumStatisticsInitTime = new SummaryStatistics();
 		sumStatisticsRemoteInitTime = new SummaryStatistics();
 		sumStatisticsEncryption = new SummaryStatistics();
@@ -24,13 +23,13 @@ public class CryptoPassStatistic {
 		sumStatisticsMsgLength = new SummaryStatistics();
 		sumStatisticsKeyLength = new SummaryStatistics();
 		
-		for(CryptoIteration ci : iterations) {
+		for(CryptoIteration ci : pass.getIterations()) {
 			sumStatisticsInitTime.addValue(ci.getInitTime());
 			sumStatisticsRemoteInitTime.addValue(ci.getRemoteInitTime());
 			sumStatisticsEncryption.addValue(ci.getEncryptionTime());
 			sumStatisticsDecryption.addValue(ci.getDecryptionTime());
-			sumStatisticsMsgLength.addValue(ci.getMessageLength());
-			sumStatisticsKeyLength.addValue(ci.getKeyLength());
+			sumStatisticsMsgLength.addValue(pass.getSendMode().messageLength);
+			sumStatisticsKeyLength.addValue(pass.getSendMode().keyLength);
 		}
 	}
 

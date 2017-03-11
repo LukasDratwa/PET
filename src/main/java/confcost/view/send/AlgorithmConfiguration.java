@@ -2,8 +2,6 @@ package confcost.view.send;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -12,13 +10,12 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.controller.SendButtonListener;
-import confcost.controller.encryption.Encryption;
+import confcost.controller.algorithm.Algorithm;
 import confcost.model.SendMode;
 
 /**
@@ -28,42 +25,27 @@ import confcost.model.SendMode;
  * @author <a href="mailto:lukasdratwa@yahoo.de">Lukas Dratwa</a>
  */
 public abstract class AlgorithmConfiguration extends JPanel {
+	
 	private static final long serialVersionUID = 1L;
-	private JButton sendButton;
-	private String header;
 	
 	/**
-	 * The encryption to configure
+	 * The header
 	 */
-	protected final Class<? extends Encryption> encryption;
-	
-	/**
-	 * Panel for generic configuration parameters. This will be set by createGenericContent().
-	 */
-	private JPanel genericInfo;
-	
-	/**
-	 * Panel for algorithm specific configuration parameters. This will be set by createSpecificContent().
-	 */
-	private JPanel specificInfo;
-	
-	private List<SendButtonListener> sendButtonListeners = new LinkedList<SendButtonListener>();
+	private final @NonNull String header;
 
 	/**
-	 * Constructor
-	 * 
-	 * @param encryption	The encryption to be configured
+	 * The registered {@link SendButtonListener}s
 	 */
-	public AlgorithmConfiguration(final @NonNull Class<? extends Encryption> encryption) {
-		this.encryption = encryption;
-		
+	private final @NonNull List<@NonNull SendButtonListener> sendButtonListeners = new LinkedList<>();
+	
+	/**
+	 * Constructor
+	 */
+	public AlgorithmConfiguration(Class<? extends Algorithm> algorithm) {	
 		setLayout(new BorderLayout(0, 0));
 		
-		this.header = Encryption.getName(encryption);
-		if (this.header == null) this.header = "<Unknown encryption>";
-		
-		sendButton = new JButton("Send");
-		this.sendButton.addMouseListener(new MouseAdapter() {
+		JButton sendButton = new JButton("Send");
+		sendButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				notifySendButtonPressed();
@@ -72,103 +54,32 @@ public abstract class AlgorithmConfiguration extends JPanel {
 		add(sendButton, BorderLayout.SOUTH);
 		
 		// Add title
+		this.header = Algorithm.getName(algorithm);
 		JLabel title = new JLabel(header);
 		title.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		add(title, BorderLayout.NORTH);
-		
-		// Add main config panel
-		JPanel content = new JPanel();
-		
-		content.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = 0;
-		
-		c.gridwidth = 2;
-		content.add(new JSeparator(), c);
-		c.gridwidth = 1;
-		c.gridy++;
-
-		this.genericInfo = createGenericContent();
-		if (this.genericInfo != null) {
-			content.add(this.genericInfo, c);
-			c.gridy++;
-			c.gridx = 0;
-			c.gridwidth = 2;
-			content.add(new JSeparator(), c);
-			c.gridwidth = 1;
-		}
-		
-		c.gridx++;
-		this.specificInfo = createSpecificContent();
-		if (this.specificInfo != null) {
-			content.add(this.specificInfo, c);
-			c.gridy++;
-			c.gridx = 0;
-			c.gridwidth = 2;
-			content.add(new JSeparator(), c);
-			c.gridwidth = 1;
-		}
-		
-		// Add spacers
-		c.gridx = 0;
-		c.gridy++;
-		c.weightx = 2;
-		c.weighty = 2;
-		content.add(new JPanel(), c);
-		
-		this.add(content, BorderLayout.CENTER);	
 	}
-	
-	/**
-	 * Used to create the generic content pane.
-	 * 
-	 * @return the pane or <code>null</code>
-	 */
-	protected abstract JPanel createGenericContent();
-	
-	/**
-	 * Used to create the specific content pane.
-	 * 
-	 * @return the pane or <code>null</code>
-	 */
-	protected abstract JPanel createSpecificContent();
-	
-	/**
-	 * TODO
-	 * @return
-	 */
-	public abstract SendMode getModeInfo();
 
 	/**
-	 * @return the btnSend
+	 * Creates a SendMode based on the current configuration.
+	 * @param iterations	The number of iterations
+	 * @return	The {@link SendMode}
 	 */
-	public JButton getBtnSend() {
-		return sendButton;
-	}
+	public abstract SendMode getModeInfo(final int iterations, final boolean generateKeyEveryIteration);
 
 	/**
 	 * @return the header
 	 */
-	public String getHeader() {
+	public final @NonNull String getHeader() {
 		return header;
-	}
-
-	/**
-	 * @param header the header to set
-	 */
-	public void setHeader(String header) {
-		this.header = header;
 	}
 
 	/**
 	 * Adds a {@link SendButtonListener}
 	 * @param listener	the listener
 	 */
-	public void addSendButtonListener(SendButtonListener listener) {
+	public void addSendButtonListener(final @NonNull SendButtonListener listener) {
 		this.sendButtonListeners.add(listener);
 	}
 	

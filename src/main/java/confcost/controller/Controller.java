@@ -123,9 +123,9 @@ public class Controller implements SendButtonListener, SettingsListener {
 		new Thread(){
 		     @Override
 		     public void run(){		 		
-		 		SendMode s = ac.getModeInfo();
+		 		SendMode mode = ac.getModeInfo(iterations, keyExchangeEveryIteration);
 		 		try {
-		 			sendController.send(s, iterations, keyExchangeEveryIteration, host, port);
+		 			sendController.send(mode, host, port);
 		 		} catch (ReflectiveOperationException | IOException e) {
 		 			e.printStackTrace();
 		 			view.displayError("Unable to send", e);

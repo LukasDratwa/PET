@@ -1,4 +1,4 @@
-package confcost.controller.encryption;
+package confcost.controller.algorithm;
 
 import java.security.GeneralSecurityException;
 
@@ -27,7 +27,7 @@ public class RC2Encryption extends SymmetricEncryption {
 	public static final @NonNull Integer[] KEY_LENGTHS = { 64, 128 };
 	
 	@Override
-	public @NonNull String getAlgorithm() {
+	public @NonNull String getName() {
 		return NAME;
 	}
 
@@ -41,25 +41,25 @@ public class RC2Encryption extends SymmetricEncryption {
 	
 	@Override
 	public final @NonNull byte[] encrypt(final @NonNull byte @NonNull [] message) throws GeneralSecurityException {
-		if (this.key == null) throw new IllegalStateException("No key set!");
+		if (this.secretKey == null) throw new IllegalStateException("No key set!");
 
-		Cipher cipher = Cipher.getInstance(getAlgorithm(), this.provider);
-		cipher.init(Cipher.ENCRYPT_MODE, this.key);
+		Cipher cipher = Cipher.getInstance(getName(), this.provider);
+		cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
 		return cipher.doFinal(message);
 	}
 	
 	@Override
 	public final @NonNull byte[] decrypt(final @NonNull byte @NonNull [] message) throws GeneralSecurityException {
-		if (this.key == null) throw new IllegalStateException("No key set!");
+		if (this.secretKey == null) throw new IllegalStateException("No key set!");
 
-		Cipher cipher = Cipher.getInstance(getAlgorithm(), this.provider);
-		cipher.init(Cipher.DECRYPT_MODE, this.key);
+		Cipher cipher = Cipher.getInstance(getName(), this.provider);
+		cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
 		return cipher.doFinal(message);
 	}
 	
 	@Override
 	public void generateKey(final int bitLength, final @NonNull byte[] secret) {
-		this.key = new SecretKeySpec(this.shortenKey(keyExchange.getKey(), bitLength), getAlgorithm());
+		this.secretKey = new SecretKeySpec(this.shortenKey(keyExchange.getKey(), bitLength), getName());
 	}
 	
 	private final byte[] shortenKey(final byte[] key, int length) {

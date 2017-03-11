@@ -1,7 +1,8 @@
-package confcost.controller.encryption;
+package confcost.controller.algorithm;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -11,9 +12,9 @@ import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.Cipher;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import confcost.model.SendMode;
-import confcost.util.HexString;
 
 /**
  * Provides support for generic asymmetric encryptions.
@@ -22,7 +23,14 @@ import confcost.util.HexString;
  *
  */
 public abstract class AsymmetricEncryption extends Encryption {
+	/**
+	 * The {@link PublicKey}
+	 */
 	protected PublicKey publicKey;
+	
+	/**
+	 * The {@link PrivateKey}
+	 */
 	protected PrivateKey privateKey;
 	
 	/**
@@ -33,6 +41,21 @@ public abstract class AsymmetricEncryption extends Encryption {
 	public AsymmetricEncryption(final @NonNull SendMode mode) {
 		super(mode);
 	}
+
+	/**
+	 * Sets the {@link PrivateKey}.
+	 * @param key	the {@link Key}
+	 */
+	public void setPrivateKey(final @NonNull PrivateKey key) {
+		this.privateKey = key;
+	}
+	
+	/**
+	 * @return	the {@link PrivateKey}
+	 */
+	public final @Nullable PrivateKey getPrivateKey() {
+		return this.privateKey;
+	}
 	
 	/**
 	 * Sets the {@link PublicKey}.
@@ -42,8 +65,14 @@ public abstract class AsymmetricEncryption extends Encryption {
 	 */
 	public void setPublicKey(byte[] bytes) throws GeneralSecurityException, IOException {
 		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytes);
-		this.publicKey = KeyFactory.getInstance(getAlgorithm(), this.provider).generatePublic(pubKeySpec);
-		System.out.println("GAE::setPublicKey >> Setting PubKey " + new HexString(bytes));
+		this.publicKey = KeyFactory.getInstance(getName(), this.provider).generatePublic(pubKeySpec);
+	}
+
+	/**
+	 * @return the {@link PublicKey}.
+	 */
+	public PublicKey getPublicKey() {	
+		return this.publicKey;
 	}
 	
 	/**
@@ -52,7 +81,7 @@ public abstract class AsymmetricEncryption extends Encryption {
 	 * @param keyLength	The key length in bit
 	 * @throws GeneralSecurityException If a security error occured
 	 */
-	public abstract void generateKeyPair(int keyLength) throws GeneralSecurityException;
+	public abstract void generateKeyPair(final int keyLength) throws GeneralSecurityException;
 	
 	@Override
 	public byte[] encrypt(@NonNull final byte[] message) throws GeneralSecurityException {
@@ -60,7 +89,7 @@ public abstract class AsymmetricEncryption extends Encryption {
 		
 		System.out.println("AsymmetricEncryption::encrypt >> Encrypting message of "+message.length+" byte");
 		
-		Cipher cipher = Cipher.getInstance(getAlgorithm(), this.provider);
+		Cipher cipher = Cipher.getInstance(getName(), this.provider);
 		cipher.init(Cipher.ENCRYPT_MODE, this.publicKey);
 		
 		return cipher.doFinal(message);
@@ -71,15 +100,8 @@ public abstract class AsymmetricEncryption extends Encryption {
 		if (this.privateKey == null) throw new IllegalStateException("No private key set!");
 		
 		System.out.println("GAE::decrypt >> Decrypting");
-		Cipher cipher = Cipher.getInstance(getAlgorithm(), this.provider);
+		Cipher cipher = Cipher.getInstance(getName(), this.provider);
 		cipher.init(Cipher.DECRYPT_MODE, this.privateKey);
 		return cipher.doFinal(message);
-	}
-	
-	/**
-	 * @return the {@link PublicKey}.
-	 */
-	public PublicKey getPublicKey() {
-		return this.publicKey;
 	}
 }

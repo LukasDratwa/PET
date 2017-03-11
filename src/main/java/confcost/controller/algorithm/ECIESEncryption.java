@@ -1,4 +1,4 @@
-package confcost.controller.encryption;
+package confcost.controller.algorithm;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -26,7 +26,7 @@ public class ECIESEncryption extends AsymmetricEncryption{
 	public static final @NonNull Integer[] KEY_LENGTHS = { 128, 192, 256 };
 	
 	@Override
-	public @NonNull String getAlgorithm() {
+	public @NonNull String getName() {
 		return NAME;
 	}
 	
@@ -44,7 +44,7 @@ public class ECIESEncryption extends AsymmetricEncryption{
 		System.out.println("ECIESEncryption::generateKeyPair >> Generating key pair");
 		ECGenParameterSpec brainpoolP256R1 = new ECGenParameterSpec(
 	            "brainpoolP256R1");
-		final KeyPairGenerator gen = KeyPairGenerator.getInstance(getAlgorithm(), this.provider);
+		final KeyPairGenerator gen = KeyPairGenerator.getInstance(getName(), this.provider);
 		gen.initialize(brainpoolP256R1);
 		final KeyPair keyPair = gen.genKeyPair();
 		this.publicKey = keyPair.getPublic();

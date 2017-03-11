@@ -13,8 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import confcost.controller.encryption.Encryption;
-import confcost.controller.encryption.SymmetricEncryption;
+import confcost.controller.algorithm.Encryption;
+import confcost.controller.algorithm.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
 import confcost.model.Model;
 import confcost.model.SendMode;
@@ -25,7 +25,7 @@ import confcost.model.SendMode;
  * @author Marc Eichler
  *
  */
-public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
+public class SymmetricEncryptionConfiguration extends EncryptionConfiguration {
 
 	/**
 	 * 
@@ -57,8 +57,10 @@ public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	 * @param encryption	The encryption to configure
 	 * @param model			The main {@link Model}
 	 */
-	public SymmetricAlgorithmConfiguration(Class<? extends SymmetricEncryption> encryption, final Model model) {
+	public SymmetricEncryptionConfiguration(Class<? extends SymmetricEncryption> encryption, final Model model) {
 		super(encryption);
+		
+		keyExchanges = new JComboBox<>();
 		
 		for (Class<? extends KeyExchange> ke : model.getKeyExchanges()) {
 			keyExchanges.addItem(new KeyExchangeWrapper(ke));
@@ -88,11 +90,13 @@ public class SymmetricAlgorithmConfiguration extends AlgorithmConfiguration {
 	}
 
 	@Override
-	public SendMode getModeInfo() {
-		return new SendMode(this.encryption, 
+	public SendMode getModeInfo(final int iterations, final boolean generateKeyEveryIteration) {
+		return new SendMode(null,
+				this.encryption, 
 				this.getSelectedKeyExchange(), 
 				this.getKeyLength(), 
-				this.getMessageLength());
+				this.getMessageLength(),
+				iterations, generateKeyEveryIteration);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package confcost.controller.encryption;
+package confcost.controller.algorithm;
 
 import java.security.GeneralSecurityException;
 
@@ -26,7 +26,7 @@ public class AESEncryption extends SymmetricEncryption {
 	public static final @NonNull Integer[] KEY_LENGTHS = { 128, 192, 256 };
 	
 	@Override
-	public @NonNull String getAlgorithm() {
+	public @NonNull String getName() {
 		return NAME;
 	}
 	
@@ -40,19 +40,19 @@ public class AESEncryption extends SymmetricEncryption {
 	
 	@Override
 	public @NonNull byte[] encrypt(@NonNull byte @NonNull [] message) throws GeneralSecurityException {
-		if (this.key == null) throw new IllegalStateException("No key set!");
+		if (this.secretKey == null) throw new IllegalStateException("No key set!");
 
 		Cipher cipher = Cipher.getInstance(NAME, this.provider);
-		cipher.init(Cipher.ENCRYPT_MODE, this.key);
+		cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
 		return cipher.doFinal(message);
 	}
 	
 	@Override
 	public @NonNull byte[] decrypt(@NonNull byte @NonNull [] message) throws GeneralSecurityException {
-		if (this.key == null) throw new IllegalStateException("No key set!");
+		if (this.secretKey == null) throw new IllegalStateException("No key set!");
 
 		Cipher cipher = Cipher.getInstance(NAME, this.provider);
-		cipher.init(Cipher.DECRYPT_MODE, this.key);
+		cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
 		return cipher.doFinal(message);
 	}
 }
