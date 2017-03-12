@@ -53,8 +53,8 @@ public class TabSend extends JPanel {
 	private JTabbedPane createAlgorithmSelectionPane(final Model model) {
 		JTabbedPane pane = new JTabbedPane();
 		
-		for (Class<? extends Algorithm> encryption : model.getAlgorithms()) {
-			AlgorithmConfiguration config = AlgorithmConfigurationFactory.create(encryption, model);
+		for (Class<? extends Algorithm> algorithm : model.getAlgorithms()) {
+			AlgorithmConfiguration config = AlgorithmConfigurationFactory.create(algorithm, model);
 			algorithmConfigurations.add(config);
 			pane.addTab(config.getHeader(), config);
 		}

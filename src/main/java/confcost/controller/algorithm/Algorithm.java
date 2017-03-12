@@ -1,7 +1,9 @@
 package confcost.controller.algorithm;
 
+import java.util.List;
 import java.security.Security;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -17,7 +19,12 @@ public abstract class Algorithm {
 	/**
 	 * The registered {@link Algorithm}s
 	 */
-	private static final @NonNull Map<@NonNull Class<? extends Algorithm>, @NonNull String> registeredAlgorithms = 
+	private static final @NonNull List<@NonNull Class<? extends Algorithm>> REGISTERED_ALGORITHMS = new LinkedList<>();
+	
+	/**
+	 * The names of the registered {@link Algorithm}s
+	 */
+	private static final @NonNull Map<@NonNull Class<? extends Algorithm>, @NonNull String> ALGORITHM_NAMES = 
 			new HashMap<>(); 
 	
 	static {
@@ -42,14 +49,15 @@ public abstract class Algorithm {
 	 * @param name	The name
 	 */
 	public static void register(final @NonNull Class<? extends Algorithm> algorithm, final @NonNull String name) {
-		registeredAlgorithms.put(algorithm, name);
+		REGISTERED_ALGORITHMS.add(algorithm);
+		ALGORITHM_NAMES.put(algorithm, name);
 	}
 	
 	/**
 	 * @return all registered {@link Algorithm}s. 
 	 */
 	public static final @NonNull Iterable<Class<? extends Algorithm>> getRegisteredAlgorithms() {
-		return registeredAlgorithms.keySet();
+		return REGISTERED_ALGORITHMS;
 	}
 	
 	/**
@@ -58,7 +66,7 @@ public abstract class Algorithm {
 	 * @return	The registered name, or <code>null</code>
 	 */
 	public static final @NonNull String getName(Class<? extends Algorithm> algorithm) {
-		return registeredAlgorithms.get(algorithm);
+		return ALGORITHM_NAMES.get(algorithm);
 	}
 
 	/**

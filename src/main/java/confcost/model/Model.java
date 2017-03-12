@@ -65,7 +65,7 @@ public class Model {
 	 * Returns a list of all encryption classes
 	 * @return	the encryptions
 	 */
-	public final @NonNull Collection<Class<? extends Algorithm>> getAlgorithms() {
+	public final @NonNull List<Class<? extends Algorithm>> getAlgorithms() {
 		return algorithms;
 	}
 
