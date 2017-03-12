@@ -46,6 +46,7 @@ public class App
 	/**
 	 * Starts the application.
 	 * 
+	 * @param args	The command line arguments
 	 * @throws IOException	If an IO error occurred
 	 */
 	public void start(final String[] args) throws IOException {
