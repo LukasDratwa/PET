@@ -129,22 +129,22 @@ public class PassStatisticPanel extends JPanel {
 	    	
 	    	if (stat.getSumInitTime() != null) {
 	    		dataList.add(StatisticsRowCreator.createPassRow(
-	    				stat.getNames().getInitTimeName(), stat.getSumInitTime()));
+	    				stat.getNames().getInitTimeName()+" (μs)", stat.getSumInitTime()));
 	    	}
 	    	
 	    	if (stat.getSumRemoteInitTime() != null) {
 	    		dataList.add(StatisticsRowCreator.createPassRow(
-	    				stat.getNames().getRemoteInitTimeName(), stat.getSumRemoteInitTime()));
+	    				stat.getNames().getRemoteInitTimeName()+" (μs)", stat.getSumRemoteInitTime()));
 	    	}
 	    	
 	    	if (stat.getSumRunTime() != null) {
 	    		dataList.add(StatisticsRowCreator.createPassRow(
-	    				stat.getNames().getRunTimeName(), stat.getSumRunTime()));
+	    				stat.getNames().getRunTimeName()+" (μs)", stat.getSumRunTime()));
 	    	}
 	    	
 	    	if (stat.getSumRemoteRunTime() != null) {
 	    		dataList.add(StatisticsRowCreator.createPassRow(
-	    				stat.getNames().getRemoteRunTimeName(), stat.getSumRemoteRunTime()));
+	    				stat.getNames().getRemoteRunTimeName()+" (μs)", stat.getSumRemoteRunTime()));
 	    	}
 
 	    	this.data = new Object[dataList.size()][];

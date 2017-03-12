@@ -8,7 +8,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import confcost.controller.algorithm.Encryption;
-import confcost.controller.algorithm.Signature;
 import confcost.controller.ke.KeyExchange;
 import confcost.model.SendMode;
 
@@ -55,20 +54,7 @@ public class CryptoPass {
 	}
 	
 	public String toString() {
-		StringBuilder ret = new StringBuilder();
-		if (mode.signature != null) {
-			ret.append(Signature.getName(mode.signature) + " with ");
-		} 
-		
-		ret.append(Encryption.getName(mode.encryption));
-		
-		if (mode.keyExchange != null) {
-			ret.append("/"+KeyExchange.getName(mode.keyExchange));
-		}
-		
-		ret.append(" *"+mode.iterations);
-		
-		return ret.toString();
+		return mode.toString();
 	}
 	
 	public final @NonNull Class<? extends Encryption> getAlgorithm() {

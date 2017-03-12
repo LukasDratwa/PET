@@ -188,7 +188,7 @@ public class PassComparisonPanel extends JPanel {
 		for (String s : names) {
 			if (!added.contains(s)) {
 				if (ret.length() != 0) ret.append(" | ");
-				ret.append(s);
+				ret.append(s+" (μs)");
 				added.add(s);
 			}
 		}
