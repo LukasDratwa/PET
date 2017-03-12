@@ -65,6 +65,24 @@ public abstract class StatisticsRowCreator {
 		row[4] = "";
     	return row;
 	}
+
+	/**
+	 * Creates a row of data for a passes' attribute (like init time), utilizing a single value. This is
+	 * useful for displaying, for example, an average.
+	 *  
+	 * @param name	The row name
+	 * @param value	The value
+	 * @return	The row
+	 */
+	public static @NonNull Object[] createPassRow(final @NonNull String name, final @NonNull String value) {    	
+    	Object[] row = new Object[PASS_COLUMNS.length];
+    	row[0] = name + " (μs)";
+		row[1] = "";
+    	row[2] = value;
+		row[3] = "";
+		row[4] = "";
+    	return row;
+	}
 	
 	
 }

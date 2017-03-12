@@ -80,8 +80,10 @@ public class IterationStatisticComparisonPanel extends JPanel {
 		for (CryptoPass pass : passes) {
 			if (pass.getStatistics().getSumInitTime() != null)
 				rows[i] = StatisticsRowCreator.createPassRow(pass.toString(), pass.getStatistics().getSumInitTime());
-			else
+			else if (pass.getStatistics().getInitTime() >= 0)
 				rows[i] = StatisticsRowCreator.createPassRow(pass.toString(), pass.getStatistics().getInitTime());
+			else
+				rows[i] = StatisticsRowCreator.createPassRow(pass.toString(), "n/a");
 			names[i] = pass.getStatistics().getNames().getInitTimeName();
 			i++;
 		}
@@ -101,8 +103,10 @@ public class IterationStatisticComparisonPanel extends JPanel {
 		for (CryptoPass pass : passes) {
 			if (pass.getStatistics().getSumRemoteInitTime() != null)
 				rows[i] = StatisticsRowCreator.createPassRow(pass.toString(), pass.getStatistics().getSumRemoteInitTime());
-			else
+			else if (pass.getStatistics().getRemoteInitTime() >= 0)
 				rows[i] = StatisticsRowCreator.createPassRow(pass.toString(), pass.getStatistics().getRemoteInitTime());
+			else
+				rows[i] = StatisticsRowCreator.createPassRow(pass.toString(), "n/a");
 			names[i] = pass.getStatistics().getNames().getRemoteInitTimeName();
 			i++;
 		}
