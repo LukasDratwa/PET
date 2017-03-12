@@ -9,17 +9,17 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.model.SendMode;
-import confcost.view.send.AlgorithmConfiguration;
 import confcost.view.send.AlgorithmConfigurationFactory;
+import confcost.view.send.EncryptionConfiguration;
 
 /**
  * Superclass for encryption algorithms.
  * 
  * <p>
  * To add an additional encryption method, the following steps must be taken:
- * 1. Implement a new subclass of {@link Encryption}
+ * 1. Implement a new subclass of {@link AsymmetricEncryption} or {@link SymmetricEncryption}
  * 2. Register this subclass to {@link Encryption} (see {@link Encryption#register(Class, Integer[])})
- * 3. (optional) Create a subclass of {@link AlgorithmConfiguration} or expand the functionality
+ * 3. (optional) Create a subclass of {@link EncryptionConfiguration} or expand the functionality
  * 	of an existing subclass and add the creation logic to 
  * {@link AlgorithmConfigurationFactory#create(Class, confcost.model.Model)}
  * </p>

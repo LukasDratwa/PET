@@ -10,8 +10,8 @@ import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 
 import confcost.model.SendMode;
-import confcost.view.send.AlgorithmConfiguration;
 import confcost.view.send.AlgorithmConfigurationFactory;
+import confcost.view.send.SignatureConfiguration;
 
 /**
  * Superclass for signature algorithms.
@@ -21,7 +21,7 @@ import confcost.view.send.AlgorithmConfigurationFactory;
  * 1. Implement a new subclass of {@link Signature}
  * 2. Register this subclass to {@link Signature} (see {@link Signature#register(Class, Collection)})
  * 3. Register this subclass to {@link Algorithm} (see {@link Algorithm#register(Class, String)})
- * 4. (optional) Create a subclass of {@link AlgorithmConfiguration} or expand the functionality
+ * 4. (optional) Create a subclass of {@link SignatureConfiguration} or expand the functionality
  * 	of an existing subclass and add the creation logic to 
  * {@link AlgorithmConfigurationFactory#create(Class, confcost.model.Model)}
  * </p>
