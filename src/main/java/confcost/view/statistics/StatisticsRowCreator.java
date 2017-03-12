@@ -17,9 +17,9 @@ public abstract class StatisticsRowCreator {
 	 * Columns names for {@link CryptoPass} data rows
 	 */
 	public static final @NonNull String[] PASS_COLUMNS = {"Metric", "Min", "Mean", "Max", "Standard Deviation"};
-	
+
 	/**
-	 * Creates a row of data for a passes attribute (like init time).
+	 * Creates a row of data for a passes' attribute (like init time).
 	 * 
 	 * The data is assumed to be in ns, and will be printed in μs.
 	 *  
@@ -42,4 +42,29 @@ public abstract class StatisticsRowCreator {
     	}
     	return row;
 	}
+	
+
+	/**
+	 * Creates a row of data for a passes' attribute (like init time), utilizing a single value. This is
+	 * useful for displaying, for example, an average.
+	 * 
+	 * The data is assumed to be in ns, and will be printed in μs.
+	 *  
+	 * @param name	The row name
+	 * @param value	The value
+	 * @return	The row
+	 */
+	public static @NonNull Object[] createPassRow(final @NonNull String name, final @NonNull long value) {
+    	DecimalFormat df = new DecimalFormat("#.0"); 
+    	
+    	Object[] row = new Object[PASS_COLUMNS.length];
+    	row[0] = name + " (μs)";
+		row[1] = "";
+    	row[2] = df.format(value/1000);
+		row[3] = "";
+		row[4] = "";
+    	return row;
+	}
+	
+	
 }

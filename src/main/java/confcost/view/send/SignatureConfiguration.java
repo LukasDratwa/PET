@@ -93,7 +93,8 @@ public class SignatureConfiguration extends AlgorithmConfiguration {
 	/**
 	 * Constructor
 	 * 
-	 * @param encryption	The encryption to be configured
+	 * @param signature	The {@link Signature} to be configured
+	 * @param model	The main {@link Model}
 	 */
 	public SignatureConfiguration(final @NonNull Class<? extends Signature> signature, final @NonNull Model model) {
 		super(signature);

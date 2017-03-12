@@ -48,7 +48,6 @@ public abstract class Encryption extends Algorithm {
 	/**
 	 * Registers an encryption.
 	 * @param encryption	The {@link Encryption}
-	 * @param name	A unique, printable name
 	 * @param keyLengths	The available key lengths in bit
 	 */
 	public static void register(Class<? extends Encryption> encryption, 

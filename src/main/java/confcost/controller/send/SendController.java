@@ -31,7 +31,7 @@ import confcost.network.Frame;
 import confcost.util.HexString;
 
 /**
- * Responsible for sending data in accordance with a {@link SendModeInstance}.
+ * Responsible for sending data in accordance with a {@link SendMode}.
  * 
  * @author Marc Eichler
  *
@@ -58,8 +58,6 @@ public class SendController {
 	/**
 	 * Sends one or more encrypted messages to the specified host, according to the specified parameters
 	 * @param mode	The {@link SendMode} 
-	 * @param iterations The number of iterations
-	 * @param generateKeyEveryIteration	true iff a new key should be generated for every iteration
 	 * @param hostname	The host
 	 * @param port	The port
 	 * @throws IOException If an IO error occurred
@@ -219,18 +217,25 @@ public class SendController {
 			}
 
 		    // Receive key generation time
-		    remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();
+			if (mode.generateKeyEveryIteration) {
+				remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();
+			    statistics.setRemoteInitTime(remoteInitTime);
+			}
 		    // Receive decryption time
 		    remoteRunTime = new DataInputStream(socket.getInputStream()).readLong();
 		    
 		    // Update Statistics
-		    statistics.setRemoteInitTime(remoteInitTime);
 		    statistics.setRunTime(runTime);
 		    statistics.setRemoteRunTime(remoteRunTime);
 		    ci.setStatistics(statistics);
 		    
 		    // Update connection progress
 	    	connection.setProgress(i+1);
+		}
+	    // Receive key generation time
+		if (!mode.generateKeyEveryIteration) {
+			long remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();
+			passStat.setRemoteInitTime(remoteInitTime);
 		}
 		
 		connection.setStatus(Status.DONE);

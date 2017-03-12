@@ -47,7 +47,6 @@ public abstract class Signature extends Algorithm {
 	/**
 	 * Registers an encryption.
 	 * @param signature The {@link Signature}
-	 * @param name	A unique, printable name
 	 * @param encryptions	The available encryptions
 	 */
 	public static void register(Class<? extends Signature> signature, 
@@ -73,8 +72,8 @@ public abstract class Signature extends Algorithm {
 	
 	/**
 	 * Creates a new {@link Signature}
-	 * @param mode
-	 * @throws ReflectiveOperationException
+	 * @param mode	The {@link SendMode}
+	 * @throws ReflectiveOperationException	If the encryption could not be initialized
 	 */
 	public Signature(@NonNull SendMode mode) throws ReflectiveOperationException {
 		// Initialize Encryption
@@ -87,8 +86,8 @@ public abstract class Signature extends Algorithm {
 	 * Signs the data
 	 * @param data	The data
 	 * @return	The signed data
-	 * @throws InvalidKeyException 
-	 * @throws GeneralSecurityException 
+	 * @throws InvalidKeyException If the key is invalid
+	 * @throws GeneralSecurityException If a security error occurred
 	 */
 	public abstract @NonNull byte[] sign(final @NonNull byte[] data) throws InvalidKeyException, GeneralSecurityException;
 	
@@ -97,7 +96,7 @@ public abstract class Signature extends Algorithm {
 	 * @param data	The data
 	 * @param signature	The signature
 	 * @return	true iff verified
-	 * @throws GeneralSecurityException 
+	 * @throws GeneralSecurityException If a security error occurred
 	 */
 	public abstract boolean verify(final @NonNull byte[] data, final @NonNull byte[] signature) throws GeneralSecurityException;
 	

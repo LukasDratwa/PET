@@ -9,19 +9,31 @@ import confcost.controller.algorithm.Signature;
 import confcost.controller.ke.KeyExchange;
 import confcost.model.SendMode;
 
+/**
+ * Represents an iteration of the cryptographic algorithms in a {@link CryptoPass}.
+ *
+ */
 public class CryptoIteration {
-
+	/**
+	 * The statistics
+	 */
 	@NonNull IterationStatistics statistics;
 
+	/**
+	 * The index of the iteration
+	 */
 	private final int iteration;
 
+	/**
+	 * The {@link CryptoPass}
+	 */
 	private @Nullable CryptoPass pass;
 	
 	/**
 	 * Creates a new {@link CryptoIteration}
 	 * 
 	 * @param iteration	The current iteration
-	 * @param mode	The {@link SendMode}
+	 * @param pass 	The {@link CryptoPass}
 	 */
 	public CryptoIteration(final int iteration, final @NonNull CryptoPass pass) {
 		this.iteration = iteration;

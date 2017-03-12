@@ -82,7 +82,7 @@ public class PassStatistics {
 	
 	/**
 	 * Aggregates the specified {@link IterationStatistics} to the overall summary.
-	 * @param iterations	The {@link IterationStatistics}
+	 * @param iteration	The {@link IterationStatistics}
 	 */
 	public final void aggregate(final @NonNull IterationStatistics iteration) {
 		if (iteration.getInitTime() >= 0) {

@@ -90,7 +90,6 @@ public class Connection {
 	 * 
 	 * @param type	The type
 	 * @param mode	The {@link SendMode}
-	 * @param iterations	The number of iterations to be performed
 	 * @param addr	The other address
 	 */
 	public Connection(final @NonNull Type type, 

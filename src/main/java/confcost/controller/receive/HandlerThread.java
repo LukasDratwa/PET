@@ -97,7 +97,7 @@ public class HandlerThread extends Thread {
 				
 				for (int i = 0; i < mode.iterations; i++) {
 					System.out.println("HandlerThread >> *** Iteration "+(i+1)+"/"+mode.iterations);
-					long decryptTime = -1;
+					long runTime = -1;
 					
 					// Key generation
 					if (mode.generateKeyEveryIteration) {
@@ -111,27 +111,32 @@ public class HandlerThread extends Thread {
 					if (signature != null) {
 						byte[] sig = Frame.get(socket).data;
 						System.out.println("HandlerThread >> Signature: "+new HexString(sig));
-					    decryptTime = System.nanoTime();
+					    runTime = System.nanoTime();
 						System.out.println("Verified: "+signature.verify(message, sig));
-						decryptTime = System.nanoTime() - decryptTime;
+						runTime = System.nanoTime() - runTime;
 					} else {
-					    decryptTime = System.nanoTime();
+					    runTime = System.nanoTime();
 						message = encryption.decrypt(message);
-						decryptTime = System.nanoTime() - decryptTime;
+						runTime = System.nanoTime() - runTime;
 						System.out.println("HandlerThread >> Encrypted: "+new HexString(message));
 					}
 					
 					System.out.println("HandlerThread >> Done.");
 					
 				    // Send back measured times
-					System.out.println("HandlerThread >> Measured "+initTime +", "+decryptTime);
-				    new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
-				    new DataOutputStream(socket.getOutputStream()).writeLong(decryptTime);
+					System.out.println("HandlerThread >> Measured "+initTime +", "+runTime);
+					
+					if (mode.generateKeyEveryIteration)
+						new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
+				    new DataOutputStream(socket.getOutputStream()).writeLong(runTime);
 				    
 				    if (connection != null) {
 				    	connection.setProgress(i+1);
 			    	}
 				}
+				
+				if (!mode.generateKeyEveryIteration)
+					new DataOutputStream(socket.getOutputStream()).writeLong(initTime);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 				if (connection != null) {

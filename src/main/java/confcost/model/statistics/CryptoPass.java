@@ -106,9 +106,8 @@ public class CryptoPass {
 	}
 	
 	/**
-	 * Returns the average for all 
-	 * @param pass
-	 * @return
+	 * Returns an {@link IterationStatistics} containing the average of all iterations' values.
+	 * @return	The average
 	 */
 	public IterationStatistics getAverage() {
 		long initTime = 0;

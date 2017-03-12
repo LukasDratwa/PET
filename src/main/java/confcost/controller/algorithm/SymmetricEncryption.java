@@ -67,9 +67,9 @@ public abstract class SymmetricEncryption extends Encryption {
 	 * Generates an appropriate key based on the specified length and secret.
 	 * @param bitLength	The length of the key in bit
 	 * @param secret	The secret
-	 * @throws InvalidKeySpecException 
-	 * @throws NoSuchProviderException 
-	 * @throws NoSuchAlgorithmException 
+	 * @throws InvalidKeySpecException	If the secret is an invalid key
+	 * @throws NoSuchProviderException	If the provider was not found 	
+	 * @throws NoSuchAlgorithmException 	If the algorithm was not found
 	 */
 	public void generateKey(final int bitLength, final @NonNull byte[] secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
 		SecretKeySpec spec = new SecretKeySpec(shortenKey(keyExchange.getKey(), bitLength), this.getName());

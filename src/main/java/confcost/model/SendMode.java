@@ -66,6 +66,8 @@ public class SendMode implements Serializable {
 	 * @param keyExchange	The key exchange protocol or <code>null</code>
 	 * @param keyLength	The key length in bit
 	 * @param messageLength	The message length in bit
+	 * @param iterations	The maximum number of iterations
+	 * @param generateKeyEveryIteration	Whether or not a key should be generated every iteration (<code>true</code>), or at initialization (<code>false</code>) 
 	 */
 	public SendMode(final @NonNull Class<? extends Signature> signature,
 			final @NonNull Class<? extends Encryption> encryption,

@@ -60,8 +60,8 @@ public abstract class AsymmetricEncryption extends Encryption {
 	/**
 	 * Sets the {@link PublicKey}.
 	 * @param bytes The public key as bytes
-	 * @throws GeneralSecurityException	If a security error occured
-	 * @throws IOException 
+	 * @throws GeneralSecurityException	If a security error occurred
+	 * @throws IOException If an IO error occurred
 	 */
 	public void setPublicKey(byte[] bytes) throws GeneralSecurityException, IOException {
 		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytes);

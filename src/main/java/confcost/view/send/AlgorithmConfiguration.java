@@ -40,6 +40,7 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	
 	/**
 	 * Constructor
+	 * @param algorithm	The {@link Algorithm} to be configured
 	 */
 	public AlgorithmConfiguration(Class<? extends Algorithm> algorithm) {	
 		setLayout(new BorderLayout(0, 0));
@@ -64,6 +65,7 @@ public abstract class AlgorithmConfiguration extends JPanel {
 	/**
 	 * Creates a SendMode based on the current configuration.
 	 * @param iterations	The number of iterations
+	 * @param generateKeyEveryIteration	Whether or not to generate a key every iteration
 	 * @return	The {@link SendMode}
 	 */
 	public abstract SendMode getModeInfo(final int iterations, final boolean generateKeyEveryIteration);
