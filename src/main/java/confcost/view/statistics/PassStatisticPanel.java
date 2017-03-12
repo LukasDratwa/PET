@@ -27,6 +27,10 @@ import confcost.model.statistics.PassStatistics;
 public class PassStatisticPanel extends JPanel {
 	private static final long serialVersionUID = 5811821084252979623L;
 	
+	/**
+	 * Constructor
+	 * @param pass	The {@link CryptoPass}
+	 */
 	public PassStatisticPanel(final @NonNull CryptoPass pass) {
 		this.setLayout(new BorderLayout());
 		
@@ -49,6 +53,12 @@ public class PassStatisticPanel extends JPanel {
 		content.add(new JLabel("Connection: "), c);
 		c.gridx++;
 		content.add(new JLabel(pass.getOther().getHostName()), c);
+
+		c.gridx = 0;
+		c.gridy++;
+		content.add(new JLabel("Generate key every iteration?: "), c);
+		c.gridx++;
+		content.add(new JLabel(""+pass.getSendMode().generateKeyEveryIteration), c);
 
 		c.gridy++;
 		c.gridx = 0;
@@ -103,6 +113,10 @@ public class PassStatisticPanel extends JPanel {
 		this.add(content, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * The table model for iteration statistics.
+	 *
+	 */
 	public class IterationStatisticTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1445146757994573243L;
 

@@ -18,7 +18,7 @@ public class App
 	/**
 	 * The application's version
 	 */
-	public static final String VERSION = "RC1";
+	public static final String VERSION = "V1.0";
 	
 	/**
 	 * Sets the L&amp;F to the specified L&amp;F. If no L&amp;F with the specified name exists, the systems' L&amp;F is used instead. 

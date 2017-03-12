@@ -85,8 +85,18 @@ public class SendMode implements Serializable {
 	
 	@Override
 	public final @NonNull String toString() {
-		return Encryption.getName(this.encryption)+"/"+KeyExchange.getName(this.keyExchange)
-		+" ("+this.keyLength+","+this.messageLength+") ";
+		StringBuilder ret = new StringBuilder();
+		if (this.signature != null)
+			ret.append(Signature.getName(this.signature) + " with ");
+		
+		ret.append(Encryption.getName(this.encryption));
+		
+		if (this.keyExchange != null)
+			ret.append("/"+KeyExchange.getName(this.keyExchange));
+
+		ret.append(" ("+this.keyLength+","+this.messageLength+") ");
+		
+		return ret.toString();
 	}
 }
 
