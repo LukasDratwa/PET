@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.border.MatteBorder;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -49,11 +49,11 @@ public class ConnectionPanel extends JPanel implements ConnectionListener {
 	
 	public ConnectionPanel(final @NonNull Connection connection) {
 		this.setLayout(new GridBagLayout());
+
+		this.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
 		
 		this.connection = connection;
 		connection.addConnectionListener(this);
-		
-		this.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 		
 		this.initialize();
 	}
@@ -63,8 +63,7 @@ public class ConnectionPanel extends JPanel implements ConnectionListener {
 	 */
 	public void initialize() {
 		GridBagConstraints c = new GridBagConstraints();
-		
-		c.fill = GridBagConstraints.NONE;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
@@ -112,6 +111,7 @@ public class ConnectionPanel extends JPanel implements ConnectionListener {
 		
 		// Add error label
 		c.gridy++;
+		c.anchor = GridBagConstraints.WEST;
 		this.error = new JLabel();
 		this.add(this.error, c);
 		

@@ -1,8 +1,9 @@
 package confcost.view.status;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -38,11 +39,11 @@ public class ConnectionList extends JPanel implements ConnectionModelListener {
 		this.setLayout(new BorderLayout());
 		
 		this.content = new JPanel();
-		this.content.setLayout(new BoxLayout(this.content, BoxLayout.PAGE_AXIS));
+		this.content.setLayout(new GridBagLayout());
 		
 		this.scrollPane = new JScrollPane(content);
 		
-		this.add(scrollPane, BorderLayout.CENTER);
+		this.add(scrollPane);
 		model.getConnectionModel().addConnectionModelListener(this);
 	}
 
@@ -56,8 +57,12 @@ public class ConnectionList extends JPanel implements ConnectionModelListener {
 	 * @param connection	the {@link Connection}
 	 */
 	public void addConnectionPanel(Connection connection) {
-		this.content.add(new ConnectionPanel(connection));
-		this.content.revalidate();
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		this.content.add(new ConnectionPanel(connection), c);
 	}
 
 	@Override
