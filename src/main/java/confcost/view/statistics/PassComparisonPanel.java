@@ -16,13 +16,19 @@ import org.eclipse.jdt.annotation.NonNull;
 import confcost.model.statistics.CryptoPass;
 
 /**
+ * Comparison panel for {@link CryptoPass}es.
+ * 
  * <hr>Created on 19.02.2017<hr>
  * @author <a href="mailto:lukasdratwa@yahoo.de">Lukas Dratwa</a>
  */
-public class IterationStatisticComparisonPanel extends JPanel {
+public class PassComparisonPanel extends JPanel {
 	private static final long serialVersionUID = -6436736247904526338L;
 
-	public IterationStatisticComparisonPanel(List<CryptoPass> passes) {
+	/**
+	 * Creates a new comparison panel
+	 * @param passes	The passes to be compared
+	 */
+	public PassComparisonPanel(List<CryptoPass> passes) {
 		this.setLayout(new BorderLayout());
 		
 		JLabel label = new JLabel("Aggregated Statistics ("+passes.size()+")");
@@ -41,18 +47,19 @@ public class IterationStatisticComparisonPanel extends JPanel {
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
 	
-	class IterationStatisticTableModel extends AbstractTableModel {
+	/**
+	 * The table model for comparison tables
+	 */
+	class PassComparisonTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1445146757994573243L;
-
-		private String[] columnNames = {"Metric", "Min", "Mean", "Max", "Standard Deviation"};
 	    private Object[][] data;
 	    
-	    public IterationStatisticTableModel(Object[][] values) {
+	    public PassComparisonTableModel(Object[][] values) {
 	    	data = values;
 	    }
 
 	    public int getColumnCount() {
-	        return columnNames.length;
+	        return StatisticsRowCreator.PASS_COLUMNS.length;
 	    }
 
 	    public int getRowCount() {
@@ -60,7 +67,7 @@ public class IterationStatisticComparisonPanel extends JPanel {
 	    }
 
 	    public String getColumnName(int col) {
-	        return columnNames[col];
+	        return StatisticsRowCreator.PASS_COLUMNS[col];
 	    }
 
 	    public Object getValueAt(int row, int col) {
@@ -69,9 +76,9 @@ public class IterationStatisticComparisonPanel extends JPanel {
 	}
 	
 	/**
-	 * 
-	 * @param passes
-	 * @return
+	 * Creates the comparison table for the local initrun time
+	 * @param passes	The passes to be compared
+	 * @return	The table
 	 */
 	private final JPanel createInitTime(final @NonNull List<CryptoPass> passes) {
 		String[] names = new String[passes.size()];
@@ -92,9 +99,9 @@ public class IterationStatisticComparisonPanel extends JPanel {
 	}
 	
 	/**
-	 * 
-	 * @param passes
-	 * @return
+	 * Creates the comparison table for the remote init time
+	 * @param passes	The passes to be compared
+	 * @return	The table
 	 */
 	private final JPanel createRemoteInitTime(final @NonNull List<CryptoPass> passes) {
 		String[] names = new String[passes.size()];
@@ -113,7 +120,12 @@ public class IterationStatisticComparisonPanel extends JPanel {
 		
 		return createTable(aggregateNames(names), rows);
 	}
-	
+
+	/**
+	 * Creates the comparison table for the local run time
+	 * @param passes	The passes to be compared
+	 * @return	The table
+	 */
 	private final JPanel createRunTime(final @NonNull List<CryptoPass> passes) {
 		String[] names = new String[passes.size()];
 		Object[][] rows = new Object[passes.size()][];
@@ -127,6 +139,11 @@ public class IterationStatisticComparisonPanel extends JPanel {
 		return createTable(aggregateNames(names), rows);
 	}
 	
+	/**
+	 * Creates the comparison table for the remote run time
+	 * @param passes	The passes to be compared
+	 * @return	The table
+	 */
 	private final JPanel createRemoteRunTime(final @NonNull List<CryptoPass> passes) {
 		final @NonNull String[] names = new String[passes.size()];
 		final @NonNull Object[][] rows = new Object[passes.size()][];
@@ -140,12 +157,18 @@ public class IterationStatisticComparisonPanel extends JPanel {
 		return createTable(aggregateNames(names), rows);
 	}
 	
+	/**
+	 * Creates a {@link JTable} with the specified title and rows
+	 * @param name	The title
+	 * @param rows	The rows
+	 * @return	The {@link JTable}
+	 */
 	private final @NonNull JPanel createTable(final @NonNull String name, final @NonNull Object[][] rows) {
 		final @NonNull JPanel content = new JPanel(new BorderLayout());
 		final @NonNull JLabel header = new JLabel(name);
 		content.add(header, BorderLayout.NORTH);
 
-		final @NonNull JTable table = new JTable(new IterationStatisticTableModel(rows));
+		final @NonNull JTable table = new JTable(new PassComparisonTableModel(rows));
 		table.setPreferredScrollableViewportSize(table.getPreferredSize());
 		content.add(new JScrollPane(table), BorderLayout.CENTER);
 		

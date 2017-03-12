@@ -32,7 +32,7 @@ public class PassPanel extends JPanel {
 	private JScrollPane scrollPaneIterations;
 	private final @NonNull IterationPanel iterationPanel;
 	private PassStatisticPanel iterationStatistic;
-	private IterationStatisticComparisonPanel iterationStatisticComparison = null;
+	private PassComparisonPanel iterationStatisticComparison = null;
 
 	public PassPanel() {
 		this.setLayout(new BorderLayout());
@@ -91,7 +91,7 @@ public class PassPanel extends JPanel {
 			}
 			
 			
-			iterationStatisticComparison = new IterationStatisticComparisonPanel(passes);
+			iterationStatisticComparison = new PassComparisonPanel(passes);
 			this.add(iterationStatisticComparison, BorderLayout.CENTER);
 			
 			this.revalidate();
