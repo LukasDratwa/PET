@@ -6,7 +6,6 @@ import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -74,8 +73,7 @@ public abstract class SymmetricEncryption extends Encryption {
 	 */
 	public void generateKey(final int bitLength, final @NonNull byte[] secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
 		SecretKeySpec spec = new SecretKeySpec(shortenKey(keyExchange.getKey(), bitLength), this.getName());
-		SecretKeyFactory kf = SecretKeyFactory.getInstance(this.getName(), this.provider);
-		this.secretKey = kf.generateSecret(spec);
+		this.secretKey = spec;
 	}
 
 	
