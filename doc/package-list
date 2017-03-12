@@ -1,10 +1,11 @@
 confcost.confcost
 confcost.controller
-confcost.controller.encryption
+confcost.controller.algorithm
 confcost.controller.ke
 confcost.controller.receive
 confcost.controller.send
 confcost.model
+confcost.model.statistics
 confcost.network
 confcost.util
 confcost.view
