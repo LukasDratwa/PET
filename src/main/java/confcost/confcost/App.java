@@ -48,12 +48,24 @@ public class App
 	 * 
 	 * @throws IOException	If an IO error occurred
 	 */
-	public void start() throws IOException {
+	public void start(final String[] args) throws IOException {
+		int port = -1;
+		if (args.length > 0) {
+			if (args[0].equals("-p")) {
+				port = Integer.parseInt(args[1]);
+			}
+			else throw new IllegalArgumentException("Unknown command line argument: "+args[0]);
+		}
+		
         Model model = new Model();
 		model.setVersion(App.VERSION);
 		
         MainFrame view = new MainFrame("confcost", model);
-        Controller controller = new Controller(model, view);
+        Controller controller;
+        if (port > 0)
+        	controller = new Controller(model, view, port);
+    	else
+        	controller = new Controller(model, view);
         controller.start();
 	}
 	
@@ -65,6 +77,6 @@ public class App
     public static void main( String[] args ) throws IOException {		
     	App app = new App();
     	app.setLookAndFeel("Nimbus");
-    	app.start();
+    	app.start(args);
     }
 }

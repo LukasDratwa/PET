@@ -98,6 +98,27 @@ public class Controller implements SendButtonListener, SettingsListener {
 	}
 	
 	/**
+	 * Constructor
+	 * 
+	 * @param model	The main model
+	 * @param view	The main view
+	 * @param port	The port to listen on
+	 * @throws IOException	If an IO error occurred
+	 */
+	public Controller(final @NonNull Model model, final @NonNull MainFrame view, final int port) throws IOException {
+		this.port = port;
+		
+		this.model = model;
+		this.view = view;
+		this.sendController = new SendController(model);
+
+		this.view.addSendButtonListener(this);
+		this.view.addSettingsListener(this);
+		
+		this.receiveThread = new ReceiveThread(model, port);
+	}
+	
+	/**
 	 * Starts the {@link Controller}.
 	 */
 	public void start() {
