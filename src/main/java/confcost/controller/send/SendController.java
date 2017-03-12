@@ -19,10 +19,14 @@ import confcost.controller.algorithm.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
 import confcost.model.Connection;
 import confcost.model.Connection.Status;
-import confcost.model.CryptoIteration;
-import confcost.model.CryptoPass;
 import confcost.model.Model;
 import confcost.model.SendMode;
+import confcost.model.statistics.CryptoIteration;
+import confcost.model.statistics.CryptoPass;
+import confcost.model.statistics.EncryptionStatisticsNameSet;
+import confcost.model.statistics.SignatureIterationNameSet;
+import confcost.model.statistics.IterationStatistics;
+import confcost.model.statistics.PassStatistics;
 import confcost.network.Frame;
 import confcost.util.HexString;
 
@@ -160,15 +164,18 @@ public class SendController {
 		// Perform setup information exchange
 		new ObjectOutputStream(socket.getOutputStream()).writeObject(mode);
 
-		CryptoPass cp = new CryptoPass(mode);
+		CryptoPass cp = new CryptoPass(mode, socket.getInetAddress());
 		
     	connection.setStatus(Status.TRANSMITTING);
-    	
-    	// Measured init time in ns
-    	long initTime = -1;
+
+		PassStatistics passStat = 
+				new PassStatistics((signature!=null)?(new SignatureIterationNameSet()):(new EncryptionStatisticsNameSet()));
+		cp.setStatistics(passStat);
+		
 		// Retrieve key
 		if (!mode.generateKeyEveryIteration) {
-			initTime = generateKey(socket, encryption, mode);
+			long initTime = generateKey(socket, encryption, mode);
+			passStat.setInitTime(initTime);
 		}
 		
 		for (int i = 0; i < mode.iterations; i++) {
@@ -177,13 +184,16 @@ public class SendController {
 			
 			// Measured time in ns
 			long remoteInitTime = -1;
-			long encryptionTime = -1;
-			long decryptionTime = -1;
+			long runTime = -1;
+			long remoteRunTime = -1;
 			
-			
+			IterationStatistics statistics = 
+					new IterationStatistics((signature!=null)?(new SignatureIterationNameSet()):(new EncryptionStatisticsNameSet()));
+			   
 			// Retrieve key
 			if (mode.generateKeyEveryIteration) {
-				initTime = generateKey(socket, encryption, mode);
+				long initTime = generateKey(socket, encryption, mode);
+				statistics.setInitTime(initTime);
 			}
 			
 			// Generate and encrypt message
@@ -191,18 +201,18 @@ public class SendController {
 		    System.out.println("SendController::send >> Generated message "+new HexString(message));
 			
 			if (signature != null) {
-			    encryptionTime = System.nanoTime();
+			    runTime = System.nanoTime();
 				final @NonNull byte[] sig = signature.sign(message);
-				encryptionTime = System.nanoTime() - encryptionTime;
+				runTime = System.nanoTime() - runTime;
 				// Send encrypted/signed message
 			    System.out.println("SendController::send >> Sending message "+new HexString(message));
 				new Frame(message).write(socket);
 			    System.out.println("SendController::send >> Sending signature "+new HexString(sig));
 				new Frame(sig).write(socket);
 			} else {
-			    encryptionTime = System.nanoTime();
+			    runTime = System.nanoTime();
 				message = encryption.encrypt(message);
-				encryptionTime = System.nanoTime() - encryptionTime;
+				runTime = System.nanoTime() - runTime;
 				// Send encrypted/signed message
 			    System.out.println("SendController::send >> Sending message "+new HexString(message));
 				new Frame(message).write(socket);
@@ -211,13 +221,13 @@ public class SendController {
 		    // Receive key generation time
 		    remoteInitTime = new DataInputStream(socket.getInputStream()).readLong();
 		    // Receive decryption time
-		    decryptionTime = new DataInputStream(socket.getInputStream()).readLong();
+		    remoteRunTime = new DataInputStream(socket.getInputStream()).readLong();
 		    
-		    // Set elapsed time
-		    ci.setInitTime(initTime/1000);
-		    ci.setRemoteInitTime(remoteInitTime/1000);
-		    ci.setEncryptionTime(encryptionTime/1000);
-		    ci.setDecryptionTime(decryptionTime/1000);
+		    // Update Statistics
+		    statistics.setRemoteInitTime(remoteInitTime);
+		    statistics.setRunTime(runTime);
+		    statistics.setRemoteRunTime(remoteRunTime);
+		    ci.setStatistics(statistics);
 		    
 		    // Update connection progress
 	    	connection.setProgress(i+1);

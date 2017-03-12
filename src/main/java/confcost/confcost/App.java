@@ -62,7 +62,7 @@ public class App
 	 * @param args	Command line arguments
 	 * @throws IOException	If an IO error occurred
 	 */
-    public static void main( String[] args ) throws IOException {
+    public static void main( String[] args ) throws IOException {		
     	App app = new App();
     	app.setLookAndFeel("Nimbus");
     	app.start();

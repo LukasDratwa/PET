@@ -11,9 +11,9 @@ import javax.swing.event.ListSelectionListener;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import confcost.model.CryptoPass;
 import confcost.model.StatModel;
 import confcost.model.StatModelListener;
+import confcost.model.statistics.CryptoPass;
 import confcost.view.MainFrame;
 
 /**

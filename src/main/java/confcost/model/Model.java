@@ -9,6 +9,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import confcost.controller.algorithm.Algorithm;
 import confcost.controller.ke.KeyExchange;
+import confcost.model.statistics.CryptoPass;
 
 /**
  * Main model class

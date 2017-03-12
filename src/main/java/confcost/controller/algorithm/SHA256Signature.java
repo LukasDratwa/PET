@@ -17,7 +17,8 @@ public class SHA256Signature extends Signature {
 	 */
 	public final static @NonNull Collection<Class<? extends Encryption>> ENCRYPTIONS;
 	static { ENCRYPTIONS = new LinkedList<Class<? extends Encryption>>(); 
-				ENCRYPTIONS.add(RSAEncryption.class); 
+		ENCRYPTIONS.add(RSAEncryption.class); 
+		ENCRYPTIONS.add(DESEncryption.class); 
 	}
 	
 	public SHA256Signature(@NonNull SendMode mode) throws ReflectiveOperationException {

@@ -15,8 +15,8 @@ import javax.swing.event.ListSelectionListener;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import confcost.model.CryptoIteration;
-import confcost.model.CryptoPass;
+import confcost.model.statistics.CryptoIteration;
+import confcost.model.statistics.CryptoPass;
 import confcost.view.ModelList;
 
 /**
@@ -31,7 +31,7 @@ public class PassPanel extends JPanel {
 	private ModelList<CryptoIteration> iterations;
 	private JScrollPane scrollPaneIterations;
 	private final @NonNull IterationPanel iterationPanel;
-	private IterationStatisticPanel iterationStatistic;
+	private PassStatisticPanel iterationStatistic;
 	private IterationStatisticComparisonPanel iterationStatisticComparison = null;
 
 	public PassPanel() {
@@ -76,7 +76,7 @@ public class PassPanel extends JPanel {
 					this.remove(iterationStatisticComparison);
 				}
 				
-				iterationStatistic = new IterationStatisticPanel(pass);
+				iterationStatistic = new PassStatisticPanel(pass);
 				this.add(iterationStatistic, BorderLayout.SOUTH);
 				this.revalidate();
 				this.repaint();
@@ -97,5 +97,7 @@ public class PassPanel extends JPanel {
 			this.revalidate();
 			this.repaint();
 		}
+		
+		iterationPanel.set(null);
 	}
 }

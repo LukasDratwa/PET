@@ -7,6 +7,9 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import confcost.model.statistics.CryptoIteration;
+import confcost.model.statistics.CryptoPass;
+
 public class StatModel {
 	private final List<CryptoPass> stats;
 	private final Set<StatModelListener> listener;

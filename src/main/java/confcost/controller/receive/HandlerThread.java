@@ -112,8 +112,8 @@ public class HandlerThread extends Thread {
 						byte[] sig = Frame.get(socket).data;
 						System.out.println("HandlerThread >> Signature: "+new HexString(sig));
 					    decryptTime = System.nanoTime();
-						decryptTime = System.nanoTime() - decryptTime;
 						System.out.println("Verified: "+signature.verify(message, sig));
+						decryptTime = System.nanoTime() - decryptTime;
 					} else {
 					    decryptTime = System.nanoTime();
 						message = encryption.decrypt(message);
