@@ -39,6 +39,7 @@ public abstract class Encryption extends Algorithm {
 		
 		// Register all encryptions to be used
 		register(AESEncryption.class,	AESEncryption.KEY_LENGTHS);
+		register(DESEncryption.class,	DESEncryption.KEY_LENGTHS);
 		register(ECIESEncryption.class,	ECIESEncryption.KEY_LENGTHS);
 		register(RC2Encryption.class,	RC2Encryption.KEY_LENGTHS);
 		register(RSAEncryption.class,	RSAEncryption.KEY_LENGTHS);

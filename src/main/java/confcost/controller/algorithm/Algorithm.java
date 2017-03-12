@@ -26,6 +26,7 @@ public abstract class Algorithm {
 
 		// Register encryptions
 		register(AESEncryption.class, 	AESEncryption.NAME);
+		register(DESEncryption.class, 	DESEncryption.NAME);
 		register(RSAEncryption.class, 	RSAEncryption.NAME);
 		register(RC2Encryption.class, 	RC2Encryption.NAME);
 		register(ECIESEncryption.class,	ECIESEncryption.NAME);
