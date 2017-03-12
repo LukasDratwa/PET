@@ -9,13 +9,13 @@ import org.eclipse.jdt.annotation.NonNull;
 import confcost.model.SendMode;
 
 /**
- * SHA-256
+ * SHA-1
  * @author Marc Eichler
  *
  */
-public class SHA256Signature extends Signature {
+public class SHA1Signature extends Signature {
 
-	public final static @NonNull String NAME = "SHA256";
+	public final static @NonNull String NAME = "SHA1";
 	
 	/**
 	 * The available {@link Encryption}s
@@ -25,7 +25,7 @@ public class SHA256Signature extends Signature {
 		ENCRYPTIONS.add(RSAEncryption.class);
 	}
 	
-	public SHA256Signature(@NonNull SendMode mode) throws ReflectiveOperationException {
+	public SHA1Signature(@NonNull SendMode mode) throws ReflectiveOperationException {
 		super(mode);
 	}
 	

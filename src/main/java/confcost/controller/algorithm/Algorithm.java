@@ -27,12 +27,13 @@ public abstract class Algorithm {
 		// Register encryptions
 		register(AESEncryption.class, 	AESEncryption.NAME);
 		register(DESEncryption.class, 	DESEncryption.NAME);
-		register(RSAEncryption.class, 	RSAEncryption.NAME);
 		register(RC2Encryption.class, 	RC2Encryption.NAME);
+		register(RSAEncryption.class, 	RSAEncryption.NAME);
 		register(ECIESEncryption.class,	ECIESEncryption.NAME);
 		
 		// Register signature algorithms
-		register(SHA256Signature.class,	SHA256Signature.NAME);
+		register(SHA1Signature.class,		SHA1Signature.NAME);
+		register(SHA256Signature.class,		SHA256Signature.NAME);
 	}
 
 	/**

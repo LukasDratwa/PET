@@ -40,7 +40,8 @@ public abstract class Signature extends Algorithm {
 		availableEncryptions = new HashMap<>();
 		
 		// Register all encryptions to be used
-		register(SHA256Signature.class,	SHA256Signature.ENCRYPTIONS);
+		register(SHA1Signature.class,		SHA1Signature.ENCRYPTIONS);
+		register(SHA256Signature.class,		SHA256Signature.ENCRYPTIONS);
 	}
 	
 	/**

@@ -3,6 +3,8 @@ package confcost.view.send;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -15,11 +17,12 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import confcost.controller.algorithm.Algorithm;
 import confcost.controller.algorithm.Encryption;
-import confcost.controller.algorithm.RSAEncryption;
 import confcost.controller.algorithm.Signature;
+import confcost.controller.algorithm.SymmetricEncryption;
 import confcost.controller.ke.KeyExchange;
 import confcost.model.Model;
 import confcost.model.SendMode;
@@ -51,6 +54,21 @@ public class SignatureConfiguration extends AlgorithmConfiguration {
 	 * Panel for encryption selection and encryption specific parameters. This will be created by createEncryptionPanel().
 	 */
 	private JPanel encryptionPanel;
+	
+	/**
+	 * Contains the current encryption config panel 
+	 */
+	private JPanel encryptionConfig;
+	
+	/**
+	 * The configs' key length
+	 */
+	private @NonNull JComboBox<Integer> keyLength;
+	
+	/**
+	 * The configs' key exchange or <code>null</code>
+	 */
+	private @Nullable JComboBox<KeyExchangeWrapper> keyExchange;
 
 	/**
 	 * Panel for algorithm specific configuration parameters. This will be set by createSpecificContent().
@@ -68,6 +86,11 @@ public class SignatureConfiguration extends AlgorithmConfiguration {
 	private JTextField messageLength;
 	
 	/**
+	 * The main {@link Model}
+	 */
+	private final @NonNull Model model;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param encryption	The encryption to be configured
@@ -77,10 +100,23 @@ public class SignatureConfiguration extends AlgorithmConfiguration {
 
 		this.signature = signature;
 		
+		this.model = model;
+		
+		// Add available encryptions
 		this.encryptions = new JComboBox<>();
 		for (Class<? extends Encryption> e : Signature.getEncryptions(this.signature)) {
 			encryptions.addItem(new EncryptionWrapper(e));
 		}
+		
+		// Recreate config panel on selection change
+		this.encryptions.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				encryptionConfig.removeAll();
+				encryptionConfig.add(createEncryptionConfiguration(
+						((EncryptionWrapper)encryptions.getSelectedItem()).get()), BorderLayout.CENTER);
+			}
+		});
 
 		// Add main config panel
 		JPanel content = new JPanel();
@@ -176,7 +212,11 @@ public class SignatureConfiguration extends AlgorithmConfiguration {
 		return panel;
 	}
 	
-	protected JPanel createEncryptionPanel() {
+	/**
+	 * Creates a panel for selecting and configuring the available encryptions
+	 * @return
+	 */
+	protected final @NonNull JPanel createEncryptionPanel() {
 		JPanel panel = new JPanel();
 
 		panel.setLayout(new GridBagLayout());
@@ -190,6 +230,14 @@ public class SignatureConfiguration extends AlgorithmConfiguration {
 		panel.add(new JLabel("Encryption"), c);
 		c.gridx++;
 		panel.add(this.encryptions, c);
+		
+		// Add encryption configuration panels
+		this.encryptionConfig = new JPanel(new BorderLayout());
+		this.encryptionConfig.add(createEncryptionConfiguration(((EncryptionWrapper)encryptions.getSelectedItem()).get()), BorderLayout.CENTER);
+		c.gridx = 0;
+		c.gridy++;
+		c.gridwidth = 2;
+		panel.add(this.encryptionConfig, c);
 
 		// Add spacer
 		c.gridx = 0;
@@ -202,6 +250,52 @@ public class SignatureConfiguration extends AlgorithmConfiguration {
 	}
 	
 	/**
+	 * Creates a configuration panel for the specified {@link Encryption}
+	 * @param encryption	The {@link Encryption}
+	 * @return	The config panel
+	 */
+	private final @NonNull JPanel createEncryptionConfiguration(final @NonNull Class<? extends Encryption> encryption) {
+		System.out.println("Creating config panel for "+encryption);
+		
+		final @NonNull JPanel config = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+
+		// Add Key length
+		config.add(new JLabel("Key length (b): "), c);
+		c.gridx++;
+		this.keyLength = new JComboBox<>(Encryption.getKeyLength(encryption));
+		config.add(this.keyLength, c);
+		
+		// Add key exchange if necessary
+		if (SymmetricEncryption.class.isAssignableFrom(encryption)) {
+			c.gridx = 0;
+			c.gridy++;
+			config.add(new JLabel("Key exchange: "), c);
+			this.keyExchange= new JComboBox<>();
+			for (Class<? extends KeyExchange> ke : model.getKeyExchanges()) {
+				this.keyExchange.addItem(new KeyExchangeWrapper(ke));
+			}
+			c.gridx++;
+			config.add(this.keyExchange, c);
+		} else {
+			this.keyExchange = null;
+		}
+		
+		// Add spacer
+		c.gridx = 0;
+		c.gridy++;
+		c.gridwidth = 2;
+		c.weighty = 2;
+		config.add(new JPanel(), c);
+		
+		return config;
+	}
+	
+	/**
 	 * Used to create the specific content pane.
 	 * 
 	 * @return the pane or <code>null</code>
@@ -211,23 +305,20 @@ public class SignatureConfiguration extends AlgorithmConfiguration {
 	}
 
 	private final @NonNull Class<? extends Encryption> getSelectedEncryption() {
-		System.out.println("DEBUG: USING RSA");
-		return RSAEncryption.class;
+		return ((EncryptionWrapper)encryptions.getSelectedItem()).get();
 	}
 	
 	private final @NonNull Class<? extends KeyExchange> getSelectedKeyExchange() {
-		System.out.println("DEBUG: NO KEY EXCHANGE");
-		return null;
+		if (keyExchange != null) return ((KeyExchangeWrapper) keyExchange.getSelectedItem()).get();
+		else return null;
 	}
 	
 	private final @NonNull int getKeyLength() {
-		System.out.println("DEBUG: KEY LENGTH = "+512);
-		return 512;
+		return (Integer) keyLength.getSelectedItem();
 	}
 	
 	private final @NonNull int getMessageLength() {
-		System.out.println("DEBUG: MSG LENGTH = "+512);
-		return 512;
+		return Integer.parseInt(messageLength.getText());
 	}
 
 	@Override

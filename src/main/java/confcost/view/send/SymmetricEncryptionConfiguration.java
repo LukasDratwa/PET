@@ -43,7 +43,6 @@ public class SymmetricEncryptionConfiguration extends EncryptionConfiguration {
 	 * A drop down menu of available key exchange protocols
 	 */
 	private JComboBox<KeyExchangeWrapper> keyExchanges;
-	static { System.out.println("STATIC SYMMETRIC"); }
 	
 	/**
 	 * Message length
@@ -152,23 +151,5 @@ public class SymmetricEncryptionConfiguration extends EncryptionConfiguration {
 	@Override
 	protected JPanel createSpecificContent() {
 		return null;
-	}
-	
-	/**
-	 * Wraps a {@link KeyExchange} for use in a {@link JComboBox}
-	 * @author Marc Eichler
-	 *
-	 */
-	class KeyExchangeWrapper {
-		public final Class<? extends KeyExchange> ke;
-		private final String name;
-		KeyExchangeWrapper(final Class<? extends KeyExchange> ke) {
-			this.ke = ke;
-			this.name = KeyExchange.getName(ke);
-		}
-		
-		public String toString() {
-			return this.name;
-		}
 	}
 }

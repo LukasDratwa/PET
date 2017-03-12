@@ -12,11 +12,21 @@ import confcost.model.SendMode;
 import confcost.model.statistics.CryptoIteration;
 import confcost.model.statistics.StatisticsNameSet;
 
+/**
+ * Displays data for a {@link CryptoIteration}
+ *
+ */
 public class IterationPanel extends JPanel {
 	private static final long serialVersionUID = 8861998372720649766L;
 
+	/**
+	 * The data area
+	 */
 	private JTextArea data;
 	
+	/**
+	 * Constructor
+	 */
 	public IterationPanel() {
 		this.setLayout(new BorderLayout());
 		
@@ -25,6 +35,10 @@ public class IterationPanel extends JPanel {
 		this.add(data, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * Sets the {@link CryptoIteration} to display
+	 * @param ci	The {@link CryptoIteration}
+	 */
 	public void set(final @NonNull CryptoIteration ci) {
 		System.out.println("Displaying Iteration "+ci);
 		if (ci == null) {

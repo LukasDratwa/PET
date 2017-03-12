@@ -25,7 +25,10 @@ import confcost.view.MainFrame;
 public class TabStatistics extends JPanel implements StatModelListener {
 	private static final long serialVersionUID = 1L;
 	
-	private final JList<CryptoPass> listIterations;
+	/**
+	 * List of {@link CryptoPass}
+	 */
+	private final JList<CryptoPass> passes;
 	
 	public TabStatistics(MainFrame mainFrame, final @NonNull StatModel statModel) {
 		setLayout(new BorderLayout(0, 0));
@@ -50,29 +53,19 @@ public class TabStatistics extends JPanel implements StatModelListener {
 		panelWestLeft.add(panelWestLeftIterationList, BorderLayout.CENTER);
 		panelWestLeftIterationList.setLayout(new BorderLayout(0, 0));
 		
-		listIterations = new JList<>();
-//		listIterations.setModel(new AbstractListModel<String>() {
-//			private static final long serialVersionUID = 1L;
-//			String[] values = new String[] {"23.01.17, 22:00", "23.01.17, 22:03"};
-//			public int getSize() {
-//				return values.length;
-//			}
-//			public String getElementAt(int index) {
-//				return values[index];
-//			}
-//		});
+		passes = new JList<>();
 
 		PassPanel passPanel = new PassPanel();
 		this.add(passPanel, BorderLayout.CENTER);
 		
-		listIterations.addListSelectionListener(new ListSelectionListener() {	
+		passes.addListSelectionListener(new ListSelectionListener() {	
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				passPanel.set(listIterations.getSelectedValuesList());
+				passPanel.set(passes.getSelectedValuesList());
 			}
 		});
 		JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setViewportView(listIterations);
+		scrollPane.setViewportView(passes);
 		panelWestLeftIterationList.add(scrollPane);
 		
 	}
@@ -80,6 +73,6 @@ public class TabStatistics extends JPanel implements StatModelListener {
 	@Override
 	public void statModelChanged(@NonNull StatModel model) {
 		System.out.println("Stat model changed!");
-		this.listIterations.setListData(model.getCryptoPasses());
+		this.passes.setListData(model.getCryptoPasses());
 	}
 }

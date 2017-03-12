@@ -65,7 +65,7 @@ public class Model {
 	 * Returns a list of all encryption classes
 	 * @return	the encryptions
 	 */
-	public Collection<Class<? extends Algorithm>> getAlgorithms() {
+	public final @NonNull Collection<Class<? extends Algorithm>> getAlgorithms() {
 		return algorithms;
 	}
 
@@ -73,7 +73,7 @@ public class Model {
 	 * Returns a list of all key exchange classes
 	 * @return	the key exchanges
 	 */
-	public Collection<Class<? extends KeyExchange>> getKeyExchanges() {
+	public final @NonNull Collection<Class<? extends KeyExchange>> getKeyExchanges() {
 		return keyExchanges;
 	}
 	
